@@ -1,0 +1,5 @@
+Nemotron-Personas-Korea (Hugging Face: nvidia/Nemotron-Personas-Korea)
+file: nemotron_personas_korea.csv
+size_bytes: 4136491887
+sha256: 4c6f93101635b70899473004a8fa4651add6fcc561ab83affef72bf9dc49f25c
+sampling_seed: 42 (numpy default_rng)
