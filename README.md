@@ -4,6 +4,10 @@
 Panel for Digital and AI Service Use: A Secondary-Data Validation Against the
 Korea Media Panel Survey (submitted to IEEE Access)
 
+**Preprint:** SocArXiv, https://doi.org/10.31235/osf.io/zb3w2_v1
+
+**Archived package:** Zenodo, https://doi.org/10.5281/zenodo.21397425
+
 **Preregistration:** OSF registration `dfe2z` (https://osf.io/dfe2z) — see
 `PREREGISTRATION_MAP.md` for the item-by-item correspondence between the
 registration and the reported analyses.
