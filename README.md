@@ -76,7 +76,7 @@ Numbering follows the September 2026 version of the manuscript.
 | Table 6 (framing experiment) | `framing_experiment.py`, `rr_framing_tests.py`, `diagnose_bias.py` | `진단_프레이밍통제`, `심사_프레이밍검정` |
 | Table 7 (calibration by form; temporal holdout) | `rq_uncertainty.py`, `rr_calibration_details.py`, `rr_calibration_forms_extended.py` | `RQ3_보정`, `심사_보정형태민감도`, `심사_보정형태_시점홀드아웃` |
 | Table 8 (learning curve vs. real-only; EB shrinkage; entire-cell holdout) | `rr_calibration_forms_extended.py`, `rr_learning_curve.py`, `rr_eb_curve.py` | `심사_보정형태_학습곡선`, `심사_학습곡선_정밀`, `심사_EB풀링곡선`, `심사_보정형태_셀홀드아웃` |
-| Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `sensitivity_teen_excluded.py`, `m2_ablation` run of `generate.py` | `베이스라인_공통6`, `RQ3_시점홀드아웃`, `십대제외_베이스라인`, `M2_ablation` |
+| Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `rr_baselines_common6.py`, `sensitivity_teen_excluded.py`, `m2_ablation` run of `generate.py` | `베이스라인_공통6`, `베이스라인_공통6_보정`, `RQ3_시점홀드아웃`, `십대제외_베이스라인`, `M2_ablation` |
 | Table 11 (teen-excluded sensitivity) | `sensitivity_teen_excluded.py`, `rr_teen_nested.py` | `십대제외_*`, `심사_십대제외_보정형태` |
 | Tables 12–13 (signed error by age band) | derived from the sex-by-age cell errors of `rq2_expand.py` (the two sex cells of each band combined) | `RQ2_셀별상세` |
 | Table 14 (calibration coefficients, residuals) | `rr_calibration_details.py` | `심사_보정계수` |

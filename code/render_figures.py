@@ -97,7 +97,7 @@ def fig6():
     # 값은 본문 Table 7 및 심사_보정형태_* 시트와 동일.
     models=["Gemini","EXAONE"]
     ind=[[18.9,15.9],[8.6,6.7],[5.2,4.5]]; oot=[[21.0,18.3],[14.5,14.0],[12.4,12.7]]
-    GM=12.1; PW=6.7
+    GM=12.0; PW=6.7
     import numpy as _np
     x=_np.arange(len(models)); w=0.13
     fig,ax=plt.subplots(figsize=(5.6,3.3))

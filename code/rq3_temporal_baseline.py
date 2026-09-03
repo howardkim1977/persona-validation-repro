@@ -30,7 +30,7 @@ for m,f24,f25 in [("Gemini","outputs/synthetic_recoded_gemini.csv","outputs/synt
         xs=[(AC[k[1]],sc24[k]-ac24[k]) for k in bcells if k[1] in AC]
         sl,ic=np.polyfit([x for x,_ in xs],[y for _,y in xs],1) if len(xs)>=3 else (0,b)
         # 시점 밖(out-of-time) 자명 베이스라인: 2025 전체평균, 전차수(2024) 셀평균
-        t25=a25[[v,"WT"]].dropna(); g25=np.average(t25[v],weights=t25["WT"]) if len(t25) else np.nan
+        t25=a25[a25["연령대"].isin(AGES)][[v,"WT"]].dropna(); g25=np.average(t25[v],weights=t25["WT"]) if len(t25) else np.nan   # 10세 이상 표본(셀 분석 규약)
         unc+=[abs(sc25[k]-ac25[k]) for k in cells]
         glob+=[abs((sc25[k]-b)-ac25[k]) for k in cells]
         reg+=[abs((sc25[k]-(sl*AC[k[1]]+ic))-ac25[k]) for k in cells if k[1] in AC]
