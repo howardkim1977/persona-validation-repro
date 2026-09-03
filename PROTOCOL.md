@@ -1,24 +1,34 @@
 # Prompt & Generation Protocol
 
 This document specifies the full conditioning and generation protocol. The
-`logs/batch_*.jsonl` files contain the exact request payloads sent to the
-Gemini Batch API and can be used to verify every element below byte-for-byte.
+`logs/batch_*.jsonl` and `logs/order_*.jsonl` files contain the exact request
+payloads sent to the Gemini Batch API for the 2025 run, the demographic-only
+2024 ablation run, and the randomized-order experiment; the 2024 main-run
+payload files were not preserved (see §4a). The `logs/*.log` files are the
+console logs of every generation run (Gemini batch and EXAONE live calls).
 
 ## 1. Persona block
 
-Each sampled Nemotron-Personas-Korea record is rendered as a first-person
-persona block. Structured attributes are mapped to Korean survey categories
-(`code/map_persona.py`), then concatenated with the record's narrative fields
-(life background, hobbies, cultural/media orientation). Template
-(`code/generate.py::persona_description`):
+Each sampled Nemotron-Personas-Korea record is rendered as a persona block by
+`code/map_persona.py::build_persona_prompt`, which uses the record's raw
+natural-language values (e.g., 남자/여자, exact age, abbreviated province name;
+no mapping to survey categories) and concatenates five labelled fields
+(labels verbatim as sent):
 
 ```
-성별 {gender}, 연령 {age band}, 학력 {school}, 개인 월평균 소득 {income},
-거주지 {area}, 직업 {job}, {persona narrative fields}
+[기본 정보] 성별: {sex} / 나이: {age}세 / 거주지: {province} / 직업: {occupation} / 최종학력: {education_level}
+[요약] {persona}
+[성장·생활배경] {cultural_background}
+[취미·관심사] {hobbies_and_interests}
+[문화·미디어 성향] {arts_persona}
 ```
 
-The demographic-only ablation condition uses the same template with all
-narrative fields removed (sex and age only).
+`code/generate.py::persona_description` is an alternative renderer that maps
+attributes to survey categories; it was not used by the runs reported here,
+because `sample_personas` always attaches the block above as `persona_prompt`.
+The demographic-only ablation condition replaces the block with the two-field
+string `성별 {남성|여성}, 연령대 {10대 ... 70대이상}` (`code/generate.py`,
+`--conditioning demographic`).
 
 ## 2. System instruction (verbatim)
 
@@ -64,17 +74,33 @@ Instagram Reels, TikTok) — with everything else identical
 
 ## 4a. Regeneration and exclusion, as run
 
-- Gemini (batch): first-attempt format failures 106/8,168 (1.30%) in 2024 and
-  5/7,938 (0.06%) in 2025; all resolved in the second or third batch round; no
-  exclusions. The retry-round request files `logs/batch_w{wave}_r1c0.jsonl` and
-  `r2c0.jsonl` list exactly which personas were resubmitted.
+- Gemini (batch), 2024 main run: first-attempt format failures 66/8,168 (0.81%),
+  all resolved in the second round; no exclusions; 8,234 requests in total
+  (`logs/run_batch_full.log`). The batch payload files of this run were
+  overwritten by two later runs that reused the same file names (the
+  temperature-0.7 run of 3 July and the demographic-only ablation of 4 July
+  2026), so `logs/batch_w2024_*.jsonl` are the payloads of the demographic-only
+  ablation run (same questionnaire text, decoding parameters, and persona
+  sample; two-field persona block). The main-run persona blocks can be
+  regenerated deterministically from the dataset hash and seed (§6), but the
+  original request files are not preserved.
+- Gemini (batch), 2025 run: 5/7,938 (0.06%), all resolved in the second round;
+  7,943 requests (`logs/run_batch_2025.log`); `logs/batch_w2025_*.jsonl` are the
+  payloads of this run, and `r1c0.jsonl` lists the resubmitted personas.
+- Gemini (batch), demographic-only ablation (2024 items, 4 July 2026):
+  106/8,168 (1.30%) first-attempt failures and 6 second-round failures, all
+  resolved; 8,280 requests (`logs/run_demo_gemini.log`); the temperature-0.7
+  run had 51 first-round and 1 second-round failures (`logs/run_batch_t07.log`).
 - EXAONE (live): the initial 2024 pass left 236 personas (2.9%) unresolved after
   three attempts. Inspection showed output truncation at the client's token limit
   (not malformed answers). Those personas were regenerated once more under the same
   three-attempt rule after raising `max_tokens` to 4,096, leaving 3 (0.04%) excluded
-  (`outputs/recover_exaone.log`). In 2025, 144 (1.81%) were excluded. First-attempt
-  failures were not logged individually for live calls.
-- Per-cell rates: workbook sheets `심사_형식실패`, `심사_형식실패_셀별`.
+  (`logs/recover_exaone.log`; initial pass `logs/run_exaone.log`). In 2025, 144
+  (1.81%) were excluded. First-attempt failures were not logged individually for
+  live calls.
+- Per-cell rates: workbook sheets `심사_형식실패`, `심사_형식실패_셀별`. The Gemini
+  2024 cell-level rows there are those of the demographic-only ablation run
+  (labelled as such); the main run's failures are known only per sub-batch.
 
 ## 5. Models, endpoints, sampling parameters
 
@@ -85,10 +111,10 @@ Instagram Reels, TikTok) — with everything else identical
 | Temperature | 1.0 (main) / 0.7 (robustness) | 1.0 (main) / 0.7 (robustness) |
 | top_p | 1.0 | 1.0 |
 | Reasoning | `thinkingLevel: low` | thinking disabled via chat-template argument |
-| Concurrency | batch | ≤8 workers |
+| Concurrency | batch | up to 12 workers (code default; the value used was not logged) |
 | Max output tokens | default | 4,096 (see §4a) |
 | Response format | `responseMimeType: application/json` | JSON instruction in prompt |
-| Serving window | July 2026 | July 2026 |
+| Serving window | July 2026 (randomized-order experiment: 3 September 2026) | July 2026 |
 | Knowledge cutoff | January 2025 (documented) | undisclosed |
 
 Credentials are injected via environment variables only (`GEMINI_API_KEY`,
@@ -97,13 +123,18 @@ Credentials are injected via environment variables only (`GEMINI_API_KEY`,
 ## 6. Sampling design
 
 Sex-by-age stratified sampling from Nemotron-Personas-Korea with per-cell
-allocation `n = clip(2 × actual cell count, 200, 600)`, uniform random with
-replacement within cells, seed 42 (`numpy.random.default_rng`). The exact
+allocation `n = clip(2 × survey cell count, 200, 600)`, uniform random with
+replacement within cells, seed 42 (Python `random.Random(42)` in
+`code/generate.py::sample_personas`). The exact
 source file is identified by SHA-256 in `DATASET_HASHES.txt`; re-running
 `code/generate.py::sample_personas` with that file and seed reproduces the
 identical persona selection.
 
 ## 7. Randomized-order regeneration
+
+All order-experiment generations (F1--F3 and R1) were run on 3 September 2026
+with the same model identifier and decoding settings as the main run
+(`logs/order_exp_gemini.log`).
 
 `code/order_experiment.py` regenerates the 2024 questionnaire for the same
 1,144-persona stratified subsample used by the wording experiment (seed 42,

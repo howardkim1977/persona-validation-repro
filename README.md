@@ -26,7 +26,7 @@ registration and the reported analyses.
 |---|---|
 | `code/` | All generation, recoding, analysis, calibration, and figure scripts (Python) |
 | `outputs/` | Raw synthetic responses (all conditions), recoded response files, aggregate results workbook (`validity_results.xlsx`), per-cell format-failure rates |
-| `logs/` | Raw Gemini Batch API request payloads (`batch_*.jsonl`) — system instruction, full item text, and sampling parameters (temperature, top_p, thinking level) exactly as sent |
+| `logs/` | Gemini Batch API request payloads exactly as sent (`batch_w2025_*.jsonl`: 2025 run; `batch_w2024_*.jsonl`: demographic-only 2024 ablation run, see `PROTOCOL.md` §4a; `order_*.jsonl` and `order_exp_gemini_R1_orders.json`: randomized-order experiment) and the console logs of every generation run (`run_*.log`, `recover_*.log`, `framing_*.log`, `order_exp_gemini.log`) |
 | `PROTOCOL.md` | Prompt protocol: persona block construction, system/user templates (verbatim), JSON output contract, skip logic, retry rules, model identifiers/endpoints/serving window |
 | `DATASET_HASHES.txt` | SHA-256 of the exact Nemotron-Personas-Korea file used, plus the sampling seed |
 | `MANIFEST.sha256` | SHA-256 of every file in this package |
@@ -60,16 +60,18 @@ Numbering follows the September 2026 version of the manuscript.
 | Table 6 (framing experiment) | `framing_experiment.py`, `diagnose_bias.py` | `진단_프레이밍통제` |
 | Table 7 (calibration by form; temporal holdout) | `rq_uncertainty.py`, `rr_calibration_details.py`, `rr_calibration_forms_extended.py` | `RQ3_보정`, `심사_보정형태민감도`, `심사_보정형태_시점홀드아웃` |
 | Table 8 (learning curve vs. real-only; EB shrinkage; entire-cell holdout) | `rr_calibration_forms_extended.py`, `rr_learning_curve.py`, `rr_eb_curve.py` | `심사_보정형태_학습곡선`, `심사_학습곡선_정밀`, `심사_EB풀링곡선`, `심사_보정형태_셀홀드아웃` |
-| Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `sensitivity_teen_excluded.py` | `RQ3_시점홀드아웃`, `십대제외_베이스라인`; `outputs/m2_ablation.csv` |
+| Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `sensitivity_teen_excluded.py`, `m2_ablation` run of `generate.py` | `베이스라인_공통6`, `RQ3_시점홀드아웃`, `십대제외_베이스라인`, `M2_ablation` |
 | Table 11 (teen-excluded sensitivity) | `sensitivity_teen_excluded.py`, `rr_teen_nested.py` | `십대제외_*`, `심사_십대제외_보정형태` |
 | Tables 12–13 (signed error by age band) | derived from the sex-by-age cell errors of `rq2_expand.py` (the two sex cells of each band combined) | `RQ2_셀별상세` |
 | Table 14 (calibration coefficients, residuals) | `rr_calibration_details.py` | `심사_보정계수` |
 | Table 15 (construct correlation structure) | `rr_construct_corr.py` | `심사_구성개념_상관요약`, `심사_구성개념_상관행렬` |
 | Hierarchical bootstrap (Sec. IV-J) | `rr_hier_bootstrap.py`, `rr_order_analysis.py` | `심사_계층부트스트랩_EXAONE`, `심사_계층부트스트랩_Gemini` |
 | Table 10 (randomized-order experiment, Sec. IV-K) | `order_experiment.py`, `rr_order_analysis.py` | `심사_순서실험_*` |
-| Design-based CIs (Kish deff, household bootstrap) | `design_variance.py` | console output (no workbook sheet) |
-| Response stability (ICC, repeated passes) | `m1_variance.py`, `recover_k2.py`, `recover_k23.py` | `outputs/m1_variance_*.csv` |
-| Figures (all) | `render_figures.py`; decision flowchart (Fig. 8) `fig7_decision_flow.tex` (TikZ) | (reads the sheets above) |
+| Design-based CIs (Kish deff, household bootstrap) | `design_variance.py` | `설계기반_분산` |
+| Sampling-cap sensitivity (Sec. III-G) | `sensitivity_sample.py` | `민감도_표본cap` |
+| Item-bootstrap correlation CIs (Sec. IV-A) | `rr_item_bootstrap.py` | `심사_문항부트스트랩` |
+| Response stability (ICC, repeated passes) | `m1_variance.py`, `recover_k2.py`, `recover_k23.py` | `M1_분산_Gemini`, `M1_분산_EXAONE`, `복수응답_K3` |
+| Figures (all) | `render_figures.py`; decision flowchart (Fig. 8) `fig7_decision_flow.tex` (TikZ) | (values transcribed from the sheets above as literals in the script) |
 
 ## Quick start
 
@@ -89,6 +91,8 @@ if the hosted models drift (the EXAONE arm is open-weight and pinnable).
 ## Notes for verification
 
 - Format-failure rates by sex-by-age cell are in
-  `outputs/failure_rates_by_cell.csv` (overall: Gemini 0%, EXAONE ≤1.8%).
+  `outputs/failure_rates_by_cell.csv` (overall exclusions: Gemini 0%, EXAONE ≤1.8%);
+  the Gemini 2024 first-attempt rows there come from the demographic-only
+  ablation run (`PROTOCOL.md` §4a).
 - The `logs/` payloads allow byte-level verification of the prompt protocol
   against `PROTOCOL.md` and `code/generate.py`.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """논문용 벡터 그림 렌더링(영문 라벨, 흑백 대비 마커/해치).
-출력: paper/figures/*.pdf(벡터) + *.png(미리보기). 수치 출처: results/validity_results.xlsx.
+출력: paper/figures/*.pdf(벡터) + *.png(미리보기). 수치 출처: outputs/validity_results.xlsx(값을 리터럴로 옮겨 적음).
 """
 import os
 import matplotlib
@@ -94,7 +94,7 @@ def fig5():
 # Fig 6 — RQ3 보정
 def fig6():
     # 동시점(within-2024) vs 시점밖(2024→2025): 무보정 / 선형 연령회귀(사전지정) / 중첩 선택(nested).
-    # 값은 본문 Table 4 및 심사_보정형태_* 시트와 동일.
+    # 값은 본문 Table 7 및 심사_보정형태_* 시트와 동일.
     models=["Gemini","EXAONE"]
     ind=[[18.9,15.9],[8.6,6.7],[5.2,4.5]]; oot=[[21.0,18.3],[14.5,14.0],[12.4,12.7]]
     GM=12.1; PW=6.7

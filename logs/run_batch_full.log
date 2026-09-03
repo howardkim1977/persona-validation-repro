@@ -1,0 +1,34 @@
+페르소나 8168명 추출, gemini/batch 시작(temp=1.0)
+[라운드 1] 대상 8168건 → 9개 서브배치
+  서브배치 1/9 (1000건)
+    배치 batches/fa6f6zv7xa78l2080xtk5v6sey6b94apbeoy 대기…
+    성공 988 / 재생성 12 (누적 성공 988)
+  서브배치 2/9 (1000건)
+    배치 batches/q5k3tda139pdn6wzsqt7tlbulk76fek5023s 대기…
+    성공 989 / 재생성 11 (누적 성공 1977)
+  서브배치 3/9 (1000건)
+    배치 batches/x7e167e9n03u7klaxixjpb5d9hsoxg6hxfph 대기…
+    성공 995 / 재생성 5 (누적 성공 2972)
+  서브배치 4/9 (1000건)
+    배치 batches/w39m0fg4tqnyme7evxootru2hantm5beqrqy 대기…
+    성공 995 / 재생성 5 (누적 성공 3967)
+  서브배치 5/9 (1000건)
+    배치 batches/z1nqteagbjc8cxuxzhmsv4jl37v36xigl5ae 대기…
+    성공 987 / 재생성 13 (누적 성공 4954)
+  서브배치 6/9 (1000건)
+    배치 batches/b8kywj6oh40h54ta94psfimfu20tths28mz0 대기…
+    성공 987 / 재생성 13 (누적 성공 5941)
+  서브배치 7/9 (1000건)
+    배치 batches/4mbonnm3z5wsors9th70ay8mi014sk0swxxl 대기…
+    성공 994 / 재생성 6 (누적 성공 6935)
+  서브배치 8/9 (1000건)
+    배치 batches/qvb5nffmwfzldndumlbjzweerg5hu62ckmvn 대기…
+    성공 999 / 재생성 1 (누적 성공 7934)
+  서브배치 9/9 (168건)
+    배치 batches/pdwz3ifhop84i43skmbfg720zgvdsswc4vjd 대기…
+    성공 168 / 재생성 0 (누적 성공 8102)
+[라운드 2] 대상 66건 → 1개 서브배치
+  서브배치 1/1 (66건)
+    배치 batches/fbrrg0nw38550v3igovm2zycd418i2jw4awu 대기…
+    성공 66 / 재생성 0 (누적 성공 8168)
+완료: outputs/synthetic_responses.csv (총 8168, 오류 0)

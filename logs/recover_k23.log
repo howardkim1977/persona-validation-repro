@@ -1,0 +1,18 @@
+[outputs/synthetic_exaone_k2.csv] 복구 대상 466
+  100/466
+  200/466
+  300/466
+  400/466
+[outputs/synthetic_exaone_k2.csv] 병합 완료 | 잔여 2 → 최종 오류 2
+[outputs/synthetic_exaone_k3.csv] 복구 대상 965
+  100/965
+  200/965
+  300/965
+  400/965
+  500/965
+  600/965
+  700/965
+  800/965
+  900/965
+[outputs/synthetic_exaone_k3.csv] 병합 완료 | 잔여 5 → 최종 오류 5
+전체 복구 완료

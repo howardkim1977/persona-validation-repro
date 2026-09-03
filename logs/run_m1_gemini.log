@@ -1,0 +1,23 @@
+gemini: 페르소나 190명 × 5회 응답 생성
+  100/950
+  200/950
+  300/950
+  400/950
+  500/950
+  600/950
+  700/950
+  800/950
+  900/950
+
+[gemini] 문항별 분산분해 (within=생성노이즈, between=페르소나이질성, ICC=between/(within+between))
+  AI       within 0.0147  between 0.2245  ICC 0.938
+  OTT      within 0.0303  between 0.2101  ICC 0.874
+  유튜브      within 0.0017  between 0.0531  ICC 0.969
+  숏폼       within 0.0261  between 0.1672  ICC 0.865
+  SNS      within 0.0194  between 0.2314  ICC 0.923
+  메신저      within 0.0063  between 0.0204  ICC 0.764
+  메타버스     within 0.0088  between 0.0108  ICC 0.550
+  구독       within 0.0312  between 0.2082  ICC 0.870
+
+평균 ICC: 0.844  (1에 가까울수록 응답이 페르소나로 결정, 0이면 생성노이즈 지배)
+저장: outputs/m1_variance_gemini.csv

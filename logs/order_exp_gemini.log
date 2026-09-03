@@ -1,0 +1,53 @@
+[표집] 페르소나 1144명 (시드 42, 프레이밍 실험과 동일 부분표본)
+[F1] 시작 (고정 순서, temp=1.0)
+[F1 라운드 1] 대상 1144건 → 2개 서브배치
+    배치 batches/qy32b0f063z3qac91vk2tyqzpr04ozgv5yza 대기…
+    성공 962 / 재생성 38 (누적 성공 962)
+    배치 batches/cy857ru1carmn6agw0itrh9fi7pt00pc7xwa 대기…
+    성공 142 / 재생성 2 (누적 성공 1104)
+[F1 라운드 2] 대상 40건 → 1개 서브배치
+    배치 batches/s98gwbyqe5u3esituz0hdqc6wy6izajcrks8 대기…
+    성공 37 / 재생성 3 (누적 성공 1141)
+[F1 라운드 3] 대상 3건 → 1개 서브배치
+    배치 batches/wvehl6qu0gzy6l5k3xi5kgfn3392dzah1blk 대기…
+    성공 3 / 재생성 0 (누적 성공 1144)
+완료: outputs/order_exp_gemini_F1.csv (총 1144, 오류 0)
+[F2] 시작 (고정 순서, temp=1.0)
+[F2 라운드 1] 대상 1144건 → 2개 서브배치
+    배치 batches/ncno5jq25isfwneo5qgxdx15c4f9pf991uen 대기…
+    성공 968 / 재생성 32 (누적 성공 968)
+    배치 batches/wx294igzjkhl1lbunudlmyymfnb2v9ji3qj7 대기…
+    성공 143 / 재생성 1 (누적 성공 1111)
+[F2 라운드 2] 대상 33건 → 1개 서브배치
+    배치 batches/s2wbx85mk12eca9e7ujy8n2lq1286kpf3wi1 대기…
+    성공 30 / 재생성 3 (누적 성공 1141)
+[F2 라운드 3] 대상 3건 → 1개 서브배치
+    배치 batches/cbai6bh05wxrj92b6hotvqczgakptqhkgqy4 대기…
+    성공 3 / 재생성 0 (누적 성공 1144)
+완료: outputs/order_exp_gemini_F2.csv (총 1144, 오류 0)
+[F3] 시작 (고정 순서, temp=1.0)
+[F3 라운드 1] 대상 1144건 → 2개 서브배치
+    배치 batches/p2a7itbvilk3y348p23jcbdh1bd0ussy4zpy 대기…
+    성공 968 / 재생성 32 (누적 성공 968)
+    배치 batches/na8h9qfl8mvqt5lklpbih4fheaib5nwnu6dc 대기…
+    성공 142 / 재생성 2 (누적 성공 1110)
+[F3 라운드 2] 대상 34건 → 1개 서브배치
+    배치 batches/okp9jmra4qikw0nrd6lgo8wl3wyu319gedus 대기…
+    성공 33 / 재생성 1 (누적 성공 1143)
+[F3 라운드 3] 대상 1건 → 1개 서브배치
+    배치 batches/rzckl51dbnp9zeiupciihtaj5nhlmk62j68t 대기…
+    성공 1 / 재생성 0 (누적 성공 1144)
+완료: outputs/order_exp_gemini_F3.csv (총 1144, 오류 0)
+[R1] 시작 (무작위 순서, temp=1.0)
+[R1 라운드 1] 대상 1144건 → 2개 서브배치
+    배치 batches/b70f6eievk7byqn7pbmnt1muzecc4xmsoax0 대기…
+    성공 956 / 재생성 44 (누적 성공 956)
+    배치 batches/dk67qcscwy9ld9cztggvgwcxnbu7zdct3y93 대기…
+    성공 138 / 재생성 6 (누적 성공 1094)
+[R1 라운드 2] 대상 50건 → 1개 서브배치
+    배치 batches/uohrzvh2sec443hvdd81rhm4ync2e2pg8l40 대기…
+    성공 43 / 재생성 7 (누적 성공 1137)
+[R1 라운드 3] 대상 7건 → 1개 서브배치
+    배치 batches/zjvkn62arf06s7lfghjapuid5vwq9gysfx33 대기…
+    성공 4 / 재생성 3 (누적 성공 1141)
+완료: outputs/order_exp_gemini_R1.csv (총 1144, 오류 3)

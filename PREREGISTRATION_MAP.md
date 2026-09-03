@@ -1,7 +1,6 @@
 # Preregistration Correspondence Table
 
-**Registration:** OSF `dfe2z` (https://osf.io/dfe2z), registered 2026-07-03,
-updated 2026-07-12. Section and table numbers refer to the September 2026 version of the manuscript; the paper's Table 3 reproduces the status classification below. Registration type: Secondary Data Preregistration. The
+**Registration:** OSF `dfe2z` (https://osf.io/dfe2z), registered 2026-07-03 (OSF timestamp 02:36 UTC). File timestamps show that the registration was submitted after the 2024 Gemini and EXAONE panels had been generated (2 July 22:25 and 3 July 02:01 KST) and after an initial overall and cell-level agreement computation (3 July 06:18 and 07:41 KST), and before the calibration, diagnostic, and temporal analyses were designed; the paper (Sec. III-H, Table 3) therefore labels the RQ1–RQ2 plan as registered rather than as strictly preregistered. This table was last updated 2026-09-03. Section and table numbers refer to the September 2026 version of the manuscript; the paper's Table 3 reproduces the status classification below. Registration type: Secondary Data Preregistration. The
 registration was under embargo until 2026-08-23, when the authors ended the
 embargo early; it is now public, and every row below has been checked
 word-by-word against the registration text.
@@ -30,9 +29,9 @@ unchanged.
 | Conditional-item skip logic mirroring the survey | Sec. III-D | As registered |
 | Ground reference: KISDI Korea Media Panel Survey, weighted estimates | Sec. III-A | As registered (terminology in paper: "reference estimates") |
 | RQ1: do aggregated synthetic responses reproduce population-level distributions? | Sec. IV-A | As registered |
-| RQ2: does correspondence vary across respondent groups, item types, and model/generation settings? | Secs. IV-B, IV-F | As registered |
+| RQ2: does correspondence vary across respondent groups, item types, and model/generation settings? | Secs. IV-B, IV-F | Partly — respondent groups and generation settings as registered; item-type contrast deviates, see B |
 | H1 agreement measured against a chance/null reference | Secs. IV-H, Table 9 | Deviation — see C |
-| H2 subgroup agreement by sex-by-age cell and by item type | Sec. IV-B | As registered |
+| H2 subgroup agreement by sex-by-age cell and by item type | Sec. IV-B | Sex-by-age cells as registered; item-type contrast deviates, see B |
 | Agreement metrics: total variation distance (primary), Jensen–Shannon divergence, Pearson/rank correlation | Secs. III-E, IV-A | Deviation — see C |
 | H2 modelled by mixed-effects regression of agreement on cell size, age group, item type | — | Not performed — see C |
 
@@ -43,12 +42,15 @@ unchanged.
 | Total variation distance as the primary agreement measure | Mean absolute error (MAE) as the primary measure, with cosine similarity, KL and Jensen–Shannon divergences, and item-mean Pearson correlation | The item set is dominated by binary use/non-use indicators, for which MAE is directly interpretable in percentage points and is the unit in which the paper's claims and the calibration results are stated. JS divergence and Pearson correlation are reported as registered; TVD is not reported separately. |
 | Chance/null reference: uniform or marginal-permutation baseline | Grand-mean baseline (overall weighted rate for every cell) and prior-wave baseline (2023 real cell rates) | Naive real-data baselines are a stricter test than a uniform or permutation reference: they ask whether the synthetic panel beats trivial use of the real data, not merely whether it beats chance. The paper reports that the uncorrected panel fails this stricter test. |
 | Mixed-effects regression of cell- and item-level agreement on cell size, age group, and item type, with random intercepts for item | Five-axis segment decomposition of cell error (age, sex, region, education, household type) plus leave-one-item-out and item-bootstrap checks | The registered regression was not run. The five-axis decomposition addresses the same question (whether error concentrates in particular groups) descriptively; no inferential model of agreement was fitted. |
+| Item-type contrasts: binary vs. multi-category items, and general digital vs. AI items | Binary indicators vs. 5-point constructs (Secs. IV-A, IV-B; Table 15); the three multi-category AI items (awareness, most-used service, purpose of use) were not analysed | The multi-category items have no persona-side analogue with comparable option sets; the binary/construct contrast covers the registered intent of comparing item types |
+| Robustness summaries: correlation and mean absolute difference of item-level agreement across settings (temperature, model) | Mean absolute differences and paired design-based bootstrap CIs (Sec. IV-F); cross-setting correlations not reported | The paired bootstrap answers the registered question more directly; correlations across eight items would be uninformative |
 
 ## C. Analyses not preregistered (added during analysis and review)
 
 | Analysis | Paper location | Reason added |
 |---|---|---|
 | **RQ3 (calibration) in its entirety** — the registration states only RQ1 and RQ2; no calibration research question, hypothesis, or analysis plan was registered | Secs. III-F, IV-G; Tables 7–8 | Added after the raw comparison showed large, structured (not random) error, to test whether that structure is correctable |
+| Structural bias signatures (age slopes of the signed error, response-style level and anchoring) | Sec. IV-C, Fig. 4, Tables 12–13 | Diagnose the structure of the error before calibration |
 | 2025 item-set regeneration + reference-year swap | Sec. IV-E | Temporal-misalignment diagnosis |
 | Wording-controlled paired framing regeneration | Sec. IV-D, Table 6 | Isolate item-framing cause |
 | Temporal holdout (2024-learned correction → 2025) + out-of-time references | Sec. IV-G, Table 7 | Cross-wave transferability |
