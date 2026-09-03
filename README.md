@@ -8,7 +8,9 @@ Validation Against the Korea Media Panel Survey")
 
 **Preprint:** SocArXiv, https://doi.org/10.31235/osf.io/zb3w2_v1
 
-**Archived package:** Zenodo, https://doi.org/10.5281/zenodo.21397425
+**Archived package:** Zenodo — v1.1 (resubmission) https://doi.org/10.5281/zenodo.22270829;
+v1.0 (initial submission) https://doi.org/10.5281/zenodo.21397425;
+all versions https://doi.org/10.5281/zenodo.21397424
 
 **Preregistration:** OSF registration `dfe2z` (https://osf.io/dfe2z; public since 2026-08-23) — see
 `PREREGISTRATION_MAP.md` for the item-by-item correspondence between the
