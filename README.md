@@ -57,26 +57,26 @@ Numbering follows the September 2026 version of the manuscript.
 | Table 7 (calibration by form; temporal holdout) | `rq_uncertainty.py`, `rr_calibration_details.py`, `rr_calibration_forms_extended.py` | `RQ3_보정`, `심사_보정형태민감도`, `심사_보정형태_시점홀드아웃` |
 | Table 8 (learning curve vs. real-only; EB shrinkage; entire-cell holdout) | `rr_calibration_forms_extended.py`, `rr_learning_curve.py`, `rr_eb_curve.py` | `심사_보정형태_학습곡선`, `심사_학습곡선_정밀`, `심사_EB풀링곡선`, `심사_보정형태_셀홀드아웃` |
 | Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `sensitivity_teen_excluded.py` | `십대제외_베이스라인`, `M2_ablation` |
-| Table 10 (teen-excluded sensitivity) | `sensitivity_teen_excluded.py`, `rr_teen_nested.py` | `십대제외_*`, `심사_십대제외_보정형태` |
-| Tables 11–12 (signed error by age band) | `diagnose_bias.py` | `진단_연령경사` |
-| Table 13 (calibration coefficients, residuals) | `rr_calibration_details.py` | `심사_보정계수` |
-| Table 14 (construct correlation structure) | `rr_construct_corr.py` | `심사_구성개념_상관요약`, `심사_구성개념_상관행렬` |
+| Table 11 (teen-excluded sensitivity) | `sensitivity_teen_excluded.py`, `rr_teen_nested.py` | `십대제외_*`, `심사_십대제외_보정형태` |
+| Tables 12–13 (signed error by age band) | `diagnose_bias.py` | `진단_연령경사` |
+| Table 14 (calibration coefficients, residuals) | `rr_calibration_details.py` | `심사_보정계수` |
+| Table 15 (construct correlation structure) | `rr_construct_corr.py` | `심사_구성개념_상관요약`, `심사_구성개념_상관행렬` |
 | Hierarchical bootstrap (Sec. IV-J) | `rr_hier_bootstrap.py`, `rr_order_analysis.py` | `심사_계층부트스트랩_EXAONE`, `심사_계층부트스트랩_Gemini` |
-| Randomized-order experiment (Sec. IV-K) | `order_experiment.py`, `rr_order_analysis.py` | `심사_순서실험_*` |
+| Table 10 (randomized-order experiment, Sec. IV-K) | `order_experiment.py`, `rr_order_analysis.py` | `심사_순서실험_*` |
 | Design-based CIs (Kish deff, household bootstrap) | `design_variance.py` | `설계기반_분산` |
 | Response stability (ICC, repeated passes) | `m1_variance.py`, `recover_k2.py`, `recover_k23.py` | `M1_*` |
 | Figures (all) | `render_figures.py`; decision flowchart `fig7_decision_flow.tex` (TikZ) | (reads the sheets above) |
 
 ## Quick start
 
-`python quickstart.py` verifies the manifest, prints the headline tables from the
-archived workbook, and regenerates the figures; no KISDI access is required for
-these steps. The scripts that need the restricted microdata are listed at the end
+`python quickstart.py` verifies the manifest, prints the headline table values from
+the archived workbook, and regenerates the figures (exit code 1 if the manifest or
+the rendering fails); no KISDI access is required for these steps. The scripts that need the restricted microdata are listed at the end
 of its output.
 
 ## Environment
 
-Python ≥ 3.10 with `pandas`, `numpy`, `scipy`, `openpyxl`, `matplotlib`. Generation
+Python ≥ 3.10 with `pandas`, `numpy`, `scipy`, `openpyxl`, `matplotlib`; the exact versions used are pinned in `requirements.txt`. Generation
 additionally requires `google-genai` (Gemini Batch API) and an OpenAI-compatible
 client for the FriendliAI EXAONE endpoint. Hosted-model outputs reflect the
 July 2026 serving snapshot recorded in `PROTOCOL.md`; regeneration may differ

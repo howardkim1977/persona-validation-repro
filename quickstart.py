@@ -5,7 +5,8 @@ Runs in three steps from the archived aggregate outputs:
   1. verifies the SHA-256 manifest of the package;
   2. prints the headline tables of the paper from outputs/validity_results.xlsx
      (RQ1 agreement, RQ2 segment error, RQ3 calibration vs. real-only estimators,
-     format-failure rates, paired model comparison);
+     format-failure rates, paired model comparison; table numbers follow the
+     September 2026 manuscript);
   3. regenerates the paper figures into paper/figures/ (matplotlib).
 Analyses that need the KISDI microdata (analysis_ready.csv) are listed at the end
 with the script that reproduces each one once access has been granted.
@@ -18,16 +19,16 @@ import pandas as pd
 
 ROOT=os.path.dirname(os.path.abspath(__file__))
 XLSX=os.path.join(ROOT,"outputs","validity_results.xlsx")
-SHEETS=[("RQ1_지표종합","RQ1 overall agreement (Table 1)"),
-        ("RQ2_축별MAE","RQ2 five-axis segment MAE (Table 2)"),
+SHEETS=[("RQ1_지표종합","RQ1 overall agreement (Table 4)"),
+        ("RQ2_축별MAE","RQ2 five-axis segment MAE (Table 5)"),
         ("심사_집단오차지표","RQ2 between-group error range and absolute-error complements"),
         ("심사_짝부트스트랩","Paired design-based bootstrap: Gemini vs. EXAONE (Sec. IV-A)"),
-        ("RQ3_보정","RQ3 calibration, linear form (Table 4)"),
-        ("심사_보정형태민감도","RQ3 calibration by correction form incl. nested selection (Table 4)"),
-        ("심사_보정형태_학습곡선","RQ3 learning curve vs. real-only estimators (Table 5)"),
-        ("심사_EB풀링곡선","Partially pooled estimators, synthetic vs. real-only target (Table 5, EB)"),
-        ("RQ3_시점홀드아웃","Temporal holdout (Table 4, middle)"),
-        ("심사_형식실패","Format-failure and exclusion rates (Table 3)")]
+        ("RQ3_보정","RQ3 calibration, linear form (Table 7)"),
+        ("심사_보정형태민감도","RQ3 calibration by correction form incl. nested selection (Table 7)"),
+        ("심사_보정형태_학습곡선","RQ3 learning curve vs. real-only estimators (Table 8)"),
+        ("심사_EB풀링곡선","Partially pooled estimators, synthetic vs. real-only target (Table 8, EB)"),
+        ("RQ3_시점홀드아웃","Temporal holdout (Table 7, middle)"),
+        ("심사_형식실패","Format-failure and exclusion rates (Table 2)")]
 
 def verify_manifest():
     man=os.path.join(ROOT,"MANIFEST.sha256"); bad=0; n=0
@@ -36,7 +37,7 @@ def verify_manifest():
         if not os.path.exists(p): print("  missing:",name); bad+=1; continue
         d=hashlib.sha256(open(p,"rb").read()).hexdigest(); n+=1
         if d!=h: print("  hash mismatch:",name); bad+=1
-    print(f"[1/3] manifest: {n} files checked, {bad} problems")
+    print(f"[1/3] manifest: {n} files checked, {bad} problems"); return bad
 
 def print_tables():
     x=pd.ExcelFile(XLSX); pd.set_option("display.width",160); pd.set_option("display.max_columns",30)
@@ -48,11 +49,13 @@ def print_tables():
 def render_figures():
     r=subprocess.run([sys.executable,os.path.join(ROOT,"code","render_figures.py")],cwd=ROOT)
     print("[3/3] figures:", "ok" if r.returncode==0 else f"failed ({r.returncode})")
+    return r.returncode
 
 if __name__=="__main__":
     ap=argparse.ArgumentParser(); ap.add_argument("--no-figures",action="store_true"); a=ap.parse_args()
-    verify_manifest(); print_tables()
-    if not a.no_figures: render_figures()
+    bad=verify_manifest(); print_tables()
+    rc=0 if a.no_figures else render_figures()
+    if bad or rc: sys.exit(1)
     print("\nAnalyses requiring KISDI microdata (analysis_ready.csv; see README):\n"
           "  rq1_metrics.py, rq2_expand.py, rq3_realonly.py, rr_paired_bootstrap.py, rr_calibration_forms_extended.py,\n"
           "  rr_eb_curve.py, rr_teen19.py, rr_construct_corr.py, rr_hier_bootstrap.py, rr_order_analysis.py")

@@ -1,0 +1,10 @@
+# Versions used for the archived results (macOS, Python 3.11)
+pandas==3.0.2
+numpy==2.4.4
+scipy==1.17.1
+openpyxl==3.1.5
+matplotlib==3.11.0
+python-dotenv>=1.0
+# generation only
+google-genai
+openai
