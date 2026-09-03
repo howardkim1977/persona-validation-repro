@@ -1,0 +1,18 @@
+{
+  "model": "exaone",
+  "n_ctrl": 969,
+  "n_treat": 998,
+  "sf_ott": 52.9,
+  "sf_neutral": 81.3,
+  "sf_delta": 28.3,
+  "sf_ott_ci": [
+    49.8,
+    56.0
+  ],
+  "sf_neutral_ci": [
+    78.8,
+    83.6
+  ],
+  "cond_ott": 59.9,
+  "cond_neutral": 92.6
+}

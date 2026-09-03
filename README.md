@@ -26,7 +26,7 @@ registration and the reported analyses.
 | Path | Contents |
 |---|---|
 | `code/` | All generation, recoding, analysis, calibration, and figure scripts (Python) |
-| `outputs/` | Raw synthetic responses (all conditions), recoded response files, aggregate results workbook (`validity_results.xlsx`), per-cell format-failure rates |
+| `outputs/` | Raw synthetic responses of all full-panel runs, recoded response files, aggregate results workbook (`validity_results.xlsx`), per-cell format-failure rates, and the wording experiment's arm-level results (`framing_exp_*.json`; per-persona pairing was not retained, see `PROTOCOL.md`) |
 | `logs/` | Gemini Batch API request payloads exactly as sent (`batch_w2025_*.jsonl`: 2025 run; `batch_w2024_*.jsonl`: demographic-only 2024 ablation run, see `PROTOCOL.md` §4a; `order_*.jsonl` and `order_exp_gemini_R1_orders.json`: randomized-order experiment) and the console logs of every generation run (`run_*.log`, `recover_*.log`, `framing_*.log`, `order_exp_gemini.log`) |
 | `PROTOCOL.md` | Prompt protocol: persona block construction, system/user templates (verbatim), JSON output contract, skip logic, retry rules, model identifiers/endpoints/serving window |
 | `DATASET_HASHES.txt` | SHA-256 of the exact Nemotron-Personas-Korea file used, plus the sampling seed |
@@ -58,7 +58,7 @@ Numbering follows the September 2026 version of the manuscript.
 | Table 4 (RQ1 metrics), paired model comparison, Spearman | `rq1_metrics.py`, `rr_paired_bootstrap.py` | `RQ1_지표종합`, `심사_짝부트스트랩`, `심사_상관_Spearman`, `심사_상관_구성개념` |
 | Table 5 (RQ2 axes, signed-error range and complements) | `rq2_expand.py`, `rq2_region.py`, `rr_dpd_supplements.py` | `RQ2_축별MAE`, `RQ2_지역축`, `심사_집단오차지표`, `심사_집단오차_지표별` |
 | 19-year-old comparison (Sec. IV-B) | `rr_teen19.py` | `심사_10대_19세비교` |
-| Table 6 (framing experiment) | `framing_experiment.py`, `diagnose_bias.py` | `진단_프레이밍통제` |
+| Table 6 (framing experiment) | `framing_experiment.py`, `rr_framing_tests.py`, `diagnose_bias.py` | `진단_프레이밍통제`, `심사_프레이밍검정` |
 | Table 7 (calibration by form; temporal holdout) | `rq_uncertainty.py`, `rr_calibration_details.py`, `rr_calibration_forms_extended.py` | `RQ3_보정`, `심사_보정형태민감도`, `심사_보정형태_시점홀드아웃` |
 | Table 8 (learning curve vs. real-only; EB shrinkage; entire-cell holdout) | `rr_calibration_forms_extended.py`, `rr_learning_curve.py`, `rr_eb_curve.py` | `심사_보정형태_학습곡선`, `심사_학습곡선_정밀`, `심사_EB풀링곡선`, `심사_보정형태_셀홀드아웃` |
 | Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `sensitivity_teen_excluded.py`, `m2_ablation` run of `generate.py` | `베이스라인_공통6`, `RQ3_시점홀드아웃`, `십대제외_베이스라인`, `M2_ablation` |
@@ -71,14 +71,16 @@ Numbering follows the September 2026 version of the manuscript.
 | Design-based CIs (Kish deff, household bootstrap) | `design_variance.py` | `설계기반_분산` |
 | Sampling-cap sensitivity (Sec. III-G) | `sensitivity_sample.py` | `민감도_표본cap` |
 | Item-bootstrap correlation CIs (Sec. IV-A) | `rr_item_bootstrap.py` | `심사_문항부트스트랩` |
+| Median absolute error and leave-one-item-out MAE (Secs. IV-A, IV-E) | `rr_item_supplements.py` | `심사_문항보조통계` |
 | Response stability (ICC, repeated passes) | `m1_variance.py`, `recover_k2.py`, `recover_k23.py` | `M1_분산_Gemini`, `M1_분산_EXAONE`, `복수응답_K3` |
 | Figures (all) | `render_figures.py`; decision flowchart (Fig. 8) `fig7_decision_flow.tex` (TikZ) | (values transcribed from the sheets above as literals in the script) |
 
 ## Quick start
 
 `python quickstart.py` verifies the manifest, prints the headline table values from
-the archived workbook, and regenerates the figures (exit code 1 if the manifest or
-the rendering fails); no KISDI access is required for these steps. The scripts that need the restricted microdata are listed at the end
+the archived workbook, and regenerates Figs. 1–7 with matplotlib (Fig. 8 is a TikZ
+source, `code/fig7_decision_flow.tex`, compiled when `pdflatex` is available; exit
+code 1 if the manifest or the rendering fails); no KISDI access is required for these steps. The scripts that need the restricted microdata are listed at the end
 of its output.
 
 ## Environment

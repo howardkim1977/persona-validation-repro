@@ -43,7 +43,7 @@ for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs
 
 # ── RQ3 개선폭 반복분할 CI ──
 # 분할 난수는 전용 rng(seed 42)를 사용한다. RQ1 부트스트랩 난수열과 분리해
-# 이 절만 단독 실행해도 동일 결과가 재현되도록 한다(본문 Table 3 채택 추정치).
+# 이 절만 단독 실행해도 동일 결과가 재현되도록 한다(Table 7 채택 추정치).
 rng=np.random.default_rng(42)
 print("\n=== RQ3 보정 개선폭 (반복 홀드아웃 200회, 검정셋 MAE) ===")
 def cwm_w(df,v):
@@ -81,7 +81,7 @@ for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs
     rows.append({"모델":m,"무보정_MAE%p":round(np.mean(unc),1),"전역보정_MAE%p":round(np.mean(glo),1),
                  "연령회귀_MAE%p":round(np.mean(reg),1),"개선_연령회귀%p":round(np.mean(imp),1),
                  "개선_95CI_하한":round(lo,1),"개선_95CI_상한":round(hi,1),
-                 "분할":"층화 30/70 반복 200회","비고":"본문 Table 3 상단(채택 추정치)"})
+                 "분할":"층화 30/70 반복 200회","비고":"Table 7 top(채택 추정치)"})
 
 with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:
     pd.DataFrame(rows).to_excel(w,sheet_name="RQ3_보정",index=False)

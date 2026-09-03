@@ -102,6 +102,16 @@ Instagram Reels, TikTok) — with everything else identical
   2024 cell-level rows there are those of the demographic-only ablation run
   (labelled as such); the main run's failures are known only per sub-batch.
 
+## 4b. Wording (framing) experiment, as run
+
+Both arms (original OTT wording; neutral wording naming the venues) were generated
+for the same 1,144 sampled personas (`code/framing_experiment.py`, seed 42, live
+calls, July 2026). Only arm-level aggregates were saved
+(`outputs/framing_exp_{gemini,exaone}.json`: valid n per arm, short-form rates with
+per-arm bootstrap CIs, and P(short-form | YouTube)); per-persona pairing and the
+YouTube-user denominators were not retained. The paper therefore analyses the two
+arms as independent samples (`code/rr_framing_tests.py`, sheet `심사_프레이밍검정`).
+
 ## 5. Models, endpoints, sampling parameters
 
 | | Primary | Comparison |

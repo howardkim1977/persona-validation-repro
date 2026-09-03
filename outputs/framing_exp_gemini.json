@@ -1,0 +1,18 @@
+{
+  "model": "gemini",
+  "n_ctrl": 1113,
+  "n_treat": 1112,
+  "sf_ott": 31.6,
+  "sf_neutral": 76.8,
+  "sf_delta": 45.2,
+  "sf_ott_ci": [
+    28.9,
+    34.4
+  ],
+  "sf_neutral_ci": [
+    74.4,
+    79.3
+  ],
+  "cond_ott": 32.7,
+  "cond_neutral": 79.6
+}

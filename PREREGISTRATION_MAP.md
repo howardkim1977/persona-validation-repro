@@ -41,9 +41,10 @@ unchanged.
 |---|---|---|
 | Total variation distance as the primary agreement measure | Mean absolute error (MAE) as the primary measure, with cosine similarity, KL and Jensen–Shannon divergences, and item-mean Pearson correlation | The item set is dominated by binary use/non-use indicators, for which MAE is directly interpretable in percentage points and is the unit in which the paper's claims and the calibration results are stated. JS divergence and Pearson correlation are reported as registered; TVD is not reported separately. |
 | Chance/null reference: uniform or marginal-permutation baseline | Grand-mean baseline (overall weighted rate for every cell) and prior-wave baseline (2023 real cell rates) | Naive real-data baselines are a stricter test than a uniform or permutation reference: they ask whether the synthetic panel beats trivial use of the real data, not merely whether it beats chance. The paper reports that the uncorrected panel fails this stricter test. |
-| Mixed-effects regression of cell- and item-level agreement on cell size, age group, and item type, with random intercepts for item | Five-axis segment decomposition of cell error (age, sex, region, education, household type) plus leave-one-item-out and item-bootstrap checks | The registered regression was not run. The five-axis decomposition addresses the same question (whether error concentrates in particular groups) descriptively; no inferential model of agreement was fitted. |
+| Mixed-effects regression of cell- and item-level agreement on cell size, age group, and item type, with random intercepts for item | Five-axis segment decomposition of cell error (age, sex, region, education, employment) plus leave-one-item-out and item-bootstrap checks | The registered regression was not run. The five-axis decomposition addresses the same question (whether error concentrates in particular groups) descriptively; no inferential model of agreement was fitted. |
 | Item-type contrasts: binary vs. multi-category items, and general digital vs. AI items | Binary indicators vs. 5-point constructs (Secs. IV-A, IV-B; Table 15); the three multi-category AI items (awareness, most-used service, purpose of use) were not analysed | The multi-category items have no persona-side analogue with comparable option sets; the binary/construct contrast covers the registered intent of comparing item types |
 | Robustness summaries: correlation and mean absolute difference of item-level agreement across settings (temperature, model) | Mean absolute differences and paired design-based bootstrap CIs (Sec. IV-F); cross-setting correlations not reported | The paired bootstrap answers the registered question more directly; correlations across eight items would be uninformative |
+| Eight age categories for cell-level comparison | Seven decade bands (teens to 70s and over); respondents under 10 (weighted share 1.1%) are excluded from all cell-based analyses because no persona is under 19 (Sec. III-B) | The persona source has no under-10 records; the exclusion moves indicator rates by at most 0.7 pp |
 
 ## C. Analyses not preregistered (added during analysis and review)
 
@@ -64,7 +65,7 @@ unchanged.
 | Nested correction-form selection, all candidate forms, partially pooled (EB) estimators, learning curve at 1–30% with win shares, 19-year-old comparison, construct correlation structure, paired model bootstrap, hierarchical bootstrap | Secs. III-F, IV-A, IV-B, IV-G, IV-J; Tables 7–8, 14–15 | Added after the initial analysis |
 | Randomized-order regeneration (1,144-persona subsample; three fixed-order responses + one random-order response) | Sec. IV-K | Added after the initial analysis; bounds the item-order component of context effects |
 
-All additions in Section C are diagnostic or conservative: each one narrows,
-rather than expands, the claims the paper makes. RQ3 is the one substantive
-addition, and it is reported alongside real-data-only estimators that bound
-what the calibration actually buys.
+Most additions in Section C test robustness or bound the paper's claims. RQ3 is a
+substantive exploratory extension that also produces a positive calibration
+result; it is reported alongside real-data-only estimators that bound what the
+calibration actually buys.

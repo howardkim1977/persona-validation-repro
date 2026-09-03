@@ -7,7 +7,8 @@ Runs in three steps from the archived aggregate outputs:
      (RQ1 agreement, RQ2 segment error, RQ3 calibration vs. real-only estimators,
      format-failure rates, paired model comparison; table numbers follow the
      September 2026 manuscript);
-  3. regenerates the paper figures into paper/figures/ (matplotlib).
+  3. regenerates the matplotlib figures (Figs. 1-7) into paper/figures/; the decision
+     flowchart (Fig. 8) is a TikZ source (code/fig7_decision_flow.tex) compiled with pdflatex if available.
 Analyses that need the KISDI microdata (analysis_ready.csv) are listed at the end
 with the script that reproduces each one once access has been granted.
 
@@ -20,7 +21,8 @@ import pandas as pd
 ROOT=os.path.dirname(os.path.abspath(__file__))
 XLSX=os.path.join(ROOT,"outputs","validity_results.xlsx")
 SHEETS=[("RQ1_지표종합","RQ1 overall agreement (Table 4)"),
-        ("RQ2_축별MAE","RQ2 five-axis segment MAE (Table 5)"),
+        ("RQ2_축별MAE","RQ2 segment MAE, four of the five axes (Table 5)"),
+        ("RQ2_지역축","RQ2 segment MAE, region axis (Table 5)"),
         ("심사_집단오차지표","RQ2 between-group error range and absolute-error complements"),
         ("심사_짝부트스트랩","Paired design-based bootstrap: Gemini vs. EXAONE (Sec. IV-A)"),
         ("RQ3_보정","RQ3 calibration, linear form (Table 7)"),
@@ -48,7 +50,14 @@ def print_tables():
 
 def render_figures():
     r=subprocess.run([sys.executable,os.path.join(ROOT,"code","render_figures.py")],cwd=ROOT)
-    print("[3/3] figures:", "ok" if r.returncode==0 else f"failed ({r.returncode})")
+    print("[3/3] figures 1-7:", "ok" if r.returncode==0 else f"failed ({r.returncode})")
+    import shutil
+    if shutil.which("pdflatex"):
+        fig=os.path.join(ROOT,"paper","figures"); os.makedirs(fig,exist_ok=True)
+        shutil.copy(os.path.join(ROOT,"code","fig7_decision_flow.tex"),fig)
+        t=subprocess.run(["pdflatex","-interaction=nonstopmode","fig7_decision_flow.tex"],cwd=fig,capture_output=True)
+        print("      figure 8 (TikZ):", "ok" if t.returncode==0 else f"failed ({t.returncode})")
+    else: print("      figure 8 (TikZ): pdflatex not found; compile code/fig7_decision_flow.tex manually")
     return r.returncode
 
 if __name__=="__main__":

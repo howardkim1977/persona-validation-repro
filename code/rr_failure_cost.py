@@ -52,8 +52,9 @@ for label,wave,out,log in [("EXAONE 2024",2024,"outputs/synthetic_recoded_exaone
     rows.append({"실행":label,"차수":wave,"요청수(1차)":n0,"1차실패":np.nan,"1차실패율%":np.nan,"2차실패":np.nan,"총요청수":np.nan,
                  "최종제외":fin,"최종제외율%":round(100*fin/n0,2),"근거":"live calls; 1차 실패 개별 기록 없음(logs/run_exaone*.log, recover_exaone.log)"})
 fc=pd.read_csv("outputs/failure_rates_by_cell.csv",encoding="utf-8-sig")
-for _,r in fc[fc["모델"].astype(str).str.upper().str.contains("EXAONE")].iterrows() if "모델" in fc else []:
-    cellrows.append({"실행":f"EXAONE {r.get('차수','')}","차수":r.get("차수",np.nan),"성별":r.get("성별",""),"연령대":r.get("연령대",""),"n":r.get("n",np.nan),"최종제외":r.get("최종제외",np.nan),"최종제외율%":r.get("최종제외율%",np.nan)})
+for _,r in fc[fc["모델"].astype(str).str.upper().str.contains("EXAONE")].iterrows():
+    cellrows.append({"실행":f"EXAONE {int(r['차수'])}","차수":int(r["차수"]),"성별":r["성별"],"연령대":r["연령대"],"n":int(r["목표_n"]),
+                     "최종제외":int(r["목표_n"]-r["유효_n"]),"최종제외율%":round(float(r["형식실패율_%"]),2)})
 vol=[]
 for label,pat in [("Gemini 2025 run (archived payloads)","logs/batch_w2025_r*c*.jsonl"),("Gemini 2024 demographic-only ablation (archived payloads)","logs/batch_w2024_r*c*.jsonl")]:
     chars=0; nreq=0

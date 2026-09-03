@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""RQ2 확장: 교육·직업유무 축 세그먼트 오차 + 집단편향지표(DPD 상응).
-지역축은 지역코드-시도 크로스워크 미확정으로 보류."""
+"""RQ2 확장: 교육·직업유무 축 세그먼트 오차 + 집단 간 부호오차 범위 R_e(논문 III-E; 구 명칭 DPD 상응 지표).
+지역축은 rq2_region.py(RQ2_지역축)에서 별도 산출한다."""
 import pandas as pd, numpy as np
 from generate import sample_personas
 BIN=["AI_이용여부","OTT_이용","유튜브_이용","숏폼_이용","SNS_이용","메신저_이용","메타버스_이용","콘텐츠구독_이용"]
@@ -47,8 +47,8 @@ for m,raw_f,rec_f in [("Gemini","outputs/synthetic_responses.csv","outputs/synth
         allmae=np.mean([np.mean([abs(x) for x in errs.values()]) for errs in res.values() if errs])
         print(f"  [{axis}] 셀 MAE {allmae:.1f}%p")
         axis_rows.append({"모델":m,"축":axis,"셀MAE%p":round(allmae,1),
-                          "비고":"본문 Table 2(지역축은 rq2_region.py의 RQ2_지역축)"})
-    # 집단편향지표(DPD 상응): 성별×연령대 셀 오차의 분산·최대격차·최악셀
+                          "비고":"Table 5 (region axis: RQ2_지역축 from rq2_region.py)"})
+    # 집단 간 부호오차 범위 R_e: 성별×연령대 셀 오차의 최대격차·SD·최악셀
     rec["_cell"]=rec["성별"].astype(str)+"·"+rec["연령대"].astype(str)
     a24c=a24.copy(); a24c["_cell"]=a24c["성별"].astype(str)+"·"+a24c["연령대"].astype(str)
     worst=[]
@@ -62,10 +62,10 @@ for m,raw_f,rec_f in [("Gemini","outputs/synthetic_responses.csv","outputs/synth
         vals=[e for _,e in errs]
         rng=max(vals)-min(vals); sd=np.std(vals)
         wk,wv=max(errs,key=lambda x:abs(x[1]))
-        worst.append({"모델":m,"변수":v,"DPD_최대격차%p":round(rng,1),"오차SD%p":round(sd,1),
+        worst.append({"모델":m,"변수":v,"Re_최대격차%p":round(rng,1),"오차SD%p":round(sd,1),
                       "최악셀":wk,"최악오차%p":round(wv,1)})
     dpd=pd.DataFrame(worst)
-    print("  [집단편향지표 DPD] 평균 최대격차 %.1f%%p"%dpd["DPD_최대격차%p"].mean())
+    print("  [R_e] 평균 최대격차 %.1f%%p"%dpd["Re_최대격차%p"].mean())
     with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:
         dpd.to_excel(w,sheet_name=f"RQ2_집단편향_{m}",index=False)
 with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:

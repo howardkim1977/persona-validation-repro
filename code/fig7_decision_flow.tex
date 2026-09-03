@@ -15,13 +15,13 @@
   arr/.style={->,draw=black!70,line width=0.6pt}]
 \node[box] (q0) {Target: segment-level rates for a digital/AI service item};
 \node[dec, below=of q0] (d1) {Any real probability-survey data on the item (same or prior wave)?};
-\node[dec, below=of d1] (d2) {Real calibration sample large ($\gtrsim$1{,}000--2{,}000 respondents, i.e.\ $\gtrsim$100 per sex-by-age cell)?};
-\node[outb, right=of d2, xshift=6mm] (o1) {Estimate directly from the real data\\(this study: 3.6~pp at $n{=}2{,}598$; 4.2~pp at $n{\approx}1{,}730$)};
-\node[dec, below=of d2] (d3) {Real calibration sample small ($\lesssim$ a few hundred respondents, a few dozen per cell) or segment entirely unobserved?};
-\node[outb, right=of d3, xshift=6mm] (o2) {Model-dependent zone ($n{\approx}$200--1{,}700): benchmark the calibrated panel against direct estimation \emph{and} a partially pooled real-only estimator on held-out splits; keep whichever wins};
+\node[dec, below=of d1] (d2) {Real calibration sample large ($\gtrsim$900--1{,}700 respondents at the observed grid points, i.e.\ $\gtrsim$60--120 per sex-by-age cell; model-dependent)?};
+\node[outb, right=of d2, xshift=6mm] (o1) {Estimate directly from the real data\\(this study: 3.6~pp at $n{=}2{,}598$; 4.2~pp at $n{\approx}1{,}730$, where direct estimation beat both models)};
+\node[dec, below=of d2] (d3) {Real calibration sample small ($\lesssim$170--430 respondents, model-dependent; 6--30 per cell) or segment entirely unobserved?};
+\node[outb, right=of d3, xshift=6mm] (o2) {Model-dependent zone (between $n{\approx}$170--430 and 900--1{,}700, observed grid points): benchmark the calibrated panel against direct estimation \emph{and} a partially pooled real-only estimator on held-out splits; keep whichever wins};
 \node[dec, below=of d3] (d4) {Model's bias signature known and correctable\\(e.g., age-structured)?};
 \node[warn, right=of d4, xshift=6mm] (o3) {Do not use the synthetic panel for estimation;\\diagnostic use only (framing, consistency checks)};
-\node[outb, below=of d4] (o4) {Calibrated synthetic panel, correction form selected inside the calibration set\\(6--10~pp at $n{\approx}80$--430; margin over a real-only shrinkage estimator $\le$2~pp (2.1~pp at $n{\approx}80$; $<$1~pp from $n{\approx}170$); unobserved cells 5.8--6.7 vs.\ 8.6~pp);\\always report the real-only comparison};
+\node[outb, below=of d4] (o4) {Calibrated synthetic panel, correction form selected inside the calibration set\\(6--10~pp at $n{\approx}80$--430; margin over a real-only shrinkage estimator $\le$2~pp (2.1~pp at $n{\approx}80$; $<$1~pp from $n{\approx}170$); unobserved cells: both models on 14 cells (5.8--6.7 vs.\ 8.6~pp), EXAONE only on the 12 non-teen cells (4.9 vs.\ 6.2; Gemini 7.2));\\always report the real-only comparison};
 \node[warn, left=of d1, xshift=-4mm] (o0) {No validation possible: treat synthetic estimates as hypotheses, not measurements};
 \draw[arr] (q0) -- (d1);
 \draw[arr] (d1) -- node[right,xshift=1pt]{yes} (d2);

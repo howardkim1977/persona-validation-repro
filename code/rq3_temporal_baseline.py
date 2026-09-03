@@ -43,7 +43,7 @@ for m,f24,f25 in [("Gemini","outputs/synthetic_recoded_gemini.csv","outputs/synt
                       "연령회귀_MAE%p":round(np.mean(reg)*100,1),
                       "전체평균BL_2025_MAE%p":round(np.mean(gm)*100,1),
                       "전차수BL_2024_MAE%p":round(np.mean(prev)*100,1),
-                      "설계":"2024 학습 → 2025 검정","비고":"본문 Table 3 하단+캡션(시점 홀드아웃, out-of-time 베이스라인 대비)"})
+                      "설계":"2024 학습 → 2025 검정","비고":"Table 7 bottom and caption(시점 홀드아웃, out-of-time 베이스라인 대비)"})
 with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:
     pd.DataFrame(temp_rows).to_excel(w,sheet_name="RQ3_시점홀드아웃",index=False)
 print("워크북 시트 추가: RQ3_시점홀드아웃")
