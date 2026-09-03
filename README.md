@@ -17,6 +17,8 @@ v1.2 (September 2026) https://doi.org/10.5281/zenodo.22274662;
 v1.1 (September 2026) https://doi.org/10.5281/zenodo.22270829;
 v1.0 (July 2026) https://doi.org/10.5281/zenodo.21397425;
 all versions https://doi.org/10.5281/zenodo.21397424
+(the README inside an archived version lists the DOIs of earlier versions only, because each
+version DOI is minted after its GitHub release; the version's own DOI is in its Zenodo metadata)
 
 **Preregistration:** OSF registration `dfe2z` (https://osf.io/dfe2z; public since 2026-08-23) — see
 `PREREGISTRATION_MAP.md` for the item-by-item correspondence between the

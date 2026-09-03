@@ -14,7 +14,7 @@ for m in ["gemini","exaone"]:
     d=json.load(open(f"outputs/framing_exp_{m}.json",encoding="utf-8"))
     n1,n2=d["n_ctrl"],d["n_treat"]; p1,p2=d["sf_ott"]/100,d["sf_neutral"]/100
     se=math.sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2); diff=d["sf_delta"]; lo,hi=diff-1.96*se*100,diff+1.96*se*100   # 점추정은 저장된 비반올림 차이
-    pp=(p1*n1+p2*n2)/(n1+n2); z=(p2-p1)/math.sqrt(pp*(1-pp)*(1/n1+1/n2)); p=2*(1-norm.cdf(abs(z))); pv.append(p)
+    pp=(p1*n1+p2*n2)/(n1+n2); z=(p2-p1)/math.sqrt(pp*(1-pp)*(1/n1+1/n2)); p=2*norm.sf(abs(z))   # 생존함수로 언더플로 방지; pv.append(p)
     rows.append({"모델":d["model"],"n_통제":n1,"n_처치":n2,"숏폼_통제%":d["sf_ott"],"숏폼_처치%":d["sf_neutral"],"변화%p":round(diff,1),
                  "변화_CI_하한":round(lo,1),"변화_CI_상한":round(hi,1),"z":round(z,1),"p":p,"P(숏폼|유튜브)_통제%":d["cond_ott"],"P(숏폼|유튜브)_처치%":d["cond_neutral"]})
 # Holm(2건)
