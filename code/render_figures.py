@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""논문용 벡터 그림 렌더링(영문 라벨, 흑백 대비 마커·해치).
+"""논문용 벡터 그림 렌더링(영문 라벨, 흑백 대비 마커/해치).
 출력: paper/figures/*.pdf(벡터) + *.png(미리보기). 수치 출처: results/validity_results.xlsx.
 """
 import os
@@ -142,7 +142,7 @@ def fig0():
     box(1,12,26,32,"Survey reference",
         ["KISDI Media Panel","2024 n=8,693 | 2025 n=8,411","2023 = prior-wave baseline","weighted (household clusters)"],GRAY,EG)
     box(33,10,31,36,"Validation & diagnostics",
-        ["RQ1 agreement: MAE\u00b7KL\u00b7r","(design-based bootstrap)","RQ2 five-axis segment error\u00b7$R_e$","temporal mismatch\u00b7bias signatures\u00b7","framing\u00b7ablation\u00b7baselines\u00b7variance"],TEAL2,ET,ET)
+        ["RQ1 agreement: MAE, KL, r","(design-based bootstrap)","RQ2 five-axis segment error, $R_e$","temporal mismatch, bias signatures,","framing, ablation, baselines, variance"],TEAL2,ET,ET)
     box(69,10,30,36,"RQ3 calibration",
         ["holdout \u00d7200 + real-only baselines","+ entire-cell & temporal holdouts","correction form selected inside","the calibration set (nested)","\u2192 niche: data-scarce settings only"],AMBER2,EA,EA)
     seg(89.5,64,89.5,55,c=EB); seg(89.5,55,48.5,55,c=EB); arr(48.5,55,48.5,46,c=EB)

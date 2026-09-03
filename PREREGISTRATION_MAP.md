@@ -13,7 +13,10 @@ Panel Survey." The manuscript title was later changed to
 Digital and AI Service Use: A Secondary-Data Validation Against the Korea Media
 Panel Survey." The change narrows the claim ("benchmark"/"predicting adoption"
 to "distributional validity"/"service use") and adds the calibration component;
-the study, data, and design are unchanged.
+the study, data, and design are unchanged. In the September 2026 revision the
+title was shortened to "Distributional Validity of a Korean Synthetic Persona
+Panel: Evidence from the Korea Media Panel Survey"; scope and design are
+unchanged.
 
 ## A. Preregistered elements → where reported
 
@@ -47,7 +50,7 @@ the study, data, and design are unchanged.
 |---|---|---|
 | **RQ3 (calibration) in its entirety** — the registration states only RQ1 and RQ2; no calibration research question, hypothesis, or analysis plan was registered | Secs. III-F, IV-G; Tables 7–8 | Added after the raw comparison showed large, structured (not random) error, to test whether that structure is correctable |
 | 2025 item-set regeneration + reference-year swap | Sec. IV-E | Temporal-misalignment diagnosis |
-| Wording-controlled paired framing regeneration | Sec. IV-D, Table 9 | Isolate item-framing cause |
+| Wording-controlled paired framing regeneration | Sec. IV-D, Table 6 | Isolate item-framing cause |
 | Temporal holdout (2024-learned correction → 2025) + out-of-time references | Sec. IV-G, Table 7 | Cross-wave transferability |
 | Real-data-only estimators, calibration-size learning curve (1–30%), entire-cell holdout | Sec. IV-G, Table 8 | Bound calibration value against direct use of the calibration sample |
 | Household-cluster split check | Secs. III-F, IV-G | Rule out within-household leakage |
@@ -56,7 +59,7 @@ the study, data, and design are unchanged.
 | Design-based variance (Kish deff, household bootstrap), ICC / repeated passes | Secs. III-E, IV-J | Uncertainty and stability |
 | Leave-one-item-out MAE, median AE, item-bootstrap correlation CIs | Secs. IV-A, IV-E | Single-item dominance check |
 | Sampling-cap sensitivity (150–600) | Sec. III-B | Constant-choice robustness |
-| Nested correction-form selection, all candidate forms, partially pooled (EB) estimators, learning curve at 1–30% with win shares, 19-year-old comparison, construct correlation structure, paired model bootstrap, hierarchical bootstrap | Secs. III-F, IV-A, IV-B, IV-G, IV-J; Tables 7–8, 13–14 | Added after the initial analysis |
+| Nested correction-form selection, all candidate forms, partially pooled (EB) estimators, learning curve at 1–30% with win shares, 19-year-old comparison, construct correlation structure, paired model bootstrap, hierarchical bootstrap | Secs. III-F, IV-A, IV-B, IV-G, IV-J; Tables 7–8, 14–15 | Added after the initial analysis |
 | Randomized-order regeneration (1,144-persona subsample; three fixed-order responses + one random-order response) | Sec. IV-K | Added after the initial analysis; bounds the item-order component of context effects |
 
 All additions in Section C are diagnostic or conservative: each one narrows,
