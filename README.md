@@ -1,15 +1,15 @@
 # Reproducibility Package
 
 **Paper:** Distributional Validity of a Korean Synthetic Persona Panel: Evidence
-from the Korea Media Panel Survey (IEEE Access, under review; resubmitted
-September 2026 — earlier title: "Distributional Validity and Calibration of a
-Korean Synthetic Persona Panel for Digital and AI Service Use: A Secondary-Data
-Validation Against the Korea Media Panel Survey")
+from the Korea Media Panel Survey (IEEE Access, under review; earlier working
+title: "Distributional Validity and Calibration of a Korean Synthetic Persona
+Panel for Digital and AI Service Use: A Secondary-Data Validation Against the
+Korea Media Panel Survey")
 
 **Preprint:** SocArXiv, https://doi.org/10.31235/osf.io/zb3w2_v1
 
-**Archived package:** Zenodo — v1.1 (resubmission) https://doi.org/10.5281/zenodo.22270829;
-v1.0 (initial submission) https://doi.org/10.5281/zenodo.21397425;
+**Archived package:** Zenodo — v1.1 (September 2026) https://doi.org/10.5281/zenodo.22270829;
+v1.0 (July 2026) https://doi.org/10.5281/zenodo.21397425;
 all versions https://doi.org/10.5281/zenodo.21397424
 
 **Preregistration:** OSF registration `dfe2z` (https://osf.io/dfe2z; public since 2026-08-23) — see
@@ -43,7 +43,7 @@ registration and the reported analyses.
 
 ## Reproduction map (paper table/figure → script → workbook sheet)
 
-Numbering follows the revised manuscript (IEEE Access resubmission, September 2026).
+Numbering follows the September 2026 version of the manuscript.
 
 | Paper item | Script | Workbook sheet |
 |---|---|---|
@@ -82,7 +82,7 @@ client for the FriendliAI EXAONE endpoint. Hosted-model outputs reflect the
 July 2026 serving snapshot recorded in `PROTOCOL.md`; regeneration may differ
 if the hosted models drift (the EXAONE arm is open-weight and pinnable).
 
-## Notes for reviewers
+## Notes for verification
 
 - Format-failure rates by sex-by-age cell are in
   `outputs/failure_rates_by_cell.csv` (overall: Gemini 0%, EXAONE ≤1.8%).

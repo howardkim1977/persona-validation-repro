@@ -62,7 +62,7 @@ Instagram Reels, TikTok) — with everything else identical
 - **Rate limits**: 429/RESOURCE_EXHAUSTED retried with exponential backoff
   (does not consume regeneration attempts).
 
-## 4a. Regeneration and exclusion, as run (disclosed for the review)
+## 4a. Regeneration and exclusion, as run
 
 - Gemini (batch): first-attempt format failures 106/8,168 (1.30%) in 2024 and
   5/7,938 (0.06%) in 2025; all resolved in the second or third batch round; no
@@ -103,7 +103,7 @@ source file is identified by SHA-256 in `DATASET_HASHES.txt`; re-running
 `code/generate.py::sample_personas` with that file and seed reproduces the
 identical persona selection.
 
-## 7. Randomized-order regeneration (review-stage experiment)
+## 7. Randomized-order regeneration
 
 `code/order_experiment.py` regenerates the 2024 questionnaire for the same
 1,144-persona stratified subsample used by the wording experiment (seed 42,
@@ -116,7 +116,7 @@ options are unchanged. Analysis: `code/rr_order_analysis.py` (paired
 persona-level comparison F1 vs R1 with F1 vs F2 as the generation-noise
 reference; post-stratified rates; hierarchical bootstrap for Gemini).
 
-## 8. Review-stage analysis scripts (`rr_*.py`)
+## 8. Additional analysis scripts (`rr_*.py`)
 
 All share `rr_common.py` (data loading, 14-cell definitions, stratified and
 household splits, household-cluster resampling, seed 42). Each writes one or

@@ -1,14 +1,14 @@
 # Preregistration Correspondence Table
 
 **Registration:** OSF `dfe2z` (https://osf.io/dfe2z), registered 2026-07-03,
-updated 2026-07-12. Section and table numbers refer to the revised manuscript (September 2026); the paper's Table 3 reproduces the status classification below. Registration type: Secondary Data Preregistration. The
+updated 2026-07-12. Section and table numbers refer to the September 2026 version of the manuscript; the paper's Table 3 reproduces the status classification below. Registration type: Secondary Data Preregistration. The
 registration was under embargo until 2026-08-23, when the authors ended the
 embargo early; it is now public, and every row below has been checked
 word-by-word against the registration text.
 
 **Title change.** The registration is titled "Validating Synthetic Personas for
 Predicting Digital and AI Service Adoption: A Benchmark Against the Korea Media
-Panel Survey." The manuscript title was revised during review to
+Panel Survey." The manuscript title was later changed to
 "Distributional Validity and Calibration of a Korean Synthetic Persona Panel for
 Digital and AI Service Use: A Secondary-Data Validation Against the Korea Media
 Panel Survey." The change narrows the claim ("benchmark"/"predicting adoption"
@@ -56,8 +56,8 @@ the study, data, and design are unchanged.
 | Design-based variance (Kish deff, household bootstrap), ICC / repeated passes | Secs. III-E, IV-J | Uncertainty and stability |
 | Leave-one-item-out MAE, median AE, item-bootstrap correlation CIs | Secs. IV-A, IV-E | Single-item dominance check |
 | Sampling-cap sensitivity (150–600) | Sec. III-B | Constant-choice robustness |
-| Nested correction-form selection, all candidate forms, partially pooled (EB) estimators, learning curve at 1–30% with win shares, 19-year-old comparison, construct correlation structure, paired model bootstrap, hierarchical bootstrap | Secs. III-F, IV-A, IV-B, IV-G, IV-J; Tables 7–8, 13–14 | Added in the first-round revision (reviewer requests) |
-| Randomized-order regeneration (1,144-persona subsample; three fixed-order responses + one random-order response) | Sec. IV-K | Added in the first-round revision (reviewer request): bounds the item-order component of context effects |
+| Nested correction-form selection, all candidate forms, partially pooled (EB) estimators, learning curve at 1–30% with win shares, 19-year-old comparison, construct correlation structure, paired model bootstrap, hierarchical bootstrap | Secs. III-F, IV-A, IV-B, IV-G, IV-J; Tables 7–8, 13–14 | Added after the initial analysis |
+| Randomized-order regeneration (1,144-persona subsample; three fixed-order responses + one random-order response) | Sec. IV-K | Added after the initial analysis; bounds the item-order component of context effects |
 
 All additions in Section C are diagnostic or conservative: each one narrows,
 rather than expands, the claims the paper makes. RQ3 is the one substantive
