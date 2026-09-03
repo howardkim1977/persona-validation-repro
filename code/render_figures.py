@@ -101,7 +101,7 @@ def fig6():
     import numpy as _np
     x=_np.arange(len(models)); w=0.13
     fig,ax=plt.subplots(figsize=(5.6,3.3))
-    labs=["Uncorrected","Linear age (prespecified)","Nested selection"]; cols=[RED,BLUE,TEAL]
+    labs=["Uncorrected","Linear age (post-hoc)","Nested selection"]; cols=[RED,BLUE,TEAL]
     for i,(vals,lab,c) in enumerate(zip(ind,labs,cols)):
         ax.bar(x+(i-2.5)*w,vals,w,color=c,label=f"{lab}, within-2024",edgecolor="white",linewidth=0.4)
     for i,(vals,lab,c) in enumerate(zip(oot,labs,cols)):

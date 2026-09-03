@@ -43,8 +43,17 @@ registration and the reported analyses.
   `PanelData_*.csv`): access-restricted. Apply at the KISDI Media Statistics
   Portal (https://stat.kisdi.re.kr); after approval, `code/recode.py` documents
   the exact recoding from the raw KISDI file to the analysis schema used here.
-  All analyses that require real data read a single file `analysis_ready.csv`
-  with the column schema visible at the top of each analysis script.
+  All analyses that require real data read `analysis_ready.csv` (column schema
+  visible at the top of each analysis script). Scripts that resample by
+  household or use exact ages additionally read the raw KISDI individual file
+  at the hard-coded path `private/PanelData_20260701.csv` (columns `OPID`,
+  `hid`, `YEAR`, `p__age1`): `design_variance.py`, `rq3_realonly.py`,
+  `rr_teen19.py`, and every `rr_*.py` script that calls
+  `rr_common.load_real()` with household identifiers (`rr_paired_bootstrap.py`,
+  `rr_calibration_details.py`, `rr_calibration_forms_extended.py`,
+  `rr_eb_curve.py`, `rr_learning_curve.py`, `rr_dpd_supplements.py`,
+  `rr_teen_nested.py`, `rr_hier_bootstrap.py`, `rr_order_analysis.py`).
+  Without that file these scripts stop at the read step.
 - **API keys**: all scripts read credentials from environment variables
   (`GEMINI_API_KEY`, `EXAONE_*`); none are stored in code.
 - **Nemotron-Personas-Korea** (~4.1 GB): publicly available on Hugging Face

@@ -54,16 +54,33 @@ print("="*66)
 # 베이스라인1: 전체 평균(주변분포) — 세그먼트 정보 없음
 # 베이스라인2: 전차수(2023) 실측 셀평균 — 과거 실측 사용
 a23=a[a.YEAR==2023]
-for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs/synthetic_recoded_exaone.csv")]:
-    syn=pd.read_csv(f,encoding="utf-8-sig")
+# 비교 셀은 논문과 같이 14개 성별×연령대 셀(10세 미만 제외)로 제한하고, 전체평균 베이스라인도
+# 같은 10세 이상 표본의 가중 전체 비율로 계산한다(논문 Table 9: 11.6 / 11.1 / 3.7).
+a24r=a24[a24["연령대"].isin(AGES)]
+COMMON6=[v for v in BIN if v in a23.columns and a23[v].notna().any()]   # 2023 차수에 실측이 있는 6개 지표
+def cell_err(items,syn=None):
+    """14셀 기준 셀 MAE(%p): 합성(syn), 전체평균 베이스라인, 전차수(2023) 베이스라인."""
     syn_e=[];gm_e=[];prev_e=[]
-    for v in BIN:
-        ac=cwm_w(a24,v); sc=cwm(syn,v)
-        s=a24[[v,"WT"]].dropna(); grand=np.average(s[v],weights=s["WT"])
-        pc=cwm_w(a23,v) if v in a23 else {}
-        cells=[k for k in ac if not np.isnan(ac[k])]
-        syn_e+=[abs(sc[k]-ac[k]) for k in cells if k in sc]
+    for v in items:
+        ac=cwm_w(a24,v); pc=cwm_w(a23,v) if v in a23.columns else {}
+        s=a24r[[v,"WT"]].dropna(); grand=np.average(s[v],weights=s["WT"])
+        cells=[k for k in ac if k[1] in AGES and not np.isnan(ac[k])]
+        if syn is not None:
+            sc=cwm(syn,v); syn_e+=[abs(sc[k]-ac[k]) for k in cells if k in sc]
         gm_e+=[abs(grand-ac[k]) for k in cells]
         prev_e+=[abs(pc[k]-ac[k]) for k in cells if k in pc and not np.isnan(pc[k])]
-    print(f"  {m}: 합성 {np.mean(syn_e)*100:.1f} | 전체평균 베이스라인 {np.mean(gm_e)*100:.1f} | "
-          f"전차수(2023)실측 {np.mean(prev_e)*100:.1f}")
+    f=lambda x: round(np.mean(x)*100,1) if x else np.nan
+    return f(syn_e),f(gm_e),f(prev_e)
+base_rows=[]
+for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs/synthetic_recoded_exaone.csv")]:
+    syn=pd.read_csv(f,encoding="utf-8-sig")
+    s6,_,_=cell_err(COMMON6,syn); s8,_,_=cell_err(BIN,syn)
+    base_rows.append({"조건":f"무보정 합성 {m}","공통6_셀MAE":s6,"전체8_셀MAE":s8})
+    print(f"  {m}: 합성 공통6 {s6} / 전체8 {s8}")
+_,g6,p6=cell_err(COMMON6); _,g8,_=cell_err(BIN)
+base_rows.append({"조건":"전체평균 베이스라인","공통6_셀MAE":g6,"전체8_셀MAE":g8})
+base_rows.append({"조건":"전차수(2023) 베이스라인","공통6_셀MAE":p6,"전체8_셀MAE":np.nan})
+print(f"  전체평균 베이스라인 공통6 {g6} / 전체8 {g8} | 전차수(2023) 공통6 {p6}  (14셀 기준; 공통6 = {COMMON6})")
+with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:
+    pd.DataFrame(base_rows).to_excel(w,sheet_name="베이스라인_공통6",index=False)
+print("워크북 시트 갱신: 베이스라인_공통6 (14셀)")
