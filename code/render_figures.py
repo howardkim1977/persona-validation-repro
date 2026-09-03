@@ -24,7 +24,7 @@ def fig1():
     act=[13.7,89.2,93.2,69.6,60.7,92.2,5.6,22.7]; gem=[39.9,64.5,97.0,25.2,48.0,97.6,2.0,38.8]; exa=[37.1,83.7,86.6,51.4,74.4,69.4,13.6,44.1]
     y=range(len(BINS)); h=0.26
     fig,ax=plt.subplots(figsize=(6.6,3.6))
-    ax.barh([i+h for i in y],act,h,color=GRAY,label="Actual 2024 (weighted)",edgecolor="white",linewidth=0.4)
+    ax.barh([i+h for i in y],act,h,color=GRAY,label="Survey 2024 (weighted)",edgecolor="white",linewidth=0.4)
     ax.barh(list(y),gem,h,color=BLUE,label="Gemini",hatch="//",edgecolor="white",linewidth=0.4)
     ax.barh([i-h for i in y],exa,h,color=TEAL,label="EXAONE",hatch="..",edgecolor="white",linewidth=0.4)
     ax.set_yticks(list(y)); ax.set_yticklabels(BINS); ax.invert_yaxis()
@@ -39,7 +39,7 @@ def fig2():
     act=[2.58,2.88,2.72,2.54,3.16,3.06,2.85,2.84]; gem=[2.25,3.02,1.66,1.86,3.26,2.71,2.60,2.92]; exa=[3.02,3.35,2.77,3.02,3.66,3.47,2.26,2.73]
     x=range(len(C)); w=0.26
     fig,ax=plt.subplots(figsize=(6.6,3.2))
-    ax.bar([i-w for i in x],act,w,color=GRAY,label="Actual (weighted)",edgecolor="white",linewidth=0.4)
+    ax.bar([i-w for i in x],act,w,color=GRAY,label="Survey (weighted)",edgecolor="white",linewidth=0.4)
     ax.bar(list(x),gem,w,color=BLUE,label="Gemini",hatch="//",edgecolor="white",linewidth=0.4)
     ax.bar([i+w for i in x],exa,w,color=TEAL,label="EXAONE",hatch="..",edgecolor="white",linewidth=0.4)
     ax.set_xticks(list(x)); ax.set_xticklabels(C,fontsize=7.5); ax.set_ylabel("Mean (5-point)"); ax.set_ylim(1,4)
@@ -53,8 +53,8 @@ def fig3():
     gem=[39.9,64.5,97.0,25.2,48.0,97.6,2.0,38.8]; exa=[37.1,83.7,86.6,51.4,74.4,69.4,13.6,44.1]
     y=range(len(BINS)); h=0.2
     fig,ax=plt.subplots(figsize=(6.6,3.8))
-    ax.barh([i+1.5*h for i in y],a24,h,color="#c3c2b7",label="Actual 2024",edgecolor="white",linewidth=0.3)
-    ax.barh([i+0.5*h for i in y],a25,h,color=DARK,label="Actual 2025",edgecolor="white",linewidth=0.3)
+    ax.barh([i+1.5*h for i in y],a24,h,color="#c3c2b7",label="Survey 2024",edgecolor="white",linewidth=0.3)
+    ax.barh([i+0.5*h for i in y],a25,h,color=DARK,label="Survey 2025",edgecolor="white",linewidth=0.3)
     ax.barh([i-0.5*h for i in y],gem,h,color=BLUE,label="Gemini",hatch="//",edgecolor="white",linewidth=0.3)
     ax.barh([i-1.5*h for i in y],exa,h,color=TEAL,label="EXAONE",hatch="..",edgecolor="white",linewidth=0.3)
     ax.set_yticks(list(y)); ax.set_yticklabels(BINS); ax.invert_yaxis()
@@ -68,7 +68,7 @@ def fig4():
     ages=["10s","20s","30s","40s","50s","60s","70s+"]
     act=[88.7,94.7,94.1,88.9,83.1,78.3,76.6]; gem=[75.9,43.2,10.9,2.5,1.2,0.5,0.2]; exa=[42.7,39.1,34.4,30.1,25.4,21.1,17.2]
     fig,ax=plt.subplots(figsize=(5.0,3.2))
-    ax.plot(ages,act,color=DARK,marker="s",lw=1.8,label="Actual 2025")
+    ax.plot(ages,act,color=DARK,marker="s",lw=1.8,label="Survey 2025")
     ax.plot(ages,gem,color=BLUE,marker="o",lw=1.6,ls="--",label="Gemini")
     ax.plot(ages,exa,color=TEAL,marker="^",lw=1.6,ls=":",label="EXAONE")
     ax.set_ylabel("Short-form usage (%)"); ax.set_xlabel("Age group"); ax.set_ylim(0,100)
@@ -93,24 +93,24 @@ def fig5():
 
 # Fig 6 — RQ3 보정
 def fig6():
-    # 동시점(within-2024) vs 시점밖(2024→2025) 보정 대비 + out-of-time 베이스라인 기준선.
-    # 값은 본문 Table 3 및 RQ3_시점홀드아웃 시트와 동일.
+    # 동시점(within-2024) vs 시점밖(2024→2025): 무보정 / 선형 연령회귀(사전지정) / 중첩 선택(nested).
+    # 값은 본문 Table 4 및 심사_보정형태_* 시트와 동일.
     models=["Gemini","EXAONE"]
-    ind_unc=[18.9,15.9]; ind_cal=[8.6,6.7]      # 동시점: 무보정 / 연령회귀 보정
-    oot_unc=[21.0,18.3]; oot_cal=[14.5,14.0]    # 시점밖: 무보정 / 연령회귀 보정
-    GM=12.1; PW=6.7                              # out-of-time 베이스라인(2025 전체평균 / 전차수)
+    ind=[[18.9,15.9],[8.6,6.7],[5.2,4.5]]; oot=[[21.0,18.3],[14.5,14.0],[12.4,12.7]]
+    GM=12.1; PW=6.7
     import numpy as _np
-    x=_np.arange(len(models)); w=0.2
+    x=_np.arange(len(models)); w=0.13
     fig,ax=plt.subplots(figsize=(5.6,3.3))
-    ax.bar(x-1.5*w,ind_unc,w,color=RED,label="Uncorrected (within-2024)",edgecolor="white",linewidth=0.4)
-    ax.bar(x-0.5*w,ind_cal,w,color=TEAL,label="Calibrated (within-2024)",edgecolor="white",linewidth=0.4)
-    ax.bar(x+0.5*w,oot_unc,w,color=RED,hatch="//",label="Uncorrected (out-of-time)",edgecolor="white",linewidth=0.4)
-    ax.bar(x+1.5*w,oot_cal,w,color=TEAL,hatch="//",label="Calibrated (out-of-time)",edgecolor="white",linewidth=0.4)
+    labs=["Uncorrected","Linear age (prespecified)","Nested selection"]; cols=[RED,BLUE,TEAL]
+    for i,(vals,lab,c) in enumerate(zip(ind,labs,cols)):
+        ax.bar(x+(i-2.5)*w,vals,w,color=c,label=f"{lab}, within-2024",edgecolor="white",linewidth=0.4)
+    for i,(vals,lab,c) in enumerate(zip(oot,labs,cols)):
+        ax.bar(x+(i+0.5)*w,vals,w,color=c,hatch="//",label=f"{lab}, out-of-time",edgecolor="white",linewidth=0.4)
     ax.axhline(GM,color="#6b6a66",lw=1.0,ls="--"); ax.text(1.97,GM+0.25,f"grand-mean {GM}",fontsize=7.2,color="#3a3a38",ha="right")
     ax.axhline(PW,color="#6b6a66",lw=1.0,ls=":");  ax.text(1.97,PW+0.25,f"prior-wave {PW}",fontsize=7.2,color="#3a3a38",ha="right")
-    ax.set_xticks(x); ax.set_xticklabels(models); ax.set_ylabel("Held-out segment MAE (pp)"); ax.set_xlim(-0.55,2.02); ax.set_ylim(0,23)
-    ax.legend(frameon=False,fontsize=7.2,ncol=2,loc="upper center"); ax.grid(axis="y",color="#e1e0d9",lw=0.5)
-    for s in ["top","right"]: ax.spines[s].set_visible(False)
+    ax.set_xticks(x); ax.set_xticklabels(models); ax.set_ylabel("Held-out segment MAE (pp)"); ax.set_xlim(-0.55,2.02); ax.set_ylim(0,25)
+    ax.legend(frameon=False,fontsize=6.6,ncol=2,loc="upper center"); ax.grid(axis="y",color="#e1e0d9",lw=0.5)
+    for s_ in ["top","right"]: ax.spines[s_].set_visible(False)
     save(fig,"fig6_rq3_calibration")
 
 
@@ -139,12 +139,12 @@ def fig0():
     box(80,64,19,32,"Synthetic panel",
         ["recode to survey","schema;","post-stratified","cell estimates"],BLUE2,EB,EB)
     arr(21,80,26,80); arr(46,80,51,80); arr(75,80,80,80)
-    box(1,12,26,32,"Ground truth",
+    box(1,12,26,32,"Survey reference",
         ["KISDI Media Panel","2024 n=8,693 | 2025 n=8,411","2023 = prior-wave baseline","weighted (household clusters)"],GRAY,EG)
     box(33,10,31,36,"Validation & diagnostics",
-        ["RQ1 agreement: MAE\u00b7KL\u00b7r","(design-based bootstrap)","RQ2 five-axis segment error\u00b7DPD$_e$","temporal mismatch\u00b7bias signatures\u00b7","framing\u00b7ablation\u00b7baselines\u00b7variance"],TEAL2,ET,ET)
+        ["RQ1 agreement: MAE\u00b7KL\u00b7r","(design-based bootstrap)","RQ2 five-axis segment error\u00b7$R_e$","temporal mismatch\u00b7bias signatures\u00b7","framing\u00b7ablation\u00b7baselines\u00b7variance"],TEAL2,ET,ET)
     box(69,10,30,36,"RQ3 calibration",
-        ["holdout \u00d7200 + real-only baselines","+ temporal holdout","signature-matched correction","(age regression | global shift)","\u2192 niche: data-scarce settings only"],AMBER2,EA,EA)
+        ["holdout \u00d7200 + real-only baselines","+ entire-cell & temporal holdouts","correction form selected inside","the calibration set (nested)","\u2192 niche: data-scarce settings only"],AMBER2,EA,EA)
     seg(89.5,64,89.5,55,c=EB); seg(89.5,55,48.5,55,c=EB); arr(48.5,55,48.5,46,c=EB)
     arr(27,28,33,28); arr(64,28,69,28,c=ET)
     seg(14,12,14,5); seg(14,5,84,5); arr(84,5,84,10)

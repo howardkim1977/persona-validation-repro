@@ -1,0 +1,36 @@
+\documentclass[border=4pt]{standalone}
+\usepackage{tikz}
+\usepackage{amssymb}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,calc}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\begin{document}
+\begin{tikzpicture}[
+  font=\footnotesize, node distance=5mm and 6mm, >=Latex,
+  box/.style={rectangle,draw=black!70,rounded corners=2pt,fill=white,align=center,minimum height=7mm,inner sep=2.5pt,text width=39mm},
+  dec/.style={diamond,draw=black!70,fill=black!4,align=center,aspect=2.6,inner sep=1pt,text width=38mm},
+  outb/.style={rectangle,draw=black!80,thick,fill=black!8,align=center,minimum height=8mm,inner sep=2.5pt,text width=41mm},
+  warn/.style={rectangle,draw=black!80,thick,fill=white,align=center,minimum height=8mm,inner sep=2.5pt,text width=41mm},
+  arr/.style={->,draw=black!70,line width=0.6pt}]
+\node[box] (q0) {Target: segment-level rates for a digital/AI service item};
+\node[dec, below=of q0] (d1) {Any real probability-survey data on the item (same or prior wave)?};
+\node[dec, below=of d1] (d2) {Real calibration sample large ($\gtrsim$1{,}000--2{,}000 respondents, i.e.\ $\gtrsim$100 per sex-by-age cell)?};
+\node[outb, right=of d2, xshift=6mm] (o1) {Estimate directly from the real data\\(this study: 3.6~pp at $n{=}2{,}602$; 4.2~pp at $n{\approx}1{,}730$)};
+\node[dec, below=of d2] (d3) {Real calibration sample small ($\lesssim$ a few hundred respondents, a few dozen per cell) or segment entirely unobserved?};
+\node[outb, right=of d3, xshift=6mm] (o2) {Model-dependent zone ($n{\approx}$200--1{,}700): benchmark the calibrated panel against direct estimation \emph{and} a partially pooled real-only estimator on held-out splits; keep whichever wins};
+\node[dec, below=of d3] (d4) {Model's bias signature known and correctable\\(e.g., age-structured)?};
+\node[warn, right=of d4, xshift=6mm] (o3) {Do not use the synthetic panel for estimation;\\diagnostic use only (framing, consistency checks)};
+\node[outb, below=of d4] (o4) {Calibrated synthetic panel, correction form selected inside the calibration set\\(6--10~pp at $n{\approx}80$--430; margin over a real-only shrinkage estimator $<$1~pp; unobserved cells 5.8--6.7 vs.\ 8.6~pp);\\always report the real-only comparison};
+\node[warn, left=of d1, xshift=-4mm] (o0) {No validation possible: treat synthetic estimates as hypotheses, not measurements};
+\draw[arr] (q0) -- (d1);
+\draw[arr] (d1) -- node[right,xshift=1pt]{yes} (d2);
+\draw[arr] (d1) -- node[above]{no} (o0);
+\draw[arr] (d2) -- node[above]{yes} (o1);
+\draw[arr] (d2) -- node[right,xshift=1pt]{no} (d3);
+\draw[arr] (d3) -- node[above]{no} (o2);
+\draw[arr] (d3) -- node[right,xshift=1pt]{yes} (d4);
+\draw[arr] (d4) -- node[above]{no / unknown} (o3);
+\draw[arr] (d4) -- node[right,xshift=1pt]{yes} (o4);
+\end{tikzpicture}
+\end{document}

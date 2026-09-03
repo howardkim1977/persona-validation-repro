@@ -1,14 +1,16 @@
 # Reproducibility Package
 
-**Paper:** Distributional Validity and Calibration of a Korean Synthetic Persona
-Panel for Digital and AI Service Use: A Secondary-Data Validation Against the
-Korea Media Panel Survey (submitted to IEEE Access)
+**Paper:** Distributional Validity of a Korean Synthetic Persona Panel: Evidence
+from the Korea Media Panel Survey (IEEE Access, under review; resubmitted
+September 2026 — earlier title: "Distributional Validity and Calibration of a
+Korean Synthetic Persona Panel for Digital and AI Service Use: A Secondary-Data
+Validation Against the Korea Media Panel Survey")
 
 **Preprint:** SocArXiv, https://doi.org/10.31235/osf.io/zb3w2_v1
 
 **Archived package:** Zenodo, https://doi.org/10.5281/zenodo.21397425
 
-**Preregistration:** OSF registration `dfe2z` (https://osf.io/dfe2z) — see
+**Preregistration:** OSF registration `dfe2z` (https://osf.io/dfe2z; public since 2026-08-23) — see
 `PREREGISTRATION_MAP.md` for the item-by-item correspondence between the
 registration and the reported analyses.
 
@@ -39,23 +41,40 @@ registration and the reported analyses.
 
 ## Reproduction map (paper table/figure → script → workbook sheet)
 
+Numbering follows the revised manuscript (IEEE Access resubmission, September 2026).
+
 | Paper item | Script | Workbook sheet |
 |---|---|---|
-| Table 1 (RQ1 metrics) | `rq1_metrics.py` | `RQ1_지표종합` |
-| Table 2 (RQ2 axes, DPD_e) | `rq2_expand.py`, `rq2_region.py` | `RQ2_축별MAE`, `RQ2_지역축`, `RQ2_집단편향_*` |
-| Table 3 (framing experiment) | `framing_experiment.py`, `diagnose_bias.py` | `진단_프레이밍통제` |
-| Table 4 (calibration + temporal holdout) | `rq_uncertainty.py`, `rq3_temporal_baseline.py` | `RQ3_보정`, `RQ3_시점홀드아웃` |
-| Table 5 (real-only learning curve, cell holdout) | `rq3_realonly.py` | `RQ3_실측단독_학습곡선`, `RQ3_셀홀드아웃` |
-| Table 6 (baselines, ablation) | `rq3_temporal_baseline.py`, `sensitivity_teen_excluded.py` | `십대제외_베이스라인` (full-sample rows), `M2_ablation` |
-| Appendix teen-excluded sensitivity | `sensitivity_teen_excluded.py` | `십대제외_*` (6 sheets) |
-| Appendix signed error by age band | `diagnose_bias.py` | `진단_연령경사` |
+| Table 1 (model identifiers) | `PROTOCOL.md` §5 | — |
+| Table 2 (format failures) | `rr_failure_cost.py` | `심사_형식실패`, `심사_형식실패_셀별`, `심사_생성규모` |
+| Table 3 (analysis status) | `PREREGISTRATION_MAP.md` | — |
+| Table 4 (RQ1 metrics), paired model comparison, Spearman | `rq1_metrics.py`, `rr_paired_bootstrap.py` | `RQ1_지표종합`, `심사_짝부트스트랩`, `심사_상관_Spearman`, `심사_상관_구성개념` |
+| Table 5 (RQ2 axes, signed-error range and complements) | `rq2_expand.py`, `rq2_region.py`, `rr_dpd_supplements.py` | `RQ2_축별MAE`, `RQ2_지역축`, `심사_집단오차지표`, `심사_집단오차_지표별` |
+| 19-year-old comparison (Sec. IV-B) | `rr_teen19.py` | `심사_10대_19세비교` |
+| Table 6 (framing experiment) | `framing_experiment.py`, `diagnose_bias.py` | `진단_프레이밍통제` |
+| Table 7 (calibration by form; temporal holdout) | `rq_uncertainty.py`, `rr_calibration_details.py`, `rr_calibration_forms_extended.py` | `RQ3_보정`, `심사_보정형태민감도`, `심사_보정형태_시점홀드아웃` |
+| Table 8 (learning curve vs. real-only; EB shrinkage; entire-cell holdout) | `rr_calibration_forms_extended.py`, `rr_learning_curve.py`, `rr_eb_curve.py` | `심사_보정형태_학습곡선`, `심사_학습곡선_정밀`, `심사_EB풀링곡선`, `심사_보정형태_셀홀드아웃` |
+| Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `sensitivity_teen_excluded.py` | `십대제외_베이스라인`, `M2_ablation` |
+| Table 10 (teen-excluded sensitivity) | `sensitivity_teen_excluded.py`, `rr_teen_nested.py` | `십대제외_*`, `심사_십대제외_보정형태` |
+| Tables 11–12 (signed error by age band) | `diagnose_bias.py` | `진단_연령경사` |
+| Table 13 (calibration coefficients, residuals) | `rr_calibration_details.py` | `심사_보정계수` |
+| Table 14 (construct correlation structure) | `rr_construct_corr.py` | `심사_구성개념_상관요약`, `심사_구성개념_상관행렬` |
+| Hierarchical bootstrap (Sec. IV-J) | `rr_hier_bootstrap.py`, `rr_order_analysis.py` | `심사_계층부트스트랩_EXAONE`, `심사_계층부트스트랩_Gemini` |
+| Randomized-order experiment (Sec. IV-K) | `order_experiment.py`, `rr_order_analysis.py` | `심사_순서실험_*` |
 | Design-based CIs (Kish deff, household bootstrap) | `design_variance.py` | `설계기반_분산` |
 | Response stability (ICC, repeated passes) | `m1_variance.py`, `recover_k2.py`, `recover_k23.py` | `M1_*` |
-| Figures 1–7 | `render_figures.py` | (reads the sheets above) |
+| Figures (all) | `render_figures.py`; decision flowchart `fig7_decision_flow.tex` (TikZ) | (reads the sheets above) |
+
+## Quick start
+
+`python quickstart.py` verifies the manifest, prints the headline tables from the
+archived workbook, and regenerates the figures; no KISDI access is required for
+these steps. The scripts that need the restricted microdata are listed at the end
+of its output.
 
 ## Environment
 
-Python ≥ 3.10 with `pandas`, `numpy`, `openpyxl`, `matplotlib`. Generation
+Python ≥ 3.10 with `pandas`, `numpy`, `scipy`, `openpyxl`, `matplotlib`. Generation
 additionally requires `google-genai` (Gemini Batch API) and an OpenAI-compatible
 client for the FriendliAI EXAONE endpoint. Hosted-model outputs reflect the
 July 2026 serving snapshot recorded in `PROTOCOL.md`; regeneration may differ

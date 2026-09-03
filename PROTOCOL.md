@@ -62,6 +62,20 @@ Instagram Reels, TikTok) — with everything else identical
 - **Rate limits**: 429/RESOURCE_EXHAUSTED retried with exponential backoff
   (does not consume regeneration attempts).
 
+## 4a. Regeneration and exclusion, as run (disclosed for the review)
+
+- Gemini (batch): first-attempt format failures 106/8,168 (1.30%) in 2024 and
+  5/7,938 (0.06%) in 2025; all resolved in the second or third batch round; no
+  exclusions. The retry-round request files `logs/batch_w{wave}_r1c0.jsonl` and
+  `r2c0.jsonl` list exactly which personas were resubmitted.
+- EXAONE (live): the initial 2024 pass left 236 personas (2.9%) unresolved after
+  three attempts. Inspection showed output truncation at the client's token limit
+  (not malformed answers). Those personas were regenerated once more under the same
+  three-attempt rule after raising `max_tokens` to 4,096, leaving 3 (0.04%) excluded
+  (`outputs/recover_exaone.log`). In 2025, 144 (1.81%) were excluded. First-attempt
+  failures were not logged individually for live calls.
+- Per-cell rates: workbook sheets `심사_형식실패`, `심사_형식실패_셀별`.
+
 ## 5. Models, endpoints, sampling parameters
 
 | | Primary | Comparison |
@@ -71,7 +85,8 @@ Instagram Reels, TikTok) — with everything else identical
 | Temperature | 1.0 (main) / 0.7 (robustness) | 1.0 (main) / 0.7 (robustness) |
 | top_p | 1.0 | 1.0 |
 | Reasoning | `thinkingLevel: low` | thinking disabled via chat-template argument |
-| Concurrency | batch | ≤8 workers (higher settings truncated responses) |
+| Concurrency | batch | ≤8 workers |
+| Max output tokens | default | 4,096 (see §4a) |
 | Response format | `responseMimeType: application/json` | JSON instruction in prompt |
 | Serving window | July 2026 | July 2026 |
 | Knowledge cutoff | January 2025 (documented) | undisclosed |
@@ -87,3 +102,22 @@ replacement within cells, seed 42 (`numpy.random.default_rng`). The exact
 source file is identified by SHA-256 in `DATASET_HASHES.txt`; re-running
 `code/generate.py::sample_personas` with that file and seed reproduces the
 identical persona selection.
+
+## 7. Randomized-order regeneration (review-stage experiment)
+
+`code/order_experiment.py` regenerates the 2024 questionnaire for the same
+1,144-persona stratified subsample used by the wording experiment (seed 42,
+`limit=1200`): arms F1/F2/F3 present the items in the fixed codebook order
+(three independent responses, same day), arm R1 presents each persona an
+independent random permutation of the 36 items (`random.Random(1000+idx)`;
+the realized orders are archived in `logs/order_exp_gemini_R1_orders.json`).
+Model, temperature, top_p, thinking level, system instruction, item wording and
+options are unchanged. Analysis: `code/rr_order_analysis.py` (paired
+persona-level comparison F1 vs R1 with F1 vs F2 as the generation-noise
+reference; post-stratified rates; hierarchical bootstrap for Gemini).
+
+## 8. Review-stage analysis scripts (`rr_*.py`)
+
+All share `rr_common.py` (data loading, 14-cell definitions, stratified and
+household splits, household-cluster resampling, seed 42). Each writes one or
+more `심사_*` sheets to `outputs/validity_results.xlsx`.
