@@ -6,7 +6,8 @@ title: "Distributional Validity and Calibration of a Korean Synthetic Persona
 Panel for Digital and AI Service Use: A Secondary-Data Validation Against the
 Korea Media Panel Survey")
 
-**Preprint:** SocArXiv, https://doi.org/10.31235/osf.io/zb3w2_v1
+**Preprint:** arXiv:2608.28615, https://doi.org/10.48550/arXiv.2608.28615;
+SocArXiv, https://doi.org/10.31235/osf.io/zb3w2_v1
 
 **Archived package:** Zenodo — v1.2 (September 2026) https://doi.org/10.5281/zenodo.22274662;
 v1.1 (September 2026) https://doi.org/10.5281/zenodo.22270829;
