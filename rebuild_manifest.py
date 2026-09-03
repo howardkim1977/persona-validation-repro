@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""MANIFEST.sha256 재생성(패키지 루트에서 실행). MANIFEST 자신과 .git, __pycache__ 는 제외한다."""
+"""MANIFEST.sha256 재생성(패키지 루트에서 실행). MANIFEST 자신과 .git, __pycache__, .DS_Store 는 제외한다(아카이브에 포함되지 않는 파일)."""
 import hashlib, os
-ROOT=os.path.dirname(os.path.abspath(__file__)); SKIP={"MANIFEST.sha256"}
+ROOT=os.path.dirname(os.path.abspath(__file__)); SKIP={"MANIFEST.sha256",".DS_Store"}
 def sha256(p):
     m=hashlib.sha256()
     with open(p,"rb") as f:
