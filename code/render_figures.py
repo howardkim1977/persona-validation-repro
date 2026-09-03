@@ -86,7 +86,7 @@ def fig5():
     ax.barh([i-h/2 for i in y],exa,h,color=TEAL,label="EXAONE",hatch="..",edgecolor="white",linewidth=0.4)
     ax.axvline(0,color="#888781",lw=0.7)
     ax.set_yticks(list(y)); ax.set_yticklabels(labs); ax.invert_yaxis()
-    ax.set_xlabel("Age slope of error (pp per age step)\n(negative = under-estimated for older)")
+    ax.set_xlabel("Age slope of error (pp per decade band)\n(negative = under-estimated for older)")
     ax.legend(frameon=False,fontsize=8,loc="lower left"); ax.grid(axis="x",color="#e1e0d9",lw=0.5)
     for s in ["top","right"]: ax.spines[s].set_visible(False)
     save(fig,"fig5_age_stereotype_slope")

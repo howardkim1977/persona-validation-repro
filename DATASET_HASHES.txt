@@ -3,3 +3,6 @@ file: nemotron_personas_korea.csv
 size_bytes: 4136491887
 sha256: 4c6f93101635b70899473004a8fa4651add6fcc561ab83affef72bf9dc49f25c
 sampling_seed: 42 (Python random.Random(42); see code/generate.py::sample_personas)
+hf_repo: nvidia/Nemotron-Personas-Korea (dataset)
+hf_revision_sha: ada0f5b53a38bb5a30cce09358adde883c1ab63a (Hugging Face API "sha" as of 2026-09-04; lastModified 2026-06-22T15:37:31Z)
+local_download: 2026-07-02 18:49:29 KST (file mtime); the sha256 above identifies the exact copy used, independent of the repository revision

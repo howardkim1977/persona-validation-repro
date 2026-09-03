@@ -22,7 +22,7 @@
 \node[dec, below=of d3] (d4) {Model's bias signature known and correctable\\(e.g., age-structured)?};
 \node[warn, right=of d4, xshift=6mm] (o3) {Do not use the synthetic panel for estimation;\\diagnostic use only (framing, consistency checks)};
 \node[outb, below=of d4] (o4) {Calibrated synthetic panel, correction form selected inside the calibration set\\(6--10~pp at $n{\approx}80$--430; margin over a real-only shrinkage estimator $\le$2.1~pp (2.1~pp at $n{\approx}80$; $<$1~pp from $n{\approx}170$); unobserved cells: both models on 14 cells (5.8--6.7 vs.\ 8.6~pp), EXAONE only on the 12 non-teen cells (4.9 vs.\ 6.2; Gemini 7.2));\\always report the real-only comparison};
-\node[warn, left=of d1, xshift=-4mm] (o0) {No same-wave validation possible: use prior-wave data only as a benchmark or diagnostic; do not transfer a correction across waves; treat synthetic estimates as hypotheses, not measurements};
+\node[warn, left=of d1, xshift=-4mm] (o0) {No same-wave validation possible: use prior-wave data only as a benchmark or diagnostic; do not transfer a correction across waves without re-benchmarking; treat synthetic estimates as hypotheses, not measurements};
 \draw[arr] (q0) -- (d1);
 \draw[arr] (d1) -- node[right,xshift=1pt]{yes} (d2);
 \draw[arr] (d1) -- node[above]{no} (o0);

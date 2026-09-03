@@ -52,6 +52,12 @@ string `성별 {남성|여성}, 연령대 {10대 ... 70대이상}` (`code/genera
 예: {"p__d31002": 1, "p__d31001": 3}
 ```
 
+For the EXAONE arm (live calls through `code/generate.py::ExaoneClient.generate`,
+line 148) the user message is the template above with one extra trailing line
+appended in code, `"\n\nJSON 객체만 출력."`, i.e., a blank line followed by
+`JSON 객체만 출력.`; the Gemini requests (live and batch) carry the template
+unchanged.
+
 Item text and option sets are defined in `code/items.py` (codebook
 P_codebook_v32): 36 items for the 2024 wave, 12 items for the 2025 wave. The
 framing-experiment treatment variant replaces only the short-form item
@@ -66,6 +72,16 @@ Instagram Reels, TikTok) — with everything else identical
   code, or non-integer → the persona's entire response is regenerated, at most
   3 attempts; personas still failing are excluded (per-cell exclusion rates in
   `outputs/failure_rates_by_cell.csv`).
+- **Retry content**: for live calls (`code/generate.py::generate_one`, used by
+  the EXAONE runs, the wording experiment, the repeated passes, and the
+  recovery scripts) a failed attempt appends a notice to the system
+  instruction before the next attempt (lines 215-216):
+  `system_retry = system + "\n이전 응답에 형식 오류가 있었습니다: " + "; ".join(bad)`,
+  where `bad` lists the violations in the form `p__d26092 누락`,
+  `p__d31002 비정수`, or `p__d31002=7 허용외`; the user prompt is rebuilt with the
+  conditional-skip set derived from the failed answer. Gemini batch retries
+  (`_run_batch_chunk`, lines 339-342) resubmit the persona with the system
+  instruction and questionnaire unchanged.
 - **Conditional skip** (`code/generate.py::conditional_skips`): child items are
   omitted when the parent response indicates non-use (e.g., AI sub-items are
   asked only of AI users), mirroring the original survey's skip logic.
@@ -97,7 +113,22 @@ Instagram Reels, TikTok) — with everything else identical
   three-attempt rule after raising `max_tokens` to 4,096, leaving 3 (0.04%) excluded
   (`logs/recover_exaone.log`; initial pass `logs/run_exaone.log`). In 2025, 144
   (1.81%) were excluded. First-attempt failures were not logged individually for
-  live calls.
+  live calls. The `max_tokens` value in effect before it was raised to 4,096 was
+  not recorded; the archived `code/generate.py` already carries 4,096 (line 146).
+- EXAONE (live), repeated passes (Sec. IV-J, sheet `복수응답_K3`): pass 2 left
+  2,520 of 8,168 personas unresolved after the three-attempt run
+  (`logs/run_exaone_k2.log`), 466 after a first recovery pass
+  (`code/recover_k2.py`, `logs/recover_k2.log`) and 2 after a second
+  (`code/recover_k23.py`, `logs/recover_k23.log`); pass 3 left 965
+  (`logs/run_exaone_k3.log`) and 5 after recovery (`logs/recover_k23.log`).
+  The final files carry 2 and 5 `_error` rows (`outputs/synthetic_exaone_k2.csv`,
+  `outputs/synthetic_exaone_k3.csv`).
+- EXAONE (live), other 2024 panels: the temperature-0.7 run excluded 73 of 8,168
+  (0.89%; `_error` rows of `outputs/synthetic_exaone_t07.csv`,
+  `logs/run_exaone_t07.log`; 8,095 personas in
+  `outputs/synthetic_recoded_exaone_t07.csv`) and the demographic-only run 19
+  (0.23%; `outputs/synth_demo_exaone.csv`, `logs/run_demo_exaone.log`; 8,149 in
+  `outputs/synthetic_recoded_demo_exaone.csv`).
 - Per-cell rates: workbook sheets `심사_형식실패`, `심사_형식실패_셀별`. The Gemini
   2024 cell-level rows there are those of the demographic-only ablation run
   (labelled as such); the main run's failures are known only per sub-batch.
@@ -116,8 +147,8 @@ arms as independent samples (`code/rr_framing_tests.py`, sheet `심사_프레이
 
 | | Primary | Comparison |
 |---|---|---|
-| Model | `gemini-3.5-flash` | `K-EXAONE-236B-A23B` (LG AI Research) |
-| Access | Google Gemini **Batch API**, sequential sub-batches ≤1,000 | FriendliAI serverless, OpenAI-compatible endpoint |
+| Model | `gemini-3.5-flash` | `K-EXAONE-236B-A23B` (LG AI Research); model string as sent: `LGAI-EXAONE/K-EXAONE-236B-A23B` (environment variable `EXAONE_MODEL`; workbook sheet `개요`) |
+| Access | Google Gemini **Batch API**, sequential sub-batches ≤1,000 | FriendliAI serverless, OpenAI-compatible endpoint; host `api.friendli.ai` (`/serverless/v1`), set through `EXAONE_BASE_URL` |
 | Temperature | 1.0 (main) / 0.7 (robustness) | 1.0 (main) / 0.7 (robustness) |
 | top_p | 1.0 | 1.0 |
 | Reasoning | `thinkingLevel: low` | thinking disabled via chat-template argument |

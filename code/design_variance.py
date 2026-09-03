@@ -36,6 +36,8 @@ def cluster_resample():
     return a24.loc[rows]
 
 B=600
+sheet_rows=[{"항목":"Kish 설계효과 deff_w","값":round(deff_w,2),"비고":f"가중 불균등(WT {w.min():.2f}~{w.max():.1f}), n={n}"},
+            {"항목":"유효표본 n_eff","값":int(round(n/deff_w)),"비고":"n/deff"}]
 for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs/synthetic_recoded_exaone.csv")]:
     syn=pd.read_csv(f,encoding="utf-8-sig")
     pt=rq1_mae(a24,syn)
@@ -47,3 +49,10 @@ for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs
     lo,hi=np.percentile(boot,[2.5,97.5])
     print(f"{m}: MAE {pt:.1f}%p | 설계기반(가구군집) 95% CI [{lo:.1f}, {hi:.1f}]  (기존 행단위 CI: "
           f"{'[16.7, 17.6]' if m=='Gemini' else '[14.3, 15.6]'})")
+    sheet_rows.append({"항목":f"{m} RQ1 MAE CI(설계기반)","값":f"[{lo:.1f}, {hi:.1f}]",
+                       "비고":f"가구군집({a24['hid'].nunique()}) 부트스트랩 B={B}; 행단위 [16.7,17.6]" if m=="Gemini" else "행단위 [14.3,15.6]; 비중첩 유지"})
+sheet_rows.append({"항목":"지표당 설계조정 표집오차","값":f"약 {100*np.sqrt(0.25/(n/deff_w)):.2f}%p","비고":"p=0.5, n_eff 기준"})
+# 워크북 시트 기록(콘솔 출력과 동일 값; 시트 설계기반_분산 의 배치. 행단위 CI 는 rq_uncertainty.py 의 값을 옮겨 적은 것)
+with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:
+    pd.DataFrame(sheet_rows).to_excel(w,sheet_name="설계기반_분산",index=False)
+print("워크북 시트 추가: 설계기반_분산")

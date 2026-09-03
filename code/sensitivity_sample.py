@@ -29,12 +29,21 @@ def subcap(df,cap,seed):
         parts.append(s.sample(min(cap,len(s)),random_state=int(rng.integers(1e9))))
     return pd.concat(parts)
 
+sheet_rows=[]
 for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs/synthetic_recoded_exaone.csv")]:
     df=pd.read_csv(f,encoding="utf-8-sig")
     print(f"\n=== {m} (원 셀 최대≈600) — cap별 RQ1 MAE / 연령축 MAE (5회 평균±sd) ===")
     print(f"{'cap':>5}{'RQ1 MAE':>16}{'연령축 MAE':>16}")
+    res={}
     for cap in [150,200,300,400,600]:
         r=[];ag=[]
         for sd in range(5):
             sub=subcap(df,cap,sd); r.append(rq1(sub)); ag.append(age_mae(sub))
         print(f"{cap:>5}{np.mean(r):>10.1f}±{np.std(r):.2f}{np.mean(ag):>10.1f}±{np.std(ag):.2f}")
+        res[cap]=(np.mean(r),np.mean(ag))
+    sheet_rows.append({"모델":m,"cap150_RQ1":round(res[150][0],1),"cap300_RQ1":round(res[300][0],1),"cap600_RQ1":round(res[600][0],1),
+                       "cap150_연령":round(res[150][1],1),"cap600_연령":round(res[600][1],1)})
+# 워크북 시트 기록(콘솔 출력과 동일 값; 시트 민감도_표본cap 의 배치)
+with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:
+    pd.DataFrame(sheet_rows).to_excel(w,sheet_name="민감도_표본cap",index=False)
+print("\n워크북 시트 추가: 민감도_표본cap")
