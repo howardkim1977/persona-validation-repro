@@ -67,7 +67,7 @@ order: `batches/fa6f6zv7xa78l2080xtk5v6sey6b94apbeoy`,
 in the Google account's batch job history with server-side creation times.
 
 **Git history of the working repository.** The command
-`git -C /Users/howardkim/Research/persona-validation log --since=2026-07-01 --until=2026-07-05 --format='%h %ci %s'`
+`git -C <working repo> log --since=2026-07-01 --until=2026-07-05 --format='%h %ci %s'`
 returns no commits: the working repository was initialised after the runs, its
 first commit being `5654014 2026-07-09 15:00:38 +0900 Initial commit: 합성 페르소나
 예측 타당성 검증 재현성 패키지`, and the package repository's first commit is

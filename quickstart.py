@@ -28,7 +28,7 @@ SHEETS=[("RQ1_지표종합","RQ1 overall agreement (Table 4)"),
         ("RQ3_보정","RQ3 calibration, linear form (Table 7)"),
         ("심사_보정형태민감도","RQ3 calibration by correction form incl. nested selection (Table 7)"),
         ("심사_보정형태_학습곡선","RQ3 learning curve vs. real-only estimators (Table 8)"),
-        ("심사_EB풀링곡선","Partially pooled estimators, synthetic vs. real-only target (Table 8, EB)"),
+        ("심사_EB풀링곡선","Partially pooled estimators, earlier independent split run (superseded by 심사_보정형태_학습곡선; not quoted in the paper)"),
         ("RQ3_시점홀드아웃","Temporal holdout (Table 7, middle)"),
         ("심사_형식실패","Format-failure and exclusion rates (Table 2)")]
 
