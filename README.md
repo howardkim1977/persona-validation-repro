@@ -228,13 +228,18 @@ replicates draws one household resample of the survey and one resample of the pe
 both panels answered validly, and applies both to the two panels. Point estimates use the
 same paired personas (8,165 for the 2024 comparison, 8,168 and 8,092 for the temperature
 contrasts, 7,794 for 2025), which the sheet records in the `짝 페르소나 n` column.
-The `심사_EB풀링곡선` sheet recomputes direct estimation on its own 200 splits, so its
-`실측직접_MAE%p` column differs from the Direct column of Table 8 (from
-`심사_보정형태_학습곡선`) by up to 0.1 pp; the paper quotes the latter.
+Every column of Table 8, including both empirical Bayes estimators, is computed inside the
+same 200 stratified splits by `code/rr_calibration_forms_extended.py` (columns `syn_eb%p`
+and `real_eb%p` of `심사_보정형태_학습곡선`, with the paired differences
+`Δ(중첩−실측EB)` and `Δ(합성EB−실측EB)`), so the paper's comparisons between the
+calibrated panel and the shrinkage estimator are paired. The older
+`심사_EB풀링곡선` sheet (v1.6 onward) runs its own 200 splits under the same protocol and
+is kept for continuity; its columns differ from Table 8 by up to 0.1 pp and the paper no
+longer quotes it.
 
 Two-sided bootstrap p-values follow the add-one convention
-(`rr_common.boot_p`): p = 2 min(k- + 1, k+ + 1)/(B + 1), so the smallest attainable value is
-2/(B + 1) rather than 1/B. The same rule applies to the persona-level bootstrap of the order
+(`rr_common.boot_p`): p = min{1, 2 min(k- + 1, k+ + 1)/(B + 1)}, so the smallest attainable
+value is 2/(B + 1) rather than 1/B. The same rule applies to the persona-level bootstrap of the order
 experiment (`code/rr_order_analysis.py`, B = 2,000).
 
 ### Sample conventions

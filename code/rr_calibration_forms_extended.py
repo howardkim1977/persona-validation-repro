@@ -35,25 +35,37 @@ def fit_rate_reg(rate,wcell,av):
         X=np.column_stack([np.ones(av.sum()),AGEC[av],SEXD[av]]); W=np.sqrt(np.maximum(wcell[av],1e-9))
         beta,*_=np.linalg.lstsq(X*W[:,None],rate[av]*W,rcond=None); return np.clip(beta[0]+beta[1]*AGEC+beta[2]*SEXD,0,1)
     return np.full(NC,np.nanmean(rate[av]) if av.any() else np.nan)
+def eb_shrink(obs,fit,sig2,av):
+    """경험적 베이즈 부분풀링: 관측 셀값을 적합선으로 수축한다.
+
+    lam_c = tau2/(tau2+sig2_c), tau2 = 잔차분산 − 평균 표집분산(음수는 0으로 절단).
+    셀이 크면 lam→1 이어서 관측값으로, 작으면 적합선으로 수렴한다."""
+    res=obs-fit
+    tau2=max(0.0,np.nanvar(res[av],ddof=1)-np.nanmean(sig2[av])) if av.sum()>2 else 0.0
+    lam=np.where(av,tau2/(tau2+np.where(np.isnan(sig2),1.0,sig2)+1e-12),0.0)
+    return np.where(av,lam*obs+(1-lam)*fit,fit), lam
+
+
 def household_split(rng,real,frac):
     uniq=np.unique(real.hh); rng.shuffle(uniq); return np.isin(real.hh,uniq[:int(len(uniq)*frac)])
 
 real=Real(load_real(2024)); SYN={m:syn_cell_means(load_syn(f)) for m,f in SYN_FILES.items()}
-FORMS=["syn_unc","syn_glob","syn_lin","syn_quad","syn_nested","real_dir","real_dir_regfb","real_reg","real_gm"]
+FORMS=["syn_unc","syn_glob","syn_lin","syn_quad","syn_nested","syn_eb","real_dir","real_dir_regfb","real_reg","real_eb","real_gm"]
 
 # ── (1) 학습곡선 ──
 rows=[]
 for mode in ["individual","household"]:
     for frac in FRACS:
         rng=np.random.default_rng(SEED)
-        E={m:{k:[] for k in FORMS} for m in SYN}; sel={m:{c:0 for c in CANDS} for m in SYN}
+        E={m:{k:[] for k in FORMS} for m in SYN}; sel={m:{c:0 for c in CANDS} for m in SYN}; LAM={m:[] for m in SYN}
         st={"n":[],"cmin":[],"empty":[]}
         for _ in range(REPS):
             cal=stratified_split(rng,real,frac) if mode=="individual" else household_split(rng,real,frac); tst=~cal
             n=real.cell_n(cal); wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
+            neff=real.cell_neff(cal)
             st["n"].append(cal.sum()); st["cmin"].append(n.min()); st["empty"].append((n==0).sum())
             for m,sc in SYN.items():
-                e={k:[] for k in FORMS}
+                e={k:[] for k in FORMS}; lam_e=[]
                 for v in BIN:
                     s=sc[v]; cc=real.cell_wmean(cal,v); tc=real.cell_wmean(tst,v); gm=real.grand_wmean(cal,v)
                     tv=~np.isnan(tc)&~np.isnan(s); av=tv&~np.isnan(cc); bias=s-cc
@@ -63,17 +75,27 @@ for mode in ["individual","household"]:
                     rreg=fit_rate_reg(cc,wcell,av); rdir=np.where(np.isnan(cc),gm,cc); rdir2=np.where(np.isnan(cc),rreg,cc)
                     for k,pred in [("syn_unc",0),("syn_glob",b),("syn_lin",p_lin),("syn_quad",p_quad),("syn_nested",p_nest)]:
                         e[k]+=list(np.abs((s-pred)-tc)[tv])
+                    # 경험적 베이즈: 같은 분할 위에서 합성 표적(편향을 연령선으로 수축)과 실측 표적(셀평균을 실측회귀선으로 수축)
+                    sig2=np.where(av,np.maximum(cc*(1-cc),1e-4)/np.maximum(neff,1),np.nan)
+                    eb_b,lam_b=eb_shrink(bias,p_lin,sig2,av); e["syn_eb"]+=list(np.abs((s-eb_b)-tc)[tv]); lam_e+=list(lam_b[av])
+                    eb_r,_=eb_shrink(cc,rreg,sig2,av);     e["real_eb"]+=list(np.abs(eb_r-tc)[tv])
                     e["real_dir"]+=list(np.abs(rdir-tc)[tv]); e["real_dir_regfb"]+=list(np.abs(rdir2-tc)[tv])
                     e["real_reg"]+=list(np.abs(rreg-tc)[tv]); e["real_gm"]+=list(np.abs(gm-tc)[tv])
                 for k in FORMS: E[m][k].append(np.mean(e[k])*100)
+                LAM[m].append(np.mean(lam_e) if lam_e else np.nan)
         for m in SYN:
             A={k:np.array(v) for k,v in E[m].items()}; best_real=np.minimum(A["real_dir"],A["real_reg"])
             r={"분할":mode,"보정률":frac,"모델":m,"보정셋n":round(np.mean(st["n"])),"셀n최소(평균)":round(np.mean(st["cmin"]),1),
                "빈셀수(평균)":round(np.mean(st["empty"]),2),"빈셀발생분할%":round(100*np.mean(np.array(st["empty"])>0),1)}
             for k in FORMS: r[k+"%p"]=round(A[k].mean(),2)
+            r["EB평균수축가중λ"]=round(float(np.nanmean(LAM[m])),3)
             for k in ["syn_lin","syn_quad","syn_nested"]:
                 d=A[k]-best_real; lo,hi=np.percentile(d,[2.5,97.5])
                 r[f"Δ({k}−최우수실측)"]=round(d.mean(),2); r[f"Δ({k})_CI"]=f"[{lo:.2f}, {hi:.2f}]"; r[f"{k}<최우수실측%"]=round(100*(d<0).mean(),1)
+            # 같은 분할 위의 짝 비교: 중첩 보정 대 실측 전용 EB, 합성 표적 EB 대 실측 전용 EB
+            for k,ref,tag in [("syn_nested","real_eb","중첩−실측EB"),("syn_eb","real_eb","합성EB−실측EB")]:
+                d=A[k]-A[ref]; lo,hi=np.percentile(d,[2.5,97.5])
+                r[f"Δ({tag})"]=round(d.mean(),2); r[f"Δ({tag})_CI"]=f"[{lo:.2f}, {hi:.2f}]"; r[f"{tag}<0%"]=round(100*(d<0).mean(),1)
             tot=sum(sel[m].values()); r["nested선택: quad%"]=round(100*sel[m]["age_quad"]/tot,1); r["nested선택: lin%"]=round(100*sel[m]["age_lin"]/tot,1)
             rows.append(r)
             print(f"[{mode} f={frac:.2f} {m}] n={r['보정셋n']} 빈셀 {r['빈셀수(평균)']} | lin {r['syn_lin%p']} quad {r['syn_quad%p']} nested {r['syn_nested%p']} "
