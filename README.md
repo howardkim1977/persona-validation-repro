@@ -191,7 +191,8 @@ archived files, this was done on 2026-09-04 and the result is stated.
   paper: the paper compares the eight post-stratified construct estimates (Gemini 2.54,
   EXAONE 3.03) with the weighted survey mean of the same eight constructs (2.83), all of
   which come from the `구성개념` sheet and are recomputed in `심사_보조수치`.
-  The `이진_예선택률` column originally carried transcribed values (0.549/0.602) whose
+  The `이진_예선택률` column (now `이진_예선택률_사후층화`, alongside `이진_예선택률_비가중` and
+  `실측_이진_예선택률_사후층화`) originally carried transcribed values (0.549/0.602) whose
   definition was not recorded and which none of the candidate definitions reproduces. In
   v1.12 the column was restated on the basis the paper uses, the mean post-stratified rate
   over the eight binary indicators (Gemini 0.516, EXAONE 0.575, survey 0.559; identical to
@@ -266,7 +267,7 @@ shrinks the synthetic bias toward the fitted age line (0.52-0.74 over the indivi
 fractions), and `EB평균수축가중λ(실측표적)` for the real-only comparator, which shrinks the real cell
 means toward the real-only regression (0.50-0.69). The paper quotes the synthetic-target range.
 The single `평균수축가중λ` column of `심사_EB풀링곡선` was the synthetic-target weight and is renamed
-accordingly in v1.17.
+`평균수축가중λ(합성표적)` in v1.17.
 
 Two-sided bootstrap p-values follow the add-one convention
 (`rr_common.boot_p`): p = min{1, 2 min(k- + 1, k+ + 1)/(B + 1)}, so the smallest attainable
@@ -289,6 +290,16 @@ per-indicator errors after each was rounded to one decimal (14.94), whereas Tabl
 averages the unrounded errors (14.95); `RQ2_십대제외강건성` R_e 52.4 is the mean of the eight
 per-indicator ranges after each was rounded to one decimal (52.35), whereas 52.3 (paper,
 `심사_집단오차지표`, `십대제외_RQ2`) averages the unrounded ranges (52.34).
+
+Two sheets are earlier, independent runs whose values the paper does not quote and which
+differ slightly from the sheets it does quote: `심사_EB풀링곡선` (its
+`평균수축가중λ(합성표적)` spans 0.49-0.731 against 0.517-0.742 in
+`심사_보정형태_학습곡선`) and `RQ3_셀홀드아웃` (`real_reg_MAE%p` 8.7 and `syn_reg` 10.1
+against 8.64 and 10.03 in `심사_보정형태_셀홀드아웃`). Cite the second sheet of each pair.
+
+From v1.17 on, `심사_순서실험_지표` also carries `F3%`, `Δ(F3−F1)%p`, `Δ(F3−F2)%p`, and
+`고정쌍최대차이%p`, so the paper's "largest difference between two fixed-order passes"
+(2.8 pp, SNS) can be checked over all three pairs rather than F1 against F2 alone.
 
 ### Development artifacts
 

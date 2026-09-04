@@ -102,7 +102,7 @@ Instagram Reels, TikTok) — with everything else identical
   original request files are not preserved.
 - Gemini (batch), 2025 run: 5/7,938 (0.06%), all resolved in the second round;
   7,943 requests (`logs/run_batch_2025.log`); `logs/batch_w2025_*.jsonl` are the
-  payloads of this run, and `r1c0.jsonl` lists the resubmitted personas.
+  payloads of this run, and `logs/batch_w2025_r1c0.jsonl` lists the resubmitted personas.
 - Gemini (batch), demographic-only ablation (2024 items, 4 July 2026):
   106/8,168 (1.30%) first-attempt failures and 6 second-round failures, all
   resolved; 8,280 requests (`logs/run_demo_gemini.log`); the temperature-0.7

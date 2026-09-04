@@ -65,6 +65,6 @@ if __name__=="__main__":
     bad=verify_manifest(); print_tables()
     rc=0 if a.no_figures else render_figures()
     if bad or rc: sys.exit(1)
-    print("\nAnalyses requiring KISDI microdata (analysis_ready.csv; 10 of them, see README for the full list):\n"
+    print("\nAnalyses requiring KISDI microdata (analysis_ready.csv; ten of the scripts that need it, not an exhaustive list):\n"
           "  rq1_metrics.py, rq2_expand.py, rq3_realonly.py, rr_paired_bootstrap.py, rr_calibration_forms_extended.py,\n"
           "  rr_eb_curve.py, rr_teen19.py, rr_construct_corr.py, rr_hier_bootstrap.py, rr_order_analysis.py")
