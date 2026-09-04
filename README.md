@@ -239,6 +239,14 @@ calibrated panel and the shrinkage estimator are paired. The older
 is kept for continuity; its columns differ from Table 8 by up to 0.1 pp and the paper no
 longer quotes it.
 
+The shrinkage weight of the empirical Bayes estimators uses each cell's sampling variance
+p(1-p)/n_eff, where n_eff is the Kish effective sample size computed **on the respondents who
+answered that item** (`rr_common.Real.cell_neff(mask, v)`). Two items, YouTube and short-form
+use, were fielded to a module of 7,346 of the 8,675 respondents aged 10 and over, so their
+effective sample sizes are smaller than the panel-wide ones; before v1.15 the panel-wide value
+was used for every item, which understated the sampling variance of those two cells by up to a
+factor of 2.5 and moved the reported means by at most 0.05 pp.
+
 Two-sided bootstrap p-values follow the add-one convention
 (`rr_common.boot_p`): p = min{1, 2 min(k- + 1, k+ + 1)/(B + 1)}, so the smallest attainable
 value is 2/(B + 1) rather than 1/B. The same rule applies to the persona-level bootstrap of the order

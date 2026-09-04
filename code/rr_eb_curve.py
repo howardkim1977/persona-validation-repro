@@ -19,13 +19,13 @@ rows=[]
 for frac in FRACS:
     rng=np.random.default_rng(SEED); E={m:{"eb":[],"eb_real":[],"lin":[],"dir":[],"lam":[]} for m in SYN}
     for _ in range(REPS):
-        cal=stratified_split(rng,real,frac); tst=~cal; neff=real.cell_neff(cal); wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
+        cal=stratified_split(rng,real,frac); tst=~cal; wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
         for m,sc in SYN.items():
             e={"eb":[],"eb_real":[],"lin":[],"dir":[],"lam":[]}
             for v in BIN:
                 s=sc[v]; cc=real.cell_wmean(cal,v); tc=real.cell_wmean(tst,v); gm=real.grand_wmean(cal,v)
                 av=~np.isnan(cc)&~np.isnan(s); tv=~np.isnan(tc)&~np.isnan(s); bias=s-cc
-                fit=lin(bias,av); sig2=np.where(av,np.maximum(cc*(1-cc),1e-4)/np.maximum(neff,1),np.nan)
+                fit=lin(bias,av); neff=real.cell_neff(cal,v); sig2=np.where(av,np.maximum(cc*(1-cc),1e-4)/np.maximum(neff,1),np.nan)
                 res=bias-fit; tau2=max(0.0,np.nanvar(res[av],ddof=1)-np.nanmean(sig2[av])) if av.sum()>2 else 0.0
                 lam=np.where(av,tau2/(tau2+np.where(np.isnan(sig2),1,sig2)+1e-12),0.0)
                 eb=np.where(av,lam*bias+(1-lam)*fit,fit)

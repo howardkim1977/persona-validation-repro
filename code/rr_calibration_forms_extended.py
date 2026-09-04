@@ -62,7 +62,7 @@ for mode in ["individual","household"]:
         for _ in range(REPS):
             cal=stratified_split(rng,real,frac) if mode=="individual" else household_split(rng,real,frac); tst=~cal
             n=real.cell_n(cal); wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
-            neff=real.cell_neff(cal)
+
             st["n"].append(cal.sum()); st["cmin"].append(n.min()); st["empty"].append((n==0).sum())
             for m,sc in SYN.items():
                 e={k:[] for k in FORMS}; lam_e=[]
@@ -76,6 +76,7 @@ for mode in ["individual","household"]:
                     for k,pred in [("syn_unc",0),("syn_glob",b),("syn_lin",p_lin),("syn_quad",p_quad),("syn_nested",p_nest)]:
                         e[k]+=list(np.abs((s-pred)-tc)[tv])
                     # 경험적 베이즈: 같은 분할 위에서 합성 표적(편향을 연령선으로 수축)과 실측 표적(셀평균을 실측회귀선으로 수축)
+                    neff=real.cell_neff(cal,v)   # 항목 결측 제외(셀평균과 동일 응답자 집합)
                     sig2=np.where(av,np.maximum(cc*(1-cc),1e-4)/np.maximum(neff,1),np.nan)
                     eb_b,lam_b=eb_shrink(bias,p_lin,sig2,av); e["syn_eb"]+=list(np.abs((s-eb_b)-tc)[tv]); lam_e+=list(lam_b[av])
                     eb_r,_=eb_shrink(cc,rreg,sig2,av);     e["real_eb"]+=list(np.abs(eb_r-tc)[tv])

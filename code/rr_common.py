@@ -58,7 +58,12 @@ class Real:
         with np.errstate(invalid="ignore"): return np.where(den>0,num/den,np.nan)
     def cell_n(self,mask):
         return np.bincount(self.cell[mask],minlength=NC)
-    def cell_neff(self,mask):
+    def cell_neff(self,mask,v=None):
+        """셀별 Kish 유효 표본수. v 를 주면 그 항목의 결측을 제외한다.
+
+        셀평균(cell_wmean)이 항목 결측을 제외하므로, 그 평균의 표집분산 근사에
+        쓰는 유효 표본수도 같은 응답자 집합에서 계산해야 한다."""
+        if v is not None: mask=mask&~np.isnan(self.Y[v])
         w=self.wt; out=np.zeros(NC)
         for c in range(NC):
             m=mask&(self.cell==c)

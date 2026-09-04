@@ -48,12 +48,13 @@ rng=np.random.default_rng(SEED)
 mae={m:{f:[] for f in FORMS} for m in SYN}; coef={m:{v:[] for v in BIN} for m in SYN}
 sel={m:{c:0 for c in CANDS} for m in SYN}; corrected={m:{v:[] for v in BIN} for m in SYN}
 for rep in range(REPS):
-    cal=stratified_split(rng,real,FRAC); tst=~cal; neff=real.cell_neff(cal)
+    cal=stratified_split(rng,real,FRAC); tst=~cal
     inner=[stratified_split(rng,real,0.5)&cal for _ in range(INNER)]   # 보정셋 내부 재분할(마스크 교집합)
     for m,sc in SYN.items():
         acc={f:[] for f in FORMS}
         for v in BIN:
             s=sc[v]; cc=real.cell_wmean(cal,v); tc=real.cell_wmean(tst,v)
+            neff=real.cell_neff(cal,v)   # 항목 결측 제외(셀평균과 동일 응답자 집합)
             av=~np.isnan(cc)&~np.isnan(s); tv=~np.isnan(tc)&~np.isnan(s); bias=s-cc
             preds={}
             for f in FORMS[:-2]:

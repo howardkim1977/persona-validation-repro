@@ -15,10 +15,10 @@
   arr/.style={->,draw=black!70,line width=0.6pt}]
 \node[box] (q0) {Target: segment-level rates for a digital/AI service item};
 \node[dec, below=of q0] (d1) {Any \emph{same-wave} real probability-survey data on the item?};
-\node[dec, below=of d1] (d2) {Real calibration sample large ($\gtrsim$860--1{,}730 respondents, i.e., $\gtrsim$60--125 per sex-by-age cell; model-dependent)?};
+\node[dec, below=of d1] (d2) {Real calibration sample large ($\gtrsim$860 respondents for Gemini, $\gtrsim$1{,}730 for EXAONE; $\gtrsim$60--125 per sex-by-age cell)?};
 \node[outb, right=of d2, xshift=6mm] (o1) {Estimate directly from the real data\\(this study: 3.6~pp at $n{=}2{,}598$; 4.2~pp at $n{\approx}1{,}730$, where direct estimation beat both models)};
-\node[dec, below=of d2] (d3) {Real calibration sample small ($\lesssim$170--860 respondents, model-dependent; about 6--60 per cell) or segment entirely unobserved?};
-\node[outb, right=of d3, xshift=6mm] (o2) {Model-dependent zone (between $n{\approx}$170 and 860): benchmark the calibrated panel against direct estimation \emph{and} a partially pooled real-only estimator on held-out splits, and keep whichever wins};
+\node[dec, below=of d2] (d3) {Real calibration sample small ($\lesssim$170 respondents for Gemini, $\lesssim$430 for EXAONE; at most about 30 per cell) or segment entirely unobserved?};
+\node[outb, right=of d3, xshift=6mm] (o2) {Model-dependent zone (between the two thresholds above): benchmark the calibrated panel against direct estimation \emph{and} a partially pooled real-only estimator on held-out splits, and keep whichever wins};
 \node[dec, below=of d3] (d4) {Model's bias signature known and correctable\\(e.g., age-structured)?};
 \node[warn, right=of d4, xshift=6mm] (o3) {Do not use the synthetic panel for estimation;\\diagnostic use only (framing, consistency checks)};
 \node[outb, below=of d4] (o4) {Calibrated synthetic panel, correction form selected inside the calibration set\\(6--10~pp at $n{\approx}80$--430; margin over a real-only shrinkage estimator $\le$2.2~pp, and $<$1~pp from $n{\approx}170$);\\always report the real-only comparison};
