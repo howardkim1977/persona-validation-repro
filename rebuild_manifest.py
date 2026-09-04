@@ -6,7 +6,8 @@
 MANIFEST 자신과 .DS_Store, 디렉터리 .git, __pycache__, 그리고 quickstart.py 가 그림을 렌더링하는 paper/ 는
 제외한다(아카이브에 포함되지 않는 파일). 그 밖의 인자는 거부한다."""
 import hashlib, os, sys
-ROOT=os.path.dirname(os.path.abspath(__file__)); SKIP={"MANIFEST.sha256",".DS_Store"}; SKIP_DIRS={".git","__pycache__","paper"}
+ROOT=os.path.dirname(os.path.abspath(__file__)); SKIP={"MANIFEST.sha256",".DS_Store","analysis_ready.csv"}  # 비공개 정제본은 패키지에 포함하지 않는다
+SKIP_DIRS={".git","__pycache__","paper","private"}
 MANIFEST=os.path.join(ROOT,"MANIFEST.sha256")
 def sha256(p):
     m=hashlib.sha256()
@@ -19,6 +20,7 @@ def collect():
         dns[:]=[d for d in dns if d not in SKIP_DIRS]
         for fn in sorted(fns):
             if fn in SKIP or fn.endswith(".pyc"): continue
+            if os.path.islink(os.path.join(dp,fn)): continue   # 작업용 심볼릭 링크 제외
             p=os.path.join(dp,fn); entries.append((os.path.relpath(p,ROOT),sha256(p)))
     return sorted(entries)
 def rewrite():

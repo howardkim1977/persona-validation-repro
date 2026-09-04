@@ -102,6 +102,17 @@ def write_sheets(sheets: dict):
     print("워크북 시트 갱신:", ", ".join(sheets))
 
 
+def boot_p(d):
+    """양측 부트스트랩 p값(add-one 규약, Davison & Hinkley 1997).
+
+    p = 2 * min(#{d<=0}+1, #{d>=0}+1) / (B+1), 상한 1.
+    복제 전부가 한쪽에 있을 때의 최소값이 1/B 가 아니라 2/(B+1) 이 되어
+    복제 수가 유한한 데서 오는 하한을 과소평가하지 않는다."""
+    d=np.asarray(d,float); B=len(d)
+    k=min(int((d<=0).sum()),int((d>=0).sum()))
+    return min(1.0, 2.0*(k+1)/(B+1))
+
+
 def holm(pvals):
     """Holm 단계적 보정 p값(입력 순서 유지)."""
     p=np.asarray(pvals,float); m=len(p); order=np.argsort(p); adj=np.empty(m)

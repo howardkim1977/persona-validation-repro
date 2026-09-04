@@ -8,7 +8,7 @@
   (3) 2024 기준 추정치 대비 MAE: F1, F2, F3, R1, 그리고 F1~F3 평균
   (4) 구성개념 평균 F1 vs R1
   (5) Gemini 계층 부트스트랩(가구→페르소나→3응답 중 1개) — 부분표본
-부트스트랩 CI 는 페르소나 단위 재표집(B=2000, seed 42)."""
+부트스트랩 CI 는 페르소나 단위 재표집(B=2000, seed 42), p값은 add-one 규약(rr_common.boot_p)."""
 import json, numpy as np, pandas as pd
 from rr_common import *
 from recode import recode
@@ -40,7 +40,7 @@ for v in BIN:
     for _ in range(B):
         idx=rng.integers(0,n,n); dFR.append(ps_rate(Y["R1"][v],idx)-ps_rate(Y["F1"][v],idx)); dFF.append(ps_rate(Y["F2"][v],idx)-ps_rate(Y["F1"][v],idx))
     dFR=np.array(dFR)*100; dFF=np.array(dFF)*100
-    p=max(2*min((dFR<=0).mean(),(dFR>=0).mean()),1/B); pv.append(p)
+    p=boot_p(dFR); pv.append(p)
     a1=Y["F1"][v]; a2=Y["R1"][v]; a3=Y["F2"][v]; ok=~np.isnan(a1)&~np.isnan(a2)&~np.isnan(a3)
     rows.append({"지표":v,"실측2024%":round(RR[v]*100,1),"F1%":round(f1*100,1),"F2%":round(f2*100,1),"R1%":round(r1*100,1),
                  "Δ(R1−F1)%p":round((r1-f1)*100,1),"Δ_CI":f"[{np.percentile(dFR,2.5):.1f}, {np.percentile(dFR,97.5):.1f}]","부트스트랩p":round(p,4),

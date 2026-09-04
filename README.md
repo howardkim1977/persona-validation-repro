@@ -177,12 +177,20 @@ The following sheets were transcribed from console output or from archived CSV/J
 rather than written by a script in `code/`; where the quantities could be recomputed from
 archived files, this was done on 2026-09-04 and the result is stated.
 
-- `진단_응답스타일`: transcribed from an unarchived console computation. `5점_평균` and the
-  `1점%` to `5점%` columns are the unweighted distribution of the 24 raw 5-point item answers
-  (reproduced in `심사_보조수치`: Gemini 2.45 with 19/33/33/15/0.4%, EXAONE 3.05 with
-  5/27/30/34/5%). The survey reference 2.83 quoted in Sec. IV-C is the mean of the eight
-  weighted construct means on the full 2024 sample and is now a workbook cell in
-  `심사_보조수치`. The `이진_예선택률` column originally carried transcribed values (0.549/0.602) whose definition was not recorded and which none of the candidate definitions reproduces (share of "yes" among the eight indicator answers 0.533/0.582; among the nine two-option items 0.508/0.567; mean of per-item yes rates 0.478/0.545). In v1.11 the column was restated as the first of these, the unweighted share of "yes" over the eight binary indicators (0.533 Gemini, 0.582 EXAONE; `code/rr_misc_numbers.py`, sheet `심사_보조수치`), and the paper (Sec. IV-C) now quotes these values; the sheet's `비고` column records the change.
+- `진단_응답스타일`: partly transcribed from an unarchived console computation. `5점_평균` and
+  the `1점%` to `5점%` columns are the unweighted distribution of the 24 raw 5-point item
+  answers (reproduced in `심사_보조수치`: Gemini 2.45 with 19/33/33/15/0.4%, EXAONE 3.05 with
+  5/27/30/34/5%). These raw-item means are **not** the values quoted in Sec. IV-C of the
+  paper: the paper compares the eight post-stratified construct estimates (Gemini 2.54,
+  EXAONE 3.03) with the weighted survey mean of the same eight constructs (2.83), all of
+  which come from the `구성개념` sheet and are recomputed in `심사_보조수치`.
+  The `이진_예선택률` column originally carried transcribed values (0.549/0.602) whose
+  definition was not recorded and which none of the candidate definitions reproduces. In
+  v1.12 the column was restated on the basis the paper uses, the mean post-stratified rate
+  over the eight binary indicators (Gemini 0.516, EXAONE 0.575, survey 0.559; identical to
+  the mean of the model columns of `RQ1_전체일치도`), with the unweighted pooled rate kept
+  in a separate column (0.533/0.582); `code/rr_misc_numbers.py` reproduces both, and the
+  sheet's `비고` column records the change.
 - `복수응답_K3`: per-pass RQ1 MAE and cell MAE of the three EXAONE passes
   (`outputs/synthetic_recoded_exaone.csv`, `_k2.csv`, `_k3.csv`), computed with the
   `compare_validity.py`/`rq1_metrics.py` formulas against the full 2024 sample (recomputed:
@@ -211,6 +219,18 @@ archived files, this was done on 2026-09-04 and the result is stated.
   `sensitivity_sample.py` (sheet-writing blocks added 2026-09-04); re-running both reproduces
   the archived sheets value for value.
 - `요약`: headline values transcribed as literals in `build_paper_tables.py`.
+
+### Bootstrap conventions
+
+Model comparisons (`code/rr_paired_bootstrap.py`) are fully paired: each of the B = 600
+replicates draws one household resample of the survey and one resample of the personas that
+both panels answered validly, and applies both to the two panels. Point estimates use the
+same paired personas (8,165 for the 2024 comparison, 8,168 and 8,092 for the temperature
+contrasts, 7,794 for 2025), which the sheet records in the `짝 페르소나 n` column.
+Two-sided bootstrap p-values follow the add-one convention
+(`rr_common.boot_p`): p = 2 min(k- + 1, k+ + 1)/(B + 1), so the smallest attainable value is
+2/(B + 1) rather than 1/B. The same rule applies to the persona-level bootstrap of the order
+experiment (`code/rr_order_analysis.py`, B = 2,000).
 
 ### Sample conventions
 

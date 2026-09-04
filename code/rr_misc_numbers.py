@@ -4,9 +4,11 @@
 (b) 온도 1.0 대 0.7 의 사후층화 지표 비율 평균절대차(모델별, 이진 8지표; 점유율은 2024 만 10세 이상 실측).
 (c) 요청당 평균 입력 문자 수(systemInstruction + contents 텍스트의 문자 수):
     순서 실험 고정순서 F1 1차 페이로드(2024 36문항, 서사 조건화)와 2025 배치 페이로드(1차 및 전체 라운드, 총량 포함).
-(d) 5점 문항 응답 스타일(원문항 24개, p__m01001~p__m01024): 최상점(5) 비율, 1~5 분포, 평균;
-    실측 2024 의 5점 기준값(8개 구성개념 가중평균의 평균 2.83, III-C 의 응답스타일 대조값).
-(e) 이진 문항 '예' 선택률(응답 스타일 시트의 대조값)."""
+(d) 5점 응답 스타일: 논문 IV-C 가 인용하는 값은 구성개념 8개의 사후층화 평균(Gemini 2.54, EXAONE 3.03,
+    실측 2.83)이며, 원문항 24개 비가중 평균 2.45/3.05 는 단위가 다른 별개 통계로 함께 기록한다.
+    최상점(5) 선택 비율과 1~5 분포도 원문항 기준이다.
+(e) 이진 문항 '예' 선택률: 논문 IV-C 는 8개 지표의 사후층화 이용률 평균(Gemini 51.6%, EXAONE 57.5%,
+    실측 55.9%)을 인용하며, 원문항 응답 합산 비율은 참고용으로 함께 기록한다."""
 import glob, json
 import numpy as np, pandas as pd
 from rr_common import BIN, CON, CELL, SYN_FILES, load_real, load_syn, syn_cell_means, post_stratified_rate, write_sheets, Real
@@ -63,7 +65,11 @@ for m, d in raw.items():
     dist = {k: (vals == k).mean() * 100 for k in [1, 2, 3, 4, 5]}
     add(f"{m} 5점 문항 최상점(5) 선택 비율", round(dist[5], 2), "%", "almost never (IV-C, Gemini)" if m == "Gemini" else "-",
         f"원문항 24개 응답 {len(vals):,}건; 분포 1~5 = " + " / ".join(f"{dist[k]:.1f}" for k in [1, 2, 3, 4, 5]) + f"; 상위 4-5 = {dist[4] + dist[5]:.1f}%")
-    add(f"{m} 5점 문항 응답 평균(원문항 24개, 비가중)", round(float(vals.mean()), 2), "점", "2.45 (Gemini), 3.05 (EXAONE) (IV-C)", "진단_응답스타일 의 5점_평균과 동일 산식")
+    add(f"{m} 5점 문항 응답 평균(원문항 24개, 비가중)", round(float(vals.mean()), 2), "점", "-(논문 미인용; IV-C 는 구성개념 사후층화 평균을 쓴다)", "진단_응답스타일 의 5점_평균과 동일 산식")
+for m, f in SYN_FILES.items():
+    cm = syn_cell_means(load_syn(f), CON)
+    add(f"{m} 구성개념 8개 사후층화 평균(5점)", round(float(np.mean([post_stratified_rate(share24, cm[v]) for v in CON])), 3), "점",
+        "2.54 (Gemini), 3.03 (EXAONE) (IV-C)", "구성개념 시트의 모델 열 8개 값의 평균과 동일")
 cons = [R24.overall_wmean(v) for v in CON]
 add("실측 2024 5점 기준값(8개 구성개념 가중평균의 평균, 만 10세 이상)", round(float(np.mean(cons)), 3), "점", "-", "analysis_ready.csv 2024 만 10세 이상, 구성개념별 WT 가중평균의 단순평균")
 a_full = a_all[a_all.YEAR == 2024]
@@ -72,6 +78,14 @@ for v in CON:
     t = a_full[[v, "WT"]].dropna(); cons_full.append(np.average(t[v], weights=t["WT"]))
 add("실측 2024 5점 기준값(8개 구성개념 가중평균의 평균, 전체 표본)", round(float(np.mean(cons_full)), 3), "점", "2.83 (IV-C)", "analysis_ready.csv 2024 전체(n=8,693), 구성개념 시트의 실측_가중 8개 값의 평균")
 
+# (e-1) 이진 '예' 선택률: 논문 IV-C 가 쓰는 사후층화 기준(실측과 같은 산식)
+sv8 = [np.average(a_full[[v, "WT"]].dropna()[v], weights=a_full[[v, "WT"]].dropna()["WT"]) for v in BIN]
+add("실측 2024 이진 '예' 선택률(8지표 가중 이용률의 평균, 전체 표본)", round(float(np.mean(sv8)), 3), "비율", "55.9% (IV-C)", "RQ1_전체일치도 의 실측_가중 8개 값의 평균")
+for m, f in SYN_FILES.items():
+    cm = syn_cell_means(load_syn(f), BIN)
+    add(f"{m} 이진 '예' 선택률(8지표 사후층화 이용률의 평균)", round(float(np.mean([post_stratified_rate(share24, cm[v]) for v in BIN])), 3), "비율",
+        "51.6% (Gemini), 57.5% (EXAONE) (IV-C)", "RQ1_전체일치도 의 모델 열 8개 값의 평균과 동일; 진단_응답스타일 의 이진_예선택률_사후층화")
+
 # (e) 이진 문항 '예' 선택률
 bin_items = [c for c, (t, o) in ITEMS_BY_WAVE[2024].items() if set(o.keys()) == {1, 2}]
 for m, d in raw.items():
@@ -79,7 +93,7 @@ for m, d in raw.items():
     b8 = d[["p__d31002", "p__d26001", "p__d26075", "p__d26092", "p__d11001", "p__d22001", "p__d28001", "p__d29001"]].to_numpy(float).ravel(); b8 = b8[~np.isnan(b8)]
     ball = d[[c for c in bin_items if c in d.columns]].to_numpy(float).ravel(); ball = ball[~np.isnan(ball)]
     per_item = {c: float((d[c].dropna() == 1).mean()) for c in bin_items if c in d.columns}
-    add(f"{m} 이진 '예' 선택률(8지표 원문항, 응답 합산)", round(float((b8 == 1).mean()), 3), "비율", "0.533 (Gemini), 0.582 (EXAONE) (IV-C; 진단_응답스타일 의 이진_예선택률과 동일 산식; v1.10 이전의 0.549/0.602는 산식 미기록으로 재현되지 않아 v1.11에서 정정)", f"응답 {len(b8):,}건")
+    add(f"{m} 이진 '예' 선택률(8지표 원문항, 응답 합산)", round(float((b8 == 1).mean()), 3), "비율", "-(논문 미인용; 참고용 비가중 산식. 진단_응답스타일 의 이진_예선택률_비가중)", f"응답 {len(b8):,}건")
     add(f"{m} 이진 '예' 선택률(2024 문항셋의 2택 문항 {len(bin_items)}개 전체, 응답 합산)", round(float((ball == 1).mean()), 3), "비율", "-", f"응답 {len(ball):,}건; 문항: " + ", ".join(bin_items))
     add(f"{m} 이진 '예' 선택률(2택 문항 {len(bin_items)}개, 문항별 비율의 평균)", round(float(np.mean(list(per_item.values()))), 3), "비율", "-", "; ".join(f"{c}={v:.3f}" for c, v in per_item.items()))
 
