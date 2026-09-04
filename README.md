@@ -38,6 +38,7 @@ registration and the reported analyses.
 | Path | Contents |
 |---|---|
 | `code/` | All generation, recoding, analysis, calibration, and figure scripts (Python) |
+| `outputs/fig7_decision_flow.pdf` | The compiled decision flowchart (Fig. 8), so the package is complete without a TeX installation |
 | `outputs/` | Raw synthetic responses of all full-panel runs, recoded response files, aggregate results workbook (`validity_results.xlsx`, 70 sheets), per-cell exclusion rates (`failure_rates_by_cell.csv`), the wording experiment's arm-level results (`framing_exp_*.json`; per-persona pairing was not retained, see `PROTOCOL.md`), the segment attributes of every sampled persona (`sampled_personas_2024.csv`, `sampled_personas_2025.csv`; see "Persona attributes without the 4.1 GB source"), the console-transcribed CSVs behind three sheets (`m1_variance_*.csv`, `m2_ablation.csv`), and five pre-run check files (see "Development artifacts") |
 | `logs/` | Gemini Batch API request payloads exactly as sent (`batch_w2025_*.jsonl`: 2025 run; `batch_w2024_*.jsonl`: demographic-only 2024 ablation run, see `PROTOCOL.md` §4a; `order_*.jsonl` and `order_exp_gemini_R1_orders.json`: randomized-order experiment) and the console logs of every generation run (`run_*.log`, `recover_*.log`, `framing_*.log`, `order_exp_gemini.log`) |
 | `PROTOCOL.md` | Prompt protocol: persona block construction, system/user templates (verbatim), JSON output contract, skip logic, retry rules, model identifiers/endpoints/serving window |
@@ -235,18 +236,27 @@ Every column of Table 8, including both empirical Bayes estimators, is computed 
 same 200 stratified splits by `code/rr_calibration_forms_extended.py` (columns `syn_eb%p`
 and `real_eb%p` of `심사_보정형태_학습곡선`, with the paired differences
 `Δ(중첩−실측EB)` and `Δ(합성EB−실측EB)`), so the paper's comparisons between the
-calibrated panel and the shrinkage estimator are paired. The older
-`심사_EB풀링곡선` sheet (v1.6 onward) runs its own 200 splits under the same protocol and
-is kept for continuity; its columns differ from Table 8 by up to 0.1 pp and the paper no
-longer quotes it.
+calibrated panel and the shrinkage estimator are paired. Three sheets run their own 200 splits under the same protocol and therefore differ from
+Table 8 by up to 0.1 pp on the columns they share: `심사_EB풀링곡선` (kept for continuity
+since v1.6; the paper no longer quotes it), `RQ3_실측단독_학습곡선`, and
+`심사_학습곡선_정밀`. The difference arises because `rr_calibration_forms_extended.py`
+consumes its random stream inside the nested selection, so its split sequence diverges from
+the other scripts' after the first replicate. The paper quotes
+`심사_보정형태_학습곡선` throughout.
+
+Approximate runtimes on a 2026 laptop: `rr_calibration_forms_extended.py` about 100 s,
+`rr_paired_bootstrap.py` about 25 s, `rr_order_analysis.py` about 7 s,
+`rr_eb_curve.py` about 8 s, `rr_calibration_details.py` about 5 s; `quickstart.py` about 3 s.
 
 The shrinkage weight of the empirical Bayes estimators uses each cell's sampling variance
 p(1-p)/n_eff, where n_eff is the Kish effective sample size computed **on the respondents who
 answered that item** (`rr_common.Real.cell_neff(mask, v)`). Two items, YouTube and short-form
 use, were fielded to a module of 7,346 of the 8,675 respondents aged 10 and over, so their
 effective sample sizes are smaller than the panel-wide ones; before v1.15 the panel-wide value
-was used for every item, which understated the sampling variance of those two cells by up to a
-factor of 2.5 and moved the reported means by at most 0.05 pp.
+was used for every item, which understated the sampling variance of those two items by up to a
+factor of 2.5 in the worst cell. The correction moved the empirical Bayes means by at most
+0.05 pp; it moved the effective-sample-size-weighted linear fit (`심사_보정형태민감도`,
+`age_lin_w`) by 0.22 pp for Gemini and 0.06 pp for EXAONE, from 9.20/7.05 to 8.98/6.99.
 
 Two-sided bootstrap p-values follow the add-one convention
 (`rr_common.boot_p`): p = min{1, 2 min(k- + 1, k+ + 1)/(B + 1)}, so the smallest attainable
