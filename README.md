@@ -298,7 +298,7 @@ differ slightly from the sheets it does quote: `심사_EB풀링곡선` (its
 `심사_보정형태_학습곡선`) and `RQ3_셀홀드아웃` (`real_reg_MAE%p` 8.7 and `syn_reg` 10.1
 against 8.64 and 10.03 in `심사_보정형태_셀홀드아웃`). Cite the second sheet of each pair.
 
-From v1.17 on, `심사_순서실험_지표` also carries `F3%`, `Δ(F3−F1)%p`, `Δ(F3−F2)%p`, and
+From v1.18 on, `심사_순서실험_지표` also carries `F3%`, `Δ(F3−F1)%p`, `Δ(F3−F2)%p`, and
 `고정쌍최대차이%p`, so the paper's "largest difference between two fixed-order passes"
 (2.8 pp, SNS) can be checked over all three pairs rather than F1 against F2 alone.
 

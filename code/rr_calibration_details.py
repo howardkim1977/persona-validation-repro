@@ -46,12 +46,14 @@ def eb_pool(bias,av,cc,neff):
 real=Real(load_real(2024)); SYN={m:syn_cell_means(load_syn(f)) for m,f in SYN_FILES.items()}
 rng=np.random.default_rng(SEED)
 mae={m:{f:[] for f in FORMS} for m in SYN}; coef={m:{v:[] for v in BIN} for m in SYN}
+# 민감도: 보정된 비율을 [0,1] 로 제한했을 때의 검정 MAE(주 분석은 제한하지 않는다)
+mae_clip={m:{f:[] for f in FORMS} for m in SYN}
 sel={m:{c:0 for c in CANDS} for m in SYN}; corrected={m:{v:[] for v in BIN} for m in SYN}
 for rep in range(REPS):
     cal=stratified_split(rng,real,FRAC); tst=~cal
     inner=[stratified_split(rng,real,0.5)&cal for _ in range(INNER)]   # 보정셋 내부 재분할(마스크 교집합)
     for m,sc in SYN.items():
-        acc={f:[] for f in FORMS}
+        acc={f:[] for f in FORMS}; accc={f:[] for f in FORMS}
         for v in BIN:
             s=sc[v]; cc=real.cell_wmean(cal,v); tc=real.cell_wmean(tst,v)
             neff=real.cell_neff(cal,v)   # 항목 결측 제외(셀평균과 동일 응답자 집합)
@@ -70,16 +72,20 @@ for rep in range(REPS):
                     p,_=fit_pred(c,s-icc,iav); score[c].append(np.mean(np.abs((s-p)-ivc)[itv]))
             best=min(CANDS,key=lambda c:np.mean(score[c])); sel[m][best]+=1
             preds["nested"]=preds[best]
-            for f in FORMS: acc[f].append(np.mean(np.abs((s-preds[f])-tc)[tv])*100)
+            for f in FORMS:
+                acc[f].append(np.mean(np.abs((s-preds[f])-tc)[tv])*100)
+                accc[f].append(np.mean(np.abs(np.clip(s-preds[f],0,1)-tc)[tv])*100)
             corrected[m][v].append(s-preds["age_lin"])
-        for f in FORMS: mae[m][f].append(np.mean(acc[f]))
+        for f in FORMS:
+            mae[m][f].append(np.mean(acc[f])); mae_clip[m][f].append(np.mean(accc[f]))
 
 # ── 시트 1: 형태별 검정 MAE ──
 rows=[]
 for m in SYN:
     for f in FORMS:
         a=np.array(mae[m][f]); lo,hi=np.percentile(a,[2.5,97.5])
-        rows.append({"모델":m,"보정형태":f,"검정MAE%p":round(a.mean(),2),"분할분위_하한":round(lo,2),"분할분위_상한":round(hi,2)})
+        rows.append({"모델":m,"보정형태":f,"검정MAE%p":round(a.mean(),2),"분할분위_하한":round(lo,2),"분할분위_상한":round(hi,2),
+                     "검정MAE%p_클리핑[0,1]":round(np.array(mae_clip[m][f]).mean(),2)})
     tot=sum(sel[m].values())
     for c in CANDS: rows.append({"모델":m,"보정형태":f"nested 선택빈도: {c}","검정MAE%p":round(100*sel[m][c]/tot,1)})
 form_df=pd.DataFrame(rows)

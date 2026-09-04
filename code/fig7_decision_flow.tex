@@ -15,7 +15,9 @@
   arr/.style={->,draw=black!70,line width=0.6pt}]
 \node[box] (q0) {Target: segment-level rates for a digital/AI service item};
 \node[dec, below=of q0] (d1) {Any \emph{same-wave} real probability-survey data on the item?};
-\node[dec, below=of d1] (du) {Segment entirely unobserved \emph{and} calibration beats a real-only regression on held-out cells?};
+\node[dec, below=of d1] (du) {Target segment entirely unobserved in the real data?};
+\node[dec, left=of du, xshift=-4mm] (dv) {Do held-out cells show the calibrated panel beating a real-only regression?};
+\node[warn, below=of dv] (o5) {Extrapolate with a real-only regression on the observed cells, or collect data for the segment; the calibrated panel is not supported here (Gemini, 12 non-teen cells: 7.2 vs.\ 6.2~pp)};
 \node[dec, below=of du] (d2) {Real calibration sample large ($\gtrsim$860 respondents for Gemini, $\gtrsim$1{,}730 for EXAONE)?};
 \node[outb, right=of d2, xshift=6mm] (o1) {Estimate from the real data alone, direct or partially pooled\\(this study: 3.6~pp direct and 3.5~pp pooled at $n{=}2{,}598$; the pooled version was better at every tested size)};
 \node[dec, below=of d2] (d3) {Real calibration sample small ($\lesssim$170 respondents for Gemini, $\lesssim$430 for EXAONE)?};
@@ -27,7 +29,9 @@
 \draw[arr] (q0) -- (d1);
 \draw[arr] (d1) -- node[right,xshift=1pt]{yes} (du);
 \draw[arr] (du) -- node[right,xshift=1pt]{no} (d2);
-\draw[arr] (du.west) -- ++(-6mm,0) |- node[pos=0.25,left]{yes} (o4.west);
+\draw[arr] (du) -- node[above]{yes} (dv);
+\draw[arr] (dv) -- node[right,xshift=1pt]{no} (o5);
+\draw[arr] (dv.west) -- ++(-11mm,0) |- node[pos=0.22,left]{yes} (o4.west);
 \draw[arr] (d1) -- node[above]{no} (o0);
 \draw[arr] (d2) -- node[above]{yes} (o1);
 \draw[arr] (d2) -- node[right,xshift=1pt]{no} (d3);

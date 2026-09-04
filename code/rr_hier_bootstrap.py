@@ -22,12 +22,15 @@ cell=P[0].loc[common,"_cell"].to_numpy()
 Y=np.stack([np.stack([p.loc[common,v].to_numpy(float) for v in BIN],axis=1) for p in P])   # (3, n, 8)
 n=len(common)
 
-def mae_from(idx_r, ymat, idx_p):
+def mae_from(idx_r, ymat, idx_p, cells=None):
+    # cells 는 ymat 의 행에 대응하는 셀 배열이다. 응답을 재표집하면 셀도 같은 순서로 넘겨야 한다.
+    cells=cell if cells is None else cells
+    assert len(cells)==ymat.shape[0], "응답 배열과 셀 배열의 페르소나 순서가 어긋났다"
     w=real.wt[idx_r]; c=real.cell[idx_r]; share=np.bincount(c,weights=w,minlength=NC); share=share/share.sum()
     errs=[]
     for j,v in enumerate(BIN):
         yr=real.Y[v][idx_r]; ok=~np.isnan(yr); ar=np.average(yr[ok],weights=w[ok])
-        ys=ymat[idx_p,j]; cs=cell[idx_p]; ok2=~np.isnan(ys)
+        ys=ymat[idx_p,j]; cs=cells[idx_p]; ok2=~np.isnan(ys)
         num=np.bincount(cs[ok2],weights=ys[ok2],minlength=NC); den=np.bincount(cs[ok2],minlength=NC)
         with np.errstate(invalid="ignore"): cm=np.where(den>0,num/den,np.nan)
         errs.append(abs(post_stratified_rate(share,cm)-ar))
@@ -38,7 +41,7 @@ res={"a_단일패스(k1)":[],"b_계층(페르소나×패스)":[],"c_페르소나
 for _ in range(B):
     ir=household_resample_index(rng,real); ip=rng.integers(0,n,n)
     res["a_단일패스(k1)"].append(mae_from(ir,Y[0],ip))
-    pick=rng.integers(0,3,n); ymix=Y[pick,ip,:]; res["b_계층(페르소나×패스)"].append(mae_from(ir,ymix,np.arange(n)))
+    pick=rng.integers(0,3,n); ymix=Y[pick,ip,:]; res["b_계층(페르소나×패스)"].append(mae_from(ir,ymix,np.arange(n),cell[ip]))
     res["c_페르소나재표집_3패스평균"].append(mae_from(ir,Y.mean(axis=0),ip))
 rows=[]
 for k,v in res.items():
