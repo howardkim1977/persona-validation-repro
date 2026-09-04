@@ -57,7 +57,8 @@ rows=[]
 for mode in ["individual","household"]:
     for frac in FRACS:
         rng=np.random.default_rng(SEED)
-        E={m:{k:[] for k in FORMS} for m in SYN}; sel={m:{c:0 for c in CANDS} for m in SYN}; LAM={m:[] for m in SYN}
+        E={m:{k:[] for k in FORMS} for m in SYN}; sel={m:{c:0 for c in CANDS} for m in SYN}
+        LAM={m:[] for m in SYN}; LAMR={m:[] for m in SYN}
         st={"n":[],"cmin":[],"empty":[]}
         for _ in range(REPS):
             cal=stratified_split(rng,real,frac) if mode=="individual" else household_split(rng,real,frac); tst=~cal
@@ -65,7 +66,7 @@ for mode in ["individual","household"]:
 
             st["n"].append(cal.sum()); st["cmin"].append(n.min()); st["empty"].append((n==0).sum())
             for m,sc in SYN.items():
-                e={k:[] for k in FORMS}; lam_e=[]
+                e={k:[] for k in FORMS}; lam_e=[]; lamr_e=[]
                 for v in BIN:
                     s=sc[v]; cc=real.cell_wmean(cal,v); tc=real.cell_wmean(tst,v); gm=real.grand_wmean(cal,v)
                     tv=~np.isnan(tc)&~np.isnan(s); av=tv&~np.isnan(cc); bias=s-cc
@@ -79,17 +80,19 @@ for mode in ["individual","household"]:
                     neff=real.cell_neff(cal,v)   # 항목 결측 제외(셀평균과 동일 응답자 집합)
                     sig2=np.where(av,np.maximum(cc*(1-cc),1e-4)/np.maximum(neff,1),np.nan)
                     eb_b,lam_b=eb_shrink(bias,p_lin,sig2,av); e["syn_eb"]+=list(np.abs((s-eb_b)-tc)[tv]); lam_e+=list(lam_b[av])
-                    eb_r,_=eb_shrink(cc,rreg,sig2,av);     e["real_eb"]+=list(np.abs(eb_r-tc)[tv])
+                    eb_r,lam_r=eb_shrink(cc,rreg,sig2,av);  e["real_eb"]+=list(np.abs(eb_r-tc)[tv]); lamr_e+=list(lam_r[av])
                     e["real_dir"]+=list(np.abs(rdir-tc)[tv]); e["real_dir_regfb"]+=list(np.abs(rdir2-tc)[tv])
                     e["real_reg"]+=list(np.abs(rreg-tc)[tv]); e["real_gm"]+=list(np.abs(gm-tc)[tv])
                 for k in FORMS: E[m][k].append(np.mean(e[k])*100)
                 LAM[m].append(np.mean(lam_e) if lam_e else np.nan)
+                LAMR[m].append(np.mean(lamr_e) if lamr_e else np.nan)
         for m in SYN:
             A={k:np.array(v) for k,v in E[m].items()}; best_real=np.minimum(A["real_dir"],A["real_reg"])
             r={"분할":mode,"보정률":frac,"모델":m,"보정셋n":round(np.mean(st["n"])),"셀n최소(평균)":round(np.mean(st["cmin"]),1),
                "빈셀수(평균)":round(np.mean(st["empty"]),2),"빈셀발생분할%":round(100*np.mean(np.array(st["empty"])>0),1)}
             for k in FORMS: r[k+"%p"]=round(A[k].mean(),2)
-            r["EB평균수축가중λ"]=round(float(np.nanmean(LAM[m])),3)
+            r["EB평균수축가중λ(합성표적)"]=round(float(np.nanmean(LAM[m])),3)
+            r["EB평균수축가중λ(실측표적)"]=round(float(np.nanmean(LAMR[m])),3)
             for k in ["syn_lin","syn_quad","syn_nested"]:
                 d=A[k]-best_real; lo,hi=np.percentile(d,[2.5,97.5])
                 r[f"Δ({k}−최우수실측)"]=round(d.mean(),2); r[f"Δ({k})_CI"]=f"[{lo:.2f}, {hi:.2f}]"; r[f"{k}<최우수실측%"]=round(100*(d<0).mean(),1)

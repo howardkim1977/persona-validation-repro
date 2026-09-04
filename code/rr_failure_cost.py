@@ -51,6 +51,13 @@ for label,wave,out,log in [("EXAONE 2024",2024,"outputs/synthetic_recoded_exaone
     d=pd.read_csv(out,encoding="utf-8-sig"); n0=int(re.search(r"페르소나 (\d+)명",open(log,encoding="utf-8",errors="ignore").read()).group(1)); fin=n0-len(d)
     rows.append({"실행":label,"차수":wave,"요청수(1차)":n0,"1차실패":np.nan,"1차실패율%":np.nan,"2차실패":np.nan,"총요청수":np.nan,
                  "최종제외":fin,"최종제외율%":round(100*fin/n0,2),"근거":"live calls; 1차 실패 개별 기록 없음(logs/run_exaone*.log, recover_exaone.log)"})
+# EXAONE 부수 실행(온도 0.7, 인구통계 전용 소거): 원자료의 _error 행을 직접 집계한다(본문 표 2 캡션의 값).
+for label,raw in [("EXAONE 2024 temperature 0.7","outputs/synthetic_exaone_t07.csv"),
+                  ("EXAONE 2024 demographic-only ablation","outputs/synth_demo_exaone.csv")]:
+    d=pd.read_csv(raw,encoding="utf-8-sig"); n0=len(d)
+    fin=int(d["_error"].notna().sum()) if "_error" in d.columns else 0
+    rows.append({"실행":label,"차수":2024,"요청수(1차)":n0,"1차실패":np.nan,"1차실패율%":np.nan,"2차실패":np.nan,"총요청수":np.nan,
+                 "최종제외":fin,"최종제외율%":round(100*fin/n0,2),"근거":f"live calls; {raw} 의 _error 행"})
 fc=pd.read_csv("outputs/failure_rates_by_cell.csv",encoding="utf-8-sig")
 for _,r in fc[fc["모델"].astype(str).str.upper().str.contains("EXAONE")].iterrows():
     cellrows.append({"실행":f"EXAONE {int(r['차수'])}","차수":int(r["차수"]),"성별":r["성별"],"연령대":r["연령대"],"n":int(r["목표_n"]),

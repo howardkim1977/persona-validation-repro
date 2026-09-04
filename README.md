@@ -175,7 +175,7 @@ package root (`python3 code/<script>.py`) with `analysis_ready.csv` (and, where 
 | `fig4_shortform_age` | Fig. 5 | `진단_숏폼연령` |
 | `fig3_temporal_drift` | Fig. 6 | `RQ1_정답지2024`, `RQ1_2025문항셋` (2025 survey rates), `실측_연도변화` |
 | `fig6_rq3_calibration` | Fig. 7 | `RQ3_보정`, `심사_보정형태민감도`, `RQ3_시점홀드아웃`, `심사_보정형태_시점홀드아웃` |
-| `fig7_decision_flow` | Fig. 8 | TikZ source `code/fig7_decision_flow.tex` (no data) |
+| `fig7_decision_flow` | Fig. 8 | TikZ source `code/fig7_decision_flow.tex` (no data); `outputs/fig7_decision_flow.pdf` is the compiled figure as it appears in the paper |
 
 ### Sheets without a producing script
 
@@ -258,6 +258,14 @@ was used for every item, which understated the sampling variance of those two it
 factor of 2.5 in the worst cell. The correction moved the empirical Bayes means by at most
 0.05 pp; it moved the effective-sample-size-weighted linear fit (`심사_보정형태민감도`,
 `age_lin_w`) by 0.22 pp for Gemini and 0.06 pp for EXAONE, from 9.20/7.05 to 8.98/6.99.
+
+The shrinkage weight differs between the two empirical Bayes estimators, so `심사_보정형태_학습곡선`
+reports both from v1.17 on: `EB평균수축가중λ(합성표적)` for the synthetic-target estimator, which
+shrinks the synthetic bias toward the fitted age line (0.52-0.74 over the individual-split
+fractions), and `EB평균수축가중λ(실측표적)` for the real-only comparator, which shrinks the real cell
+means toward the real-only regression (0.50-0.69). The paper quotes the synthetic-target range.
+The single `평균수축가중λ` column of `심사_EB풀링곡선` was the synthetic-target weight and is renamed
+accordingly in v1.17.
 
 Two-sided bootstrap p-values follow the add-one convention
 (`rr_common.boot_p`): p = min{1, 2 min(k- + 1, k+ + 1)/(B + 1)}, so the smallest attainable

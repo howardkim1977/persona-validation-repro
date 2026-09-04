@@ -38,6 +38,6 @@ for frac in FRACS:
             E[m]["lam"].append(np.mean(e["lam"]))
     for m in SYN:
         r={"보정률":frac,"모델":m,"EB풀링_MAE%p":round(np.mean(E[m]["eb"]),2),"순수실측EB_MAE%p":round(np.mean(E[m]["eb_real"]),2),"선형_MAE%p":round(np.mean(E[m]["lin"]),2),
-           "실측직접_MAE%p":round(np.mean(E[m]["dir"]),2),"평균수축가중λ":round(np.mean(E[m]["lam"]),3)}
+           "실측직접_MAE%p":round(np.mean(E[m]["dir"]),2),"평균수축가중λ(합성표적)":round(np.mean(E[m]["lam"]),3)}
         rows.append(r); print(r,flush=True)
 write_sheets({"심사_EB풀링곡선":pd.DataFrame(rows)})
