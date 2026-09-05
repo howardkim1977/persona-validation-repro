@@ -7,8 +7,8 @@ Runs in three steps from the archived aggregate outputs:
      (RQ1 agreement, RQ2 segment error, RQ3 calibration vs. real-only estimators,
      format-failure rates, paired model comparison; table numbers follow the
      September 2026 manuscript);
-  3. regenerates the matplotlib figures (Figs. 1-7) into paper/figures/; the decision
-     flowchart (Fig. 8) is a TikZ source (code/fig7_decision_flow.tex) compiled with pdflatex if available.
+  3. regenerates the matplotlib figures (Figs. 1-4) into paper/figures/; the decision
+     flowchart (Fig. 5) is a TikZ source (code/fig7_decision_flow.tex) compiled with pdflatex if available.
 Analyses that need the KISDI microdata (analysis_ready.csv) are listed at the end
 with the script that reproduces each one once access has been granted.
 

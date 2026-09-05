@@ -19,11 +19,12 @@ for lbl,f in [("Gemini2024","outputs/synthetic_responses.csv"),("EXAONE2024","ou
 # ── RQ1 MAE 부트스트랩(2024) ──
 def cwm_s(df,v): return {k:df.loc[df.index.isin(idx),v].mean() for k,idx in df.groupby(CELL).groups.items()}
 def rq1_mae(act,syn):
-    cw=act.groupby(CELL)["WT"].sum(); share=(cw/cw.sum()).to_dict()
     scell={v:{k:s[v].mean() for k,s in syn.groupby(CELL)} for v in BIN}
     errs=[]
     for v in BIN:
         s=act[[v,"WT"]].dropna(); actm=np.average(s[v],weights=s["WT"])
+        # 조건부 문항은 그 문항 응답자만으로 셀 점유율을 계산한다
+        cw=act[act[v].notna()].groupby(CELL)["WT"].sum(); share=(cw/cw.sum()).to_dict()
         cm=scell[v]; num=sum(share.get(k,0)*cm[k] for k in cm if k in share and not np.isnan(cm[k]))
         den=sum(share.get(k,0) for k in cm if k in share and not np.isnan(cm[k]))
         errs.append(abs(num/den-actm))

@@ -25,13 +25,14 @@ for frac in FRACS:
     stat={"n_cal":[],"cell_min":[],"cell_med":[],"empty":[]}
     E={m:{k:[] for k in ["syn_reg","real_dir","real_dir_regfb","real_reg","real_gm","syn_reg_ne","real_dir_ne"]} for m in SYN}
     for _ in range(REPS):
-        cal=stratified_split(rng,real,frac); tst=~cal; n=real.cell_n(cal); wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
+        cal=stratified_split(rng,real,frac); tst=~cal; n=real.cell_n(cal)
         stat["n_cal"].append(cal.sum()); stat["cell_min"].append(n.min()); stat["cell_med"].append(np.median(n)); stat["empty"].append((n==0).sum())
         for m,sc in SYN.items():
             e={k:[] for k in E[m]}
             for v in BIN:
                 cc=real.cell_wmean(cal,v); tc=real.cell_wmean(tst,v); gm=real.grand_wmean(cal,v); s=sc[v]
                 tv=~np.isnan(tc)&~np.isnan(s); av=tv&~np.isnan(cc)
+                wcell=np.bincount(real.cell[cal&~np.isnan(real.Y[v])],weights=real.wt[cal&~np.isnan(real.Y[v])],minlength=NC)   # 문항 응답자 기준
                 pred=fit_bias_reg(s-cc,av); rreg=fit_rate_reg(cc,wcell,av)
                 rdir=np.where(np.isnan(cc),gm,cc); rdir2=np.where(np.isnan(cc),rreg,cc)
                 e["syn_reg"]+=list(np.abs((s-pred)-tc)[tv]); e["real_dir"]+=list(np.abs(rdir-tc)[tv])

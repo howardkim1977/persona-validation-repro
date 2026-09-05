@@ -84,7 +84,7 @@ are the only local records of the sequence.
 | Bulk generation via Gemini Batch API (parameters unchanged) | Sec. III-D | As registered |
 | Stratified allocation `n = clip(2×actual, 200, 600)` per sex-by-age cell (~8,000/model) | Sec. III-B | As registered |
 | Format-violation regeneration, max 3 attempts | Sec. III-D | As registered |
-| Conditional-item skip logic mirroring the survey | Sec. III-D | As registered |
+| Conditional-item skip logic mirroring the survey | Sec. III-D | As registered for the generative-AI sub-items; extended post hoc (v1.20) to the YouTube and short-form items, which the survey asks only of OTT users and which the archived runs had answered unconditionally (see PROTOCOL.md) |
 | Ground reference: KISDI Korea Media Panel Survey, weighted estimates | Sec. III-A | As registered (terminology in paper: "reference estimates") |
 | RQ1: do aggregated synthetic responses reproduce population-level distributions? | Sec. IV-A | As registered |
 | RQ2: does correspondence vary across respondent groups, item types, and model/generation settings? | Secs. IV-B, IV-F | Partly — respondent groups and generation settings as registered; item-type contrast deviates, see B |

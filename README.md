@@ -49,7 +49,7 @@ registration and the reported analyses.
 | `PROTOCOL.md` | Prompt protocol: persona block construction, system/user templates (verbatim), JSON output contract, skip logic, retry rules, model identifiers/endpoints/serving window |
 | `DATASET_HASHES.txt` | SHA-256 of the exact Nemotron-Personas-Korea file used, plus the sampling seed |
 | `MANIFEST.sha256` | SHA-256 of every file in this package |
-| `quickstart.py` | Verifies the manifest, prints the headline tables, renders Figs. 1-7 (see "Quick start") |
+| `quickstart.py` | Verifies the manifest, prints the headline tables, renders Figs. 1–4 (see "Quick start") |
 | `rebuild_manifest.py` | Rewrites `MANIFEST.sha256` (no argument) or verifies it without rewriting (`--check`: lists mismatched, missing, and unlisted files; exit code 1 if any) |
 
 ## What is *not* included, and why
@@ -205,7 +205,7 @@ archived files, this was done on 2026-09-04 and the result is stated.
 - `복수응답_K3`: per-pass RQ1 MAE and cell MAE of the three EXAONE passes
   (`outputs/synthetic_recoded_exaone.csv`, `_k2.csv`, `_k3.csv`), computed with the
   `compare_validity.py`/`rq1_metrics.py` formulas against the full 2024 sample (recomputed:
-  15.0/15.4/15.1 and 15.9/16.0/16.0, identical to the sheet).
+  13.8/13.7/13.7 and 15.1/15.0/15.2 from v1.20, identical to the sheet).
 - `M1_분산_Gemini`, `M1_분산_EXAONE`: `outputs/m1_variance_gemini.csv` and
   `outputs/m1_variance_exaone.csv` (written by `m1_variance.py`, live API calls) with the
   `모델` column prepended.
@@ -217,7 +217,7 @@ archived files, this was done on 2026-09-04 and the result is stated.
 - `진단_프레이밍통제`: `outputs/framing_exp_{gemini,exaone}.json` (written by
   `framing_experiment.py`); `실측2024_숏폼%` (69.6) is the weighted 2024 survey rate of
   `RQ1_정답지2024`.
-- `RQ2_십대제외강건성`: derived values; `DPD_e_전체14셀` (52.4/36.2) is the `rq2_expand.py`
+- `RQ2_십대제외강건성`: derived values; `DPD_e_전체14셀` (49.6/34.7 from v1.20, equal to `심사_집단오차지표`; before v1.20 it was the `rq2_expand.py`
   console output (mean of the rounded per-indicator ranges, see "Sample conventions"),
   `DPD_e_십대제외12셀` is `십대제외_RQ2`, the OTT age slopes are the full-data linear fit of
   the cell error on the age band (14 cells: `심사_보정계수`, `β1_전체자료`; 12 cells: the same
@@ -244,8 +244,14 @@ every post-stratified overall rate uses the cell shares of the respondents who a
 item (`rr_common.Real.cell_share(mask, v)`; the same rule in `rq1_metrics.py`,
 `compare_validity.py`, `build_dual_tables.py`, `sensitivity_teen_excluded.py`,
 `sensitivity_sample.py`, `design_variance.py`, `rr_misc_numbers.py`, `rr_paired_bootstrap.py`,
-`rr_hier_bootstrap.py`, `rr_order_analysis.py`). Cell-level analyses (RQ2, RQ3) need no change
-because both sides already drop item-missing rows inside each cell. The ten
+`rr_hier_bootstrap.py`, `rr_order_analysis.py`, `rq_uncertainty.py`, and the CSV block of
+`compare_validity.py`). Cell-level analyses (RQ2, RQ3) need no change because both sides already
+drop item-missing rows inside each cell; the real-only regression's cell weights (`wcell`) and the
+Kish effective sample sizes are likewise computed on the respondents who answered the item.
+The hierarchical bootstrap averages a persona's three passes with `nanmean`, so for the two gated
+items the average runs over the passes in which the persona reported OTT use. Because
+`rr_item_bootstrap.py` and `rr_item_supplements.py` read the `RQ1_정답지2024` and `RQ1_2025문항셋`
+sheets, run them after `build_dual_tables.py`. The ten
 `outputs/synthetic_recoded_*.csv` files were regenerated with the gate; the raw response files
 are unchanged. The wording experiment (`framing_exp_*.json`) retained only the short-form and
 YouTube answers, so the gate cannot be applied to it and its arms remain unconditional.
@@ -302,20 +308,18 @@ experiment (`code/rr_order_analysis.py`, B = 2,000).
 
 ### Sample conventions
 
-Two survey samples are used. The RQ1 headline metrics (Table 4: MAE 17.1/15.0, Pearson
-0.795/0.903, construct r 0.788/0.500; `rq1_metrics.py`, `build_dual_tables.py`,
+Two survey samples are used. The RQ1 headline metrics (Table 4: MAE 17.0/13.8, Pearson
+0.811/0.912, construct r 0.788/0.500; `rq1_metrics.py`, `build_dual_tables.py`,
 `sensitivity_sample.py`, `design_variance.py`) post-stratify to the full 2024 sample (8,693
 respondents, including 18 under 10). The cell-based analyses (RQ2, RQ3, paired comparisons)
 and every `rr_*.py` script (`rr_common.load_real`) use the 8,675 respondents aged 10 and
 over, because no persona is under 19 and the `10세미만` cells have no synthetic counterpart.
 This accounts for the following small differences between sheets: `심사_상관_Spearman`
-Pearson 0.904 (age 10 and over) vs. 0.903 in Table 4 (full sample); `심사_상관_구성개념`
+Pearson 0.913/0.812 (age 10 and over) vs. 0.912/0.811 in Table 4 (full sample); `심사_상관_구성개념`
 0.787/0.502 (age 10 and over) vs. 0.788/0.500 (full sample). Two further differences are
-rounding, not sample: `정답지차수_효과` EXAONE 2024 MAE 14.9 is the mean of the eight
-per-indicator errors after each was rounded to one decimal (14.94), whereas Table 4's 15.0
-averages the unrounded errors (14.95); `RQ2_십대제외강건성` R_e 52.4 is the mean of the eight
-per-indicator ranges after each was rounded to one decimal (52.35), whereas 52.3 (paper,
-`심사_집단오차지표`, `십대제외_RQ2`) averages the unrounded ranges (52.34).
+rounding, not sample: `정답지차수_효과` Gemini 2024 MAE 16.9 is the mean of the eight
+per-indicator errors after each was rounded to one decimal (16.94), whereas Table 4's 17.0
+averages the unrounded errors (16.95); from v1.20 `RQ2_십대제외강건성` carries the same R_e as `심사_집단오차지표` (49.6/39.5, 34.7/31.2).
 
 Two sheets are earlier, independent runs whose values the paper does not quote and which
 differ slightly from the sheets it does quote: `심사_EB풀링곡선` (its

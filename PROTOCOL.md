@@ -143,6 +143,9 @@ per-arm bootstrap CIs, and P(short-form | YouTube)); per-persona pairing and the
 YouTube-user denominators were not retained. The paper therefore analyses the two
 arms as independent samples (`code/rr_framing_tests.py`, sheet `심사_프레이밍검정`).
 
+
+**Conditional media items (v1.20).** The archived raw response files were generated with `items.CONDITIONAL` covering only the generative-AI sub-items, so every persona answered the YouTube and short-form items regardless of its OTT answer. The survey asks those two items only of OTT users. From v1.20 `items.CONDITIONAL` also carries `MEDIA_CONDITIONAL` (`p__d26075`, `p__d26092` gated on `p__d26001`), which affects any new generation run, and `recode.py` applies the same gate when the archived raw files are recoded, so the analysis matches the survey's skip logic without regenerating responses. The wording-experiment JSON retained only the two items' answers and cannot be gated.
+
 ## 5. Models, endpoints, sampling parameters
 
 | | Primary | Comparison |

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """본문에 인용된 보조 수치의 재현(패키지 루트에서 실행) → 시트 심사_보조수치.
-(a) 합성 유튜브 이용률: 유효 페르소나 비가중 평균(2024, 2025)과 사후층화값(IV-D 의 93.9% 는 2025 문항셋 비가중값).
+(a) 합성 유튜브 이용률: 유효 페르소나 비가중 평균(2024, 2025)과 사후층화값(IV-D 는 게이트 통과 페르소나의 비가중값을 인용한다).
 (b) 온도 1.0 대 0.7 의 사후층화 지표 비율 평균절대차(모델별, 이진 8지표; 점유율은 2024 만 10세 이상 실측).
 (c) 요청당 평균 입력 문자 수(systemInstruction + contents 텍스트의 문자 수):
     순서 실험 고정순서 F1 1차 페이로드(2024 36문항, 서사 조건화)와 2025 배치 페이로드(1차 및 전체 라운드, 총량 포함).
@@ -25,11 +25,11 @@ real24 = load_real(2024, with_hid=False); R24 = Real(real24, BIN + CON)
 SH24 = {v: R24.cell_share(v=v) for v in BIN + CON}; share24 = R24.cell_share()
 real25 = load_real(2025, with_hid=False); R25 = Real(real25)
 SH25 = {v: R25.cell_share(v=v) for v in BIN}; share25 = R25.cell_share()
-for yr, f, share in [(2024, "outputs/synthetic_recoded_gemini.csv", SH24), (2025, "outputs/synthetic_recoded_2025_gemini.csv", share25)]:
+for yr, f, share in [(2024, "outputs/synthetic_recoded_gemini.csv", SH24), (2025, "outputs/synthetic_recoded_2025_gemini.csv", SH25)]:
     s = load_syn(f); unw = s["유튜브_이용"].mean() * 100
     sh = share["유튜브_이용"] if isinstance(share, dict) and "유튜브_이용" in share else share
     ps = post_stratified_rate(sh, syn_cell_means(s, ["유튜브_이용"])["유튜브_이용"]) * 100
-    add(f"Gemini {yr} 유튜브 이용률(유효 페르소나 비가중)", round(unw, 1), "%", "93.9 (IV-D, 2025 문항셋)" if yr == 2025 else "-", f"{f}, 유튜브_이용 단순평균 n={s['유튜브_이용'].notna().sum()}")
+    add(f"Gemini {yr} 유튜브 이용률(유효 페르소나 비가중)", round(unw, 1), "%", "100.0 (IV-D, 2025 문항셋, 게이트 적용 후)" if yr == 2025 else "100.0 (IV-D, 2024, 게이트 적용 후)", f"{f}, 유튜브_이용 단순평균 n={s['유튜브_이용'].notna().sum()}")
     add(f"Gemini {yr} 유튜브 이용률(사후층화)", round(ps, 1), "%", "-", f"{f}, 실측 {yr} 셀 점유율 사후층화")
     if yr == 2025:
         t = a_all[(a_all.YEAR == 2025)][["유튜브_이용", "WT"]].dropna()
@@ -88,7 +88,7 @@ add("실측 2024 이진 '예' 선택률(8지표 가중 이용률의 평균, 전�
 for m, f in SYN_FILES.items():
     cm = syn_cell_means(load_syn(f), BIN)
     add(f"{m} 이진 '예' 선택률(8지표 사후층화 이용률의 평균)", round(float(np.mean([post_stratified_rate(SH24[v], cm[v]) for v in BIN])), 3), "비율",
-        "51.6% (Gemini), 57.5% (EXAONE) (IV-C)", "RQ1_전체일치도 의 모델 열 8개 값의 평균과 동일; 진단_응답스타일 의 이진_예선택률_사후층화")
+        "52.5% (Gemini), 59.5% (EXAONE) (IV-C)", "RQ1_전체일치도 의 모델 열 8개 값의 평균과 동일; 진단_응답스타일 의 이진_예선택률_사후층화")
 
 # (e) 이진 문항 '예' 선택률
 bin_items = [c for c, (t, o) in ITEMS_BY_WAVE[2024].items() if set(o.keys()) == {1, 2}]

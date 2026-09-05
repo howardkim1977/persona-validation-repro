@@ -19,7 +19,7 @@ rows=[]
 for frac in FRACS:
     rng=np.random.default_rng(SEED); E={m:{"eb":[],"eb_real":[],"lin":[],"dir":[],"lam":[]} for m in SYN}
     for _ in range(REPS):
-        cal=stratified_split(rng,real,frac); tst=~cal; wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
+        cal=stratified_split(rng,real,frac); tst=~cal
         for m,sc in SYN.items():
             e={"eb":[],"eb_real":[],"lin":[],"dir":[],"lam":[]}
             for v in BIN:
@@ -30,6 +30,7 @@ for frac in FRACS:
                 lam=np.where(av,tau2/(tau2+np.where(np.isnan(sig2),1,sig2)+1e-12),0.0)
                 eb=np.where(av,lam*bias+(1-lam)*fit,fit)
                 e["eb"]+=list(np.abs((s-eb)-tc)[tv]); e["lin"]+=list(np.abs((s-fit)-tc)[tv])
+                wcell=np.bincount(real.cell[cal&~np.isnan(real.Y[v])],weights=real.wt[cal&~np.isnan(real.Y[v])],minlength=NC)   # 문항 응답자 기준
                 fr=rreg(cc,wcell,av); resr=cc-fr; tau2r=max(0.0,np.nanvar(resr[av],ddof=1)-np.nanmean(sig2[av])) if av.sum()>2 else 0.0
                 lamr=np.where(av,tau2r/(tau2r+np.where(np.isnan(sig2),1,sig2)+1e-12),0.0); ebr=np.where(av,lamr*cc+(1-lamr)*fr,fr)
                 e["eb_real"]+=list(np.abs(ebr-tc)[tv])

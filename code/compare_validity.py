@@ -77,11 +77,11 @@ for name,df in [("Gemini",g),("EXAONE",e)]:
 import csv
 rows=[]
 for v in BIN:
-    act=wmean(a,v)
-    def postw(df,v=v):
+    act=wmean(a,v); sh=share_of(v)   # 조건부 문항: 응답자 기준 점유율(콘솔 블록과 동일)
+    def postw(df,v=v,sh=sh):
         cm=cell_wmean(df,v,False)
-        num=sum(cell_share.get(k,0)*cm[k] for k in cm if k in cell_share and not np.isnan(cm[k]))
-        den=sum(cell_share.get(k,0) for k in cm if k in cell_share and not np.isnan(cm[k]))
+        num=sum(sh.get(k,0)*cm[k] for k in cm if k in sh and not np.isnan(cm[k]))
+        den=sum(sh.get(k,0) for k in cm if k in sh and not np.isnan(cm[k]))
         return num/den if den else np.nan
     gm,em=postw(g),postw(e)
     rows.append({"변수":v,"실측_가중":round(act,4),

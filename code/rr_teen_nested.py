@@ -49,12 +49,13 @@ for m,sc in SYN.items():
     e={k:[] for k in ["lin","quad","nested","real_reg"]}
     for j in np.where(KEEP)[0]:
         for _ in range(HREPS):
-            cal=stratified_split(rng,real,0.30)&(real.cell!=j); wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
+            cal=stratified_split(rng,real,0.30)&(real.cell!=j)
             for v in BIN:
                 t=FC[v][j]; s=sc[v]
                 if np.isnan(t) or np.isnan(s[j]): continue
                 cc=real.cell_wmean(cal,v); av=KEEP&~np.isnan(cc)&~np.isnan(s); av[j]=False; bias=s-cc
                 e["lin"].append(abs((s[j]-fit_pred("age_lin",bias,av)[j])-t)); e["quad"].append(abs((s[j]-fit_pred("age_quad",bias,av)[j])-t))
+                wcell=np.bincount(real.cell[cal&~np.isnan(real.Y[v])],weights=real.wt[cal&~np.isnan(real.Y[v])],minlength=NC)   # 문항 응답자 기준
                 e["nested"].append(abs((s[j]-nested_pred(s,real,cal,rng,v)[j])-t)); e["real_reg"].append(abs(fit_rate_reg(cc,wcell,av)[j]-t))
     rows.append({"모델":m+" (셀홀드아웃)",**{k+"%p":round(np.mean(v)*100,2) for k,v in e.items()}})
 df=pd.DataFrame(rows); write_sheets({"심사_십대제외_보정형태":df}); print(df.to_string(index=False))

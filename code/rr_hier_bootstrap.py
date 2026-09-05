@@ -37,13 +37,13 @@ def mae_from(idx_r, ymat, idx_p, cells=None):
         errs.append(abs(post_stratified_rate(share,cm)-ar))
     return np.mean(errs)*100
 full=np.arange(real.n); allp=np.arange(n)
-pt=[mae_from(full,Y[k],allp) for k in range(3)]; pt_avg=mae_from(full,Y.mean(axis=0),allp)
+pt=[mae_from(full,Y[k],allp) for k in range(3)]; pt_avg=mae_from(full,np.nanmean(Y,axis=0),allp)   # 게이트 문항은 모듈에 배정된 패스들의 평균
 res={"a_단일패스(k1)":[],"b_계층(페르소나×패스)":[],"c_페르소나재표집_3패스평균":[]}
 for _ in range(B):
     ir=household_resample_index(rng,real); ip=rng.integers(0,n,n)
     res["a_단일패스(k1)"].append(mae_from(ir,Y[0],ip))
     pick=rng.integers(0,3,n); ymix=Y[pick,ip,:]; res["b_계층(페르소나×패스)"].append(mae_from(ir,ymix,np.arange(n),cell[ip]))
-    res["c_페르소나재표집_3패스평균"].append(mae_from(ir,Y.mean(axis=0),ip))
+    res["c_페르소나재표집_3패스평균"].append(mae_from(ir,np.nanmean(Y,axis=0),ip))
 rows=[]
 for k,v in res.items():
     lo,hi=np.percentile(v,[2.5,97.5]); rows.append({"설계":k,"점추정MAE%p":round(pt[0] if k.startswith("a") else (pt_avg if k.startswith("c") else np.mean(pt)),2),

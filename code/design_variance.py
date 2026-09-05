@@ -48,10 +48,9 @@ for m,f in [("Gemini","outputs/synthetic_recoded_gemini.csv"),("EXAONE","outputs
         sb=syn.sample(len(syn),replace=True,random_state=int(rng.integers(1e9)))
         boot.append(rq1_mae(ab,sb))
     lo,hi=np.percentile(boot,[2.5,97.5])
-    print(f"{m}: MAE {pt:.1f}%p | 설계기반(가구군집) 95% CI [{lo:.1f}, {hi:.1f}]  (기존 행단위 CI: "
-          f"{'[16.7, 17.6]' if m=='Gemini' else '[14.3, 15.6]'})")
+    print(f"{m}: MAE {pt:.1f}%p | 설계기반(가구군집) 95% CI [{lo:.1f}, {hi:.1f}]  )")
     sheet_rows.append({"항목":f"{m} RQ1 MAE CI(설계기반)","값":f"[{lo:.1f}, {hi:.1f}]",
-                       "비고":f"가구군집({a24['hid'].nunique()}) 부트스트랩 B={B}; 행단위 [16.7,17.6]" if m=="Gemini" else "행단위 [14.3,15.6]; 비중첩 유지"})
+                       "비고":f"가구군집({a24['hid'].nunique()}) 부트스트랩 B={B}; 행단위 CI 는 rq_uncertainty.py 콘솔 출력 참조"})
 sheet_rows.append({"항목":"지표당 설계조정 표집오차","값":f"약 {100*np.sqrt(0.25/(n/deff_w)):.2f}%p","비고":"p=0.5, n_eff 기준"})
 # 워크북 시트 기록(콘솔 출력과 동일 값; 시트 설계기반_분산 의 배치. 행단위 CI 는 rq_uncertainty.py 의 값을 옮겨 적은 것)
 with pd.ExcelWriter("outputs/validity_results.xlsx",engine="openpyxl",mode="a",if_sheet_exists="replace") as w:

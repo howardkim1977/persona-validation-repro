@@ -106,7 +106,7 @@ for mode in ["individual","household"]:
                     bias=s-cc
                     b=np.nanmean(bias[av]) if av.any() else 0.0
                     pred_b=fit_bias_reg(bias,av&~np.isnan(s))
-                    rreg=fit_rate_reg(cc,np.bincount(cell_of[cal],weights=wt[cal],minlength=NC),av)
+                    rreg=fit_rate_reg(cc,np.bincount(cell_of[cal&~np.isnan(Y[v])],weights=wt[cal&~np.isnan(Y[v])],minlength=NC),av)   # 문항 응답자 기준 회귀 가중
                     rdir=np.where(np.isnan(cc),gm,cc)      # 빈 셀은 보정셋 전체평균 대체
                     fb_cnt+=int(np.isnan(cc[tv]).sum())
                     e["syn_unc"]+=list(np.abs(s-tc)[tv&~np.isnan(s)])
@@ -153,7 +153,7 @@ for m,sc in SYN.items():
                 bias=sc[v]-cc
                 b=np.nanmean(bias[av]) if av.any() else 0.0
                 pred_b=fit_bias_reg(bias,av&~np.isnan(sc[v]))
-                rreg=fit_rate_reg(cc,np.bincount(cell_of[cal],weights=wt[cal],minlength=NC),av)
+                rreg=fit_rate_reg(cc,np.bincount(cell_of[cal&~np.isnan(Y[v])],weights=wt[cal&~np.isnan(Y[v])],minlength=NC),av)   # 문항 응답자 기준 회귀 가중
                 e["syn_unc"].append(abs(sc[v][j]-t))
                 e["syn_glob"].append(abs((sc[v][j]-b)-t))
                 e["syn_reg"].append(abs((sc[v][j]-pred_b[j])-t))

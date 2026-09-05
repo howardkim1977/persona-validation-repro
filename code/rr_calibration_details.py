@@ -101,9 +101,9 @@ for m,sc in SYN.items():
             "β0(절편)_분할평균":round(B[:,0].mean()*100,2),"β0_2.5":round(np.percentile(B[:,0],2.5)*100,2),"β0_97.5":round(np.percentile(B[:,0],97.5)*100,2),
             "β1(연령밴드당pp)_분할평균":round(B[:,1].mean()*100,2),"β1_2.5":round(np.percentile(B[:,1],2.5)*100,2),"β1_97.5":round(np.percentile(B[:,1],97.5)*100,2),
             "β0_전체자료":round(bf[0]*100,2),"β1_전체자료":round(bf[1]*100,2),
-            "잔차SD%p":round(res.std(ddof=1)*100,2),"최대|잔차|%p":round(np.abs(res).max()*100,2),
+            "잔차SD%p":round(res.std(ddof=1)*100,3),"최대|잔차|%p":round(np.abs(res).max()*100,2),
             "잔차-성별상관":round(np.corrcoef(res,SEXD[av])[0,1],2),
-            "보정셀추정치_분할반폭%p":round(hw,2)})
+            "보정셀추정치_분할반폭%p":round(hw,3)})
 coef_df=pd.DataFrame(crow)
 write_sheets({"심사_보정형태민감도":form_df,"심사_보정계수":coef_df})
 print(form_df.to_string(index=False)); print(coef_df.to_string(index=False))

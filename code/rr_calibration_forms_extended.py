@@ -62,7 +62,7 @@ for mode in ["individual","household"]:
         st={"n":[],"cmin":[],"empty":[]}
         for _ in range(REPS):
             cal=stratified_split(rng,real,frac) if mode=="individual" else household_split(rng,real,frac); tst=~cal
-            n=real.cell_n(cal); wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
+            n=real.cell_n(cal)
 
             st["n"].append(cal.sum()); st["cmin"].append(n.min()); st["empty"].append((n==0).sum())
             for m,sc in SYN.items():
@@ -73,6 +73,7 @@ for mode in ["individual","household"]:
                     b=np.nanmean(bias[av]) if av.any() else 0.0
                     p_lin=fit_pred("age_lin",bias,av); p_quad=fit_pred("age_quad",bias,av)
                     p_nest,best=nested_pred(s,real,cal,rng,v); sel[m][best]+=1
+                    wcell=np.bincount(real.cell[cal&~np.isnan(real.Y[v])],weights=real.wt[cal&~np.isnan(real.Y[v])],minlength=NC)   # 문항 응답자 기준 회귀 가중
                     rreg=fit_rate_reg(cc,wcell,av); rdir=np.where(np.isnan(cc),gm,cc); rdir2=np.where(np.isnan(cc),rreg,cc)
                     for k,pred in [("syn_unc",0),("syn_glob",b),("syn_lin",p_lin),("syn_quad",p_quad),("syn_nested",p_nest)]:
                         e[k]+=list(np.abs((s-pred)-tc)[tv])
@@ -114,7 +115,6 @@ for m,sc in SYN.items():
     for j in range(NC):
         for _ in range(HREPS):
             cal=stratified_split(rng,real,0.30); cal&=(real.cell!=j)
-            wcell=np.bincount(real.cell[cal],weights=real.wt[cal],minlength=NC)
             for v in BIN:
                 t=FC[v][j]; s=sc[v]
                 if np.isnan(t) or np.isnan(s[j]): continue
@@ -122,6 +122,7 @@ for m,sc in SYN.items():
                 p_nest,_=nested_pred(s,real,cal,rng,v)
                 e["syn_unc"].append(abs(s[j]-t)); e["syn_lin"].append(abs((s[j]-fit_pred("age_lin",bias,av)[j])-t))
                 e["syn_quad"].append(abs((s[j]-fit_pred("age_quad",bias,av)[j])-t)); e["syn_nested"].append(abs((s[j]-p_nest[j])-t))
+                wcell=np.bincount(real.cell[cal&~np.isnan(real.Y[v])],weights=real.wt[cal&~np.isnan(real.Y[v])],minlength=NC)
                 e["real_reg"].append(abs(fit_rate_reg(cc,wcell,av)[j]-t)); e["real_gm"].append(abs(gm-t))
     hrows.append({"모델":m,**{k+"%p":round(np.mean(v)*100,2) for k,v in e.items()}})
     print(f"[셀홀드아웃 {m}] "+" ".join(f"{k}={v}" for k,v in hrows[-1].items() if k!='모델'),flush=True)

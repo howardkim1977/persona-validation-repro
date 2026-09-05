@@ -78,9 +78,10 @@ def mae_from(idx_r,ymat,idx_p,cells=None):
     # cells 는 ymat 의 행에 대응하는 셀 배열이다. 응답을 재표집하면 셀도 같은 순서로 넘겨야 한다.
     cells=cell if cells is None else cells
     assert len(cells)==ymat.shape[0], "응답 배열과 셀 배열의 페르소나 순서가 어긋났다"
-    w=real.wt[idx_r]; c=real.cell[idx_r]; sh=np.bincount(c,weights=w,minlength=NC); sh=sh/sh.sum(); errs=[]
+    w=real.wt[idx_r]; c=real.cell[idx_r]; errs=[]
     for j,v in enumerate(BIN):
         yr=real.Y[v][idx_r]; ok=~np.isnan(yr); ar=np.average(yr[ok],weights=w[ok])
+        sh=np.bincount(c[ok],weights=w[ok],minlength=NC); sh=sh/sh.sum()   # 문항 응답자 기준 점유율
         ys=ymat[idx_p,j]; cs=cells[idx_p]; ok2=~np.isnan(ys)
         num=np.bincount(cs[ok2],weights=ys[ok2],minlength=NC); den=np.bincount(cs[ok2],minlength=NC)
         with np.errstate(invalid="ignore"): cm=np.where(den>0,num/den,np.nan)
