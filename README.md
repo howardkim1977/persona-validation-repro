@@ -9,7 +9,8 @@ Korea Media Panel Survey")
 **Preprint:** arXiv:2608.28615, https://doi.org/10.48550/arXiv.2608.28615;
 SocArXiv, https://doi.org/10.31235/osf.io/zb3w2_v1
 
-**Archived package:** Zenodo — v1.22 (September 2026) https://doi.org/10.5281/zenodo.22322682;
+**Archived package:** Zenodo — v1.23 (September 2026) https://doi.org/10.5281/zenodo.22324669;
+v1.22 (September 2026) https://doi.org/10.5281/zenodo.22322682;
 v1.21 (September 2026) https://doi.org/10.5281/zenodo.22315825;
 v1.20 (September 2026) https://doi.org/10.5281/zenodo.22315123;
 v1.19 (September 2026) https://doi.org/10.5281/zenodo.22308181;
