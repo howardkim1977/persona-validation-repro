@@ -97,6 +97,9 @@ for mode in ["individual","household"]:
             for k in ["syn_lin","syn_quad","syn_nested"]:
                 d=A[k]-best_real; lo,hi=np.percentile(d,[2.5,97.5])
                 r[f"Δ({k}−최우수실측)"]=round(d.mean(),2); r[f"Δ({k})_CI"]=f"[{lo:.2f}, {hi:.2f}]"; r[f"{k}<최우수실측%"]=round(100*(d<0).mean(),1)
+            # 심사위원 요청(R2-7): 네 추정량(중첩 보정, 직접추정, 실측 회귀, 실측 EB) 중 분할별 1위 빈도
+            stack=np.vstack([A["syn_nested"],A["real_dir"],A["real_reg"],A["real_eb"]]); best=np.argmin(stack,axis=0)
+            for i,k in enumerate(["nested","dir","reg","eb"]): r[f"최우수빈도_{k}%"]=round(100*float(np.mean(best==i)),1)
             # 같은 분할 위의 짝 비교: 중첩 보정 대 실측 전용 EB, 합성 표적 EB 대 실측 전용 EB
             for k,ref,tag in [("syn_nested","real_eb","중첩−실측EB"),("syn_eb","real_eb","합성EB−실측EB")]:
                 d=A[k]-A[ref]; lo,hi=np.percentile(d,[2.5,97.5])

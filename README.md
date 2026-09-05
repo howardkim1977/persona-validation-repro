@@ -160,6 +160,7 @@ package root (`python3 code/<script>.py`) with `analysis_ready.csv` (and, where 
 | Tables 12-13 (signed error by age band) | `rr_age_band_errors.py` (survey: weighted band rate on the age-10-and-over sample; synthetic: unweighted pooling of the two sex cells; this rule reproduces all 112 printed integers, the post-stratified alternative is given alongside) | `심사_연령대별_부호오차` |
 | Table 14 (calibration coefficients, residuals) | `rr_calibration_details.py` | `심사_보정계수` |
 | Table 15 (construct correlation structure) | `rr_construct_corr.py` | `심사_구성개념_상관요약`, `심사_구성개념_상관행렬` |
+| Gated cell sizes and gated empty cells (Secs. III-D, IV-G) | `rr_gated_cells.py` | `심사_게이트셀_합성`, `심사_게이트셀_실측분할` |
 | Hierarchical bootstrap (Sec. IV-J) | `rr_hier_bootstrap.py`, `rr_order_analysis.py` | `심사_계층부트스트랩_EXAONE`, `심사_계층부트스트랩_Gemini` |
 | Design-based CIs (Kish deff, household bootstrap) | `design_variance.py` | `설계기반_분산` |
 | Sampling-cap sensitivity (Sec. III-B) | `sensitivity_sample.py` | `민감도_표본cap` |
@@ -332,6 +333,9 @@ against 8.64 and 10.03 in `심사_보정형태_셀홀드아웃`). Cite the secon
 From v1.18 on, `심사_순서실험_지표` also carries `F3%`, `Δ(F3−F1)%p`, `Δ(F3−F2)%p`, and
 `고정쌍최대차이%p`, so the paper's "largest difference between two fixed-order passes"
 (2.8 pp, SNS) can be checked over all three pairs rather than F1 against F2 alone.
+From v1.23 `심사_보정형태_학습곡선` also records, per fraction and model, the share of splits in which each
+of the four estimators (nested panel, direct, real-only regression, real-only EB) ranks first
+(`최우수빈도_*`), as Reviewer 2 asked.
 
 ### Development artifacts
 

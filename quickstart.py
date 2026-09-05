@@ -50,14 +50,14 @@ def print_tables():
 
 def render_figures():
     r=subprocess.run([sys.executable,os.path.join(ROOT,"code","render_figures.py")],cwd=ROOT)
-    print("[3/3] figures 1-7:", "ok" if r.returncode==0 else f"failed ({r.returncode})")
+    print("[3/3] figure panels (Figs. 1-4):", "ok" if r.returncode==0 else f"failed ({r.returncode})")
     import shutil
     if shutil.which("pdflatex"):
         fig=os.path.join(ROOT,"paper","figures"); os.makedirs(fig,exist_ok=True)
         shutil.copy(os.path.join(ROOT,"code","fig7_decision_flow.tex"),fig)
         t=subprocess.run(["pdflatex","-interaction=nonstopmode","fig7_decision_flow.tex"],cwd=fig,capture_output=True)
-        print("      figure 8 (TikZ):", "ok" if t.returncode==0 else f"failed ({t.returncode})")
-    else: print("      figure 8 (TikZ): pdflatex not found; compile code/fig7_decision_flow.tex manually")
+        print("      figure 5 (TikZ):", "ok" if t.returncode==0 else f"failed ({t.returncode})")
+    else: print("      figure 5 (TikZ): pdflatex not found; compile code/fig7_decision_flow.tex manually")
     return r.returncode
 
 if __name__=="__main__":

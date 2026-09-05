@@ -88,10 +88,10 @@ are the only local records of the sequence.
 | Ground reference: KISDI Korea Media Panel Survey, weighted estimates | Sec. III-A | As registered (terminology in paper: "reference estimates") |
 | RQ1: do aggregated synthetic responses reproduce population-level distributions? | Sec. IV-A | As registered |
 | RQ2: does correspondence vary across respondent groups, item types, and model/generation settings? | Secs. IV-B, IV-F | Partly — respondent groups and generation settings as registered; item-type contrast deviates, see B |
-| H1 agreement measured against a chance/null reference | Secs. IV-H, Table 9 | Deviation — see C |
+| H1 agreement measured against a chance/null reference | Secs. IV-H, Table 9 | Deviation — see B |
 | H2 subgroup agreement by sex-by-age cell and by item type | Sec. IV-B | Sex-by-age cells as registered; item-type contrast deviates, see B |
-| Agreement metrics: total variation distance (primary), Jensen–Shannon divergence, Pearson/rank correlation | Secs. III-E, IV-A | Deviation — see C |
-| H2 modelled by mixed-effects regression of agreement on cell size, age group, item type | — | Not performed — see C |
+| Agreement metrics: total variation distance (primary), Jensen–Shannon divergence, Pearson/rank correlation | Secs. III-E, IV-A | Deviation — see B |
+| H2 modelled by mixed-effects regression of agreement on cell size, age group, item type | — | Not performed — see B |
 
 ## B. Deviations from the registered plan
 
