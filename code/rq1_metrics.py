@@ -24,13 +24,18 @@ models={"2024":{"Gemini":"outputs/synthetic_recoded_gemini.csv","EXAONE":"output
         "2025":{"Gemini":"outputs/synthetic_recoded_2025_gemini.csv","EXAONE":"outputs/synthetic_recoded_2025_exaone.csv"}}
 rows=[]
 for yr in ["2024","2025"]:
-    ay=a[a.YEAR==int(yr)]; cw=ay.groupby(CELL)["WT"].sum(); share=(cw/cw.sum()).to_dict()
+    ay=a[a.YEAR==int(yr)]
+    # 조건부 문항(유튜브·숏폼은 OTT 이용자에게만 물음)은 응답자 부분모집단의 셀 구성으로
+    # 사후층화해야 실측 가중 평균과 같은 양을 추정한다.
+    def share_of(v):
+        sub=ay[ay[v].notna()]; cw=sub.groupby(CELL)["WT"].sum(); return (cw/cw.sum()).to_dict()
+    SHARE={v:share_of(v) for v in BIN+CONS if v in ay.columns}
     act_bin=[wmean(ay,v) for v in BIN]
     has_cons = ay[CONS[0]].notna().any()
     act_cons=[wmean(ay,v) for v in CONS] if has_cons else None
     for m,f in models[yr].items():
         df=pd.read_csv(f,encoding="utf-8-sig")
-        syn_bin=[postw(df,v,share) for v in BIN]
+        syn_bin=[postw(df,v,SHARE[v]) for v in BIN]
         mae=np.mean([abs(s-a_)*100 for s,a_ in zip(syn_bin,act_bin)])
         cos=cosine(act_bin,syn_bin)
         kl=np.mean([kl_bern(a_,s) for a_,s in zip(act_bin,syn_bin)])
@@ -39,7 +44,7 @@ for yr in ["2024","2025"]:
         r_bin=np.corrcoef(act_bin,syn_bin)[0,1]
         r_cons=np.nan
         if has_cons and all(c in df.columns for c in CONS):
-            syn_cons=[postw(df,v,share) for v in CONS]
+            syn_cons=[postw(df,v,SHARE[v]) for v in CONS]
             r_cons=np.corrcoef(act_cons,syn_cons)[0,1]
         rows.append({"정답지":yr,"모델":m,"MAE_%p":round(mae,1),"코사인유사도":round(cos,4),
                      "KL발산_평균":round(kl,4),"JS발산_평균":round(js,4),

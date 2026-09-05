@@ -42,7 +42,7 @@ registration and the reported analyses.
 | Path | Contents |
 |---|---|
 | `code/` | All generation, recoding, analysis, calibration, and figure scripts (Python) |
-| `outputs/fig7_decision_flow.pdf` | The compiled decision flowchart (Fig. 8), so the package is complete without a TeX installation |
+| `outputs/fig7_decision_flow.pdf` | The compiled decision flowchart (Fig. 5), so the package is complete without a TeX installation |
 | `outputs/` | Raw synthetic responses of all full-panel runs, recoded response files, aggregate results workbook (`validity_results.xlsx`, 70 sheets), per-cell exclusion rates (`failure_rates_by_cell.csv`), the wording experiment's arm-level results (`framing_exp_*.json`; per-persona pairing was not retained, see `PROTOCOL.md`), the segment attributes of every sampled persona (`sampled_personas_2024.csv`, `sampled_personas_2025.csv`; see "Persona attributes without the 4.1 GB source"), the console-transcribed CSVs behind three sheets (`m1_variance_*.csv`, `m2_ablation.csv`), and five pre-run check files (see "Development artifacts") |
 | `logs/` | Gemini Batch API request payloads exactly as sent (`batch_w2025_*.jsonl`: 2025 run; `batch_w2024_*.jsonl`: demographic-only 2024 ablation run, see `PROTOCOL.md` §4a; `order_*.jsonl` and `order_exp_gemini_R1_orders.json`: randomized-order experiment) and the console logs of every generation run (`run_*.log`, `recover_*.log`, `framing_*.log`, `order_exp_gemini.log`) |
 | `PROTOCOL.md` | Prompt protocol: persona block construction, system/user templates (verbatim), JSON output contract, skip logic, retry rules, model identifiers/endpoints/serving window |
@@ -142,13 +142,13 @@ package root (`python3 code/<script>.py`) with `analysis_ready.csv` (and, where 
 | Table 2 (format failures) | `rr_failure_cost.py` | `심사_형식실패`, `심사_형식실패_셀별`, `심사_생성규모` |
 | Table 3 (analysis status) | `PREREGISTRATION_MAP.md` | — |
 | Table 4 (RQ1 metrics), paired model comparison, Spearman | `compare_validity.py` (first RQ1 pass, `outputs/validity_RQ1_overall.csv`), `rq1_metrics.py`, `rr_paired_bootstrap.py` | `RQ1_전체일치도`, `RQ1_지표종합`, `심사_짝부트스트랩`, `심사_상관_Spearman`, `심사_상관_구성개념` |
-| Construct means (Sec. IV-A, Fig. 3) and cell table | `analyze_extra.py` (`outputs/validity_constructs.csv`, `outputs/validity_RQ2_cells.csv`) | `구성개념`, `RQ2_셀별상세` |
+| Construct means (Sec. IV-A, Fig. 2b) and cell table | `analyze_extra.py` (`outputs/validity_constructs.csv`, `outputs/validity_RQ2_cells.csv`) | `구성개념`, `RQ2_셀별상세` |
 | Workbook skeleton | `build_paper_tables.py` (creates the workbook from the three `outputs/validity_*.csv` files; `요약` holds transcribed headline values) | `개요`, `요약`, `RQ1_전체일치도`, `RQ2_변수별요약`, `RQ2_셀별상세`, `구성개념` |
 | Table 5 (RQ2 axes, signed-error range and complements) | `rq2_expand.py`, `rq2_region.py`, `rr_dpd_supplements.py` | `RQ2_축별MAE`, `RQ2_지역축`, `RQ2_집단편향_Gemini`, `RQ2_집단편향_EXAONE`, `심사_집단오차지표`, `심사_집단오차_지표별` |
 | 19-year-old comparison (Sec. IV-B) | `rr_teen19.py` | `심사_10대_19세비교` |
 | Sec. IV-C bias signatures (Figs. 4 and 5) | `diagnose_bias.py` | `진단_숏폼연령`, `진단_유튜브숏폼일관성`, `진단_연령경사오차`; `진단_응답스타일` (transcribed, see "Sheets without a producing script") |
 | Table 6 (framing experiment) | `framing_experiment.py` (arm-level JSON), `rr_framing_tests.py` | `진단_프레이밍통제` (transcribed from the JSON), `심사_프레이밍검정` |
-| Sec. IV-E temporal mismatch (Fig. 6) | `build_dual_tables.py`, `rq1_metrics.py` | `RQ1_정답지2024`, `RQ1_정답지2025`, `정답지차수_효과`, `실측_연도변화`, `RQ1_지표종합`; `RQ1_2025문항셋` (see "Sheets without a producing script") |
+| Sec. IV-E temporal mismatch (Fig. 4a) | `build_dual_tables.py`, `rq1_metrics.py` | `RQ1_정답지2024`, `RQ1_정답지2025`, `정답지차수_효과`, `실측_연도변화`, `RQ1_지표종합`; `RQ1_2025문항셋` (see "Sheets without a producing script") |
 | Table 7 (calibration by form; temporal holdout) | `rq3_calibration.py` (single split, superseded by the 200-split estimates), `rq_uncertainty.py`, `rr_calibration_details.py`, `rr_calibration_forms_extended.py` | `RQ3_보정_단일분할`, `RQ3_보정`, `심사_보정형태민감도`, `RQ3_시점홀드아웃`, `심사_보정형태_시점홀드아웃` |
 | Table 8 (learning curve vs. real-only; EB shrinkage; entire-cell holdout) | `rq3_realonly.py`, `rr_calibration_forms_extended.py`, `rr_learning_curve.py`, `rr_eb_curve.py` | `RQ3_실측단독_학습곡선`, `RQ3_셀홀드아웃`, `심사_보정형태_학습곡선`, `심사_학습곡선_정밀`, `심사_EB풀링곡선`, `심사_보정형태_셀홀드아웃` |
 | Table 9 (baselines, ablation) | `rq3_temporal_baseline.py`, `rr_baselines_common6.py`, `sensitivity_teen_excluded.py`, demographic-only run of `generate.py` (`--conditioning demographic`) | `베이스라인_공통6`, `베이스라인_공통6_보정`, `RQ3_시점홀드아웃`, `십대제외_베이스라인`, `M2_ablation` (transcribed from `outputs/m2_ablation.csv`) |
@@ -172,13 +172,13 @@ package root (`python3 code/<script>.py`) with `analysis_ready.csv` (and, where 
 | File (`paper/figures/`, written by `quickstart.py`) | Paper figure | Source sheets |
 |---|---|---|
 | `fig0_framework` | Fig. 1 | schematic (no data) |
-| `fig1_rq1_usage_rates` | Fig. 2 | `RQ1_정답지2024` |
-| `fig2_constructs` | Fig. 3 | `구성개념` |
-| `fig5_age_stereotype_slope` | Fig. 4 | `진단_연령경사오차` |
-| `fig4_shortform_age` | Fig. 5 | `진단_숏폼연령` |
-| `fig3_temporal_drift` | Fig. 6 | `RQ1_정답지2024`, `RQ1_2025문항셋` (2025 survey rates), `실측_연도변화` |
-| `fig6_rq3_calibration` | Fig. 7 | `RQ3_보정`, `심사_보정형태민감도`, `RQ3_시점홀드아웃`, `심사_보정형태_시점홀드아웃` |
-| `fig7_decision_flow` | Fig. 8 | TikZ source `code/fig7_decision_flow.tex` (no data); `outputs/fig7_decision_flow.pdf` is the compiled figure as it appears in the paper |
+| `fig1_rq1_usage_rates` | Fig. 2(a) | `RQ1_정답지2024` |
+| `fig2_constructs` | Fig. 2(b) | `구성개념` |
+| `fig5_age_stereotype_slope` | Fig. 3(a) | `진단_연령경사오차` |
+| `fig4_shortform_age` | Fig. 3(b) | `진단_숏폼연령` |
+| `fig3_temporal_drift` | Fig. 4(a) | `RQ1_정답지2024`, `RQ1_2025문항셋` (2025 survey rates), `실측_연도변화` |
+| `fig6_rq3_calibration` | Fig. 4(b) | `RQ3_보정`, `심사_보정형태민감도`, `RQ3_시점홀드아웃`, `심사_보정형태_시점홀드아웃` |
+| `fig7_decision_flow` | Fig. 5 | TikZ source `code/fig7_decision_flow.tex` (no data); `outputs/fig7_decision_flow.pdf` is the compiled figure as it appears in the paper |
 
 ### Sheets without a producing script
 
@@ -229,6 +229,29 @@ archived files, this was done on 2026-09-04 and the result is stated.
   `sensitivity_sample.py` (sheet-writing blocks added 2026-09-04); re-running both reproduces
   the archived sheets value for value.
 - `요약`: headline values transcribed as literals in `build_paper_tables.py`.
+
+### Conditional items (skip logic), from v1.20
+
+The survey asks the YouTube and short-form items only of respondents who report OTT use: in
+both waves the set of respondents who answered them (7,346 of 8,675 in 2024, 7,196 of 8,395 in
+2025) coincides exactly with the OTT users, with no exception in either direction. Until v1.19
+the synthetic panels answered these items unconditionally, so the two sides were estimating
+different quantities (the survey a rate among OTT users, the panel a rate among everyone).
+From v1.20 `recode.py` applies the survey's skip logic to the synthetic responses (`items.py`
+lists the rule as `MEDIA_CONDITIONAL`; the generative-AI sub-items follow the same rule), and
+every post-stratified overall rate uses the cell shares of the respondents who answered that
+item (`rr_common.Real.cell_share(mask, v)`; the same rule in `rq1_metrics.py`,
+`compare_validity.py`, `build_dual_tables.py`, `sensitivity_teen_excluded.py`,
+`sensitivity_sample.py`, `design_variance.py`, `rr_misc_numbers.py`, `rr_paired_bootstrap.py`,
+`rr_hier_bootstrap.py`, `rr_order_analysis.py`). Cell-level analyses (RQ2, RQ3) need no change
+because both sides already drop item-missing rows inside each cell. The ten
+`outputs/synthetic_recoded_*.csv` files were regenerated with the gate; the raw response files
+are unchanged. The wording experiment (`framing_exp_*.json`) retained only the short-form and
+YouTube answers, so the gate cannot be applied to it and its arms remain unconditional.
+Headline effects: 2024 overall MAE 17.1/15.0 to 17.0/13.8 (Gemini/EXAONE), sex-by-age cell MAE
+18.9/15.9 to 18.3/15.1, nested calibration 5.2/4.5 to 4.9/4.4, paired model difference 2.2 to
+3.2 pp, order-experiment short-form shift +16.7 to +26.7 pp; every sheet that touches the two
+items was regenerated.
 
 ### Bootstrap conventions
 
@@ -313,7 +336,7 @@ and no reported number depends on them.
 ## Quick start
 
 `python quickstart.py` verifies the manifest, prints the headline table values from
-the archived workbook, and regenerates Figs. 1–7 with matplotlib (Fig. 8 is a TikZ
+the archived workbook, and regenerates the seven panels of Figs. 1–4 with matplotlib (Fig. 5 is a TikZ
 source, `code/fig7_decision_flow.tex`, compiled when `pdflatex` is available; exit
 code 1 if the manifest or the rendering fails); no KISDI access is required for these steps. The scripts that need the restricted microdata are listed at the end
 of its output. `python3 rebuild_manifest.py --check` verifies `MANIFEST.sha256` on its own

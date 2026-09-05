@@ -20,11 +20,15 @@ def add(item, value, unit, paper, source):
     rows.append({"항목": item, "값": value, "단위": unit, "논문값": paper, "산식/출처": source})
 
 # (a) 유튜브 이용률
-real24 = load_real(2024, with_hid=False); R24 = Real(real24, BIN + CON); share24 = R24.cell_share()
-real25 = load_real(2025, with_hid=False); R25 = Real(real25); share25 = R25.cell_share()
-for yr, f, share in [(2024, "outputs/synthetic_recoded_gemini.csv", share24), (2025, "outputs/synthetic_recoded_2025_gemini.csv", share25)]:
+real24 = load_real(2024, with_hid=False); R24 = Real(real24, BIN + CON)
+# 조건부 문항은 그 문항 응답자만으로 셀 점유율을 계산한다
+SH24 = {v: R24.cell_share(v=v) for v in BIN + CON}; share24 = R24.cell_share()
+real25 = load_real(2025, with_hid=False); R25 = Real(real25)
+SH25 = {v: R25.cell_share(v=v) for v in BIN}; share25 = R25.cell_share()
+for yr, f, share in [(2024, "outputs/synthetic_recoded_gemini.csv", SH24), (2025, "outputs/synthetic_recoded_2025_gemini.csv", share25)]:
     s = load_syn(f); unw = s["유튜브_이용"].mean() * 100
-    ps = post_stratified_rate(share, syn_cell_means(s, ["유튜브_이용"])["유튜브_이용"]) * 100
+    sh = share["유튜브_이용"] if isinstance(share, dict) and "유튜브_이용" in share else share
+    ps = post_stratified_rate(sh, syn_cell_means(s, ["유튜브_이용"])["유튜브_이용"]) * 100
     add(f"Gemini {yr} 유튜브 이용률(유효 페르소나 비가중)", round(unw, 1), "%", "93.9 (IV-D, 2025 문항셋)" if yr == 2025 else "-", f"{f}, 유튜브_이용 단순평균 n={s['유튜브_이용'].notna().sum()}")
     add(f"Gemini {yr} 유튜브 이용률(사후층화)", round(ps, 1), "%", "-", f"{f}, 실측 {yr} 셀 점유율 사후층화")
     if yr == 2025:
@@ -35,7 +39,7 @@ for yr, f, share in [(2024, "outputs/synthetic_recoded_gemini.csv", share24), (2
 for m, f10, f07 in [("Gemini", "outputs/synthetic_recoded_gemini.csv", "outputs/synthetic_recoded_gemini_t07.csv"),
                     ("EXAONE", "outputs/synthetic_recoded_exaone.csv", "outputs/synthetic_recoded_exaone_t07.csv")]:
     c10 = syn_cell_means(load_syn(f10)); c07 = syn_cell_means(load_syn(f07))
-    d = [abs(post_stratified_rate(share24, c10[v]) - post_stratified_rate(share24, c07[v])) * 100 for v in BIN]
+    d = [abs(post_stratified_rate(SH24[v], c10[v]) - post_stratified_rate(SH24[v], c07[v])) * 100 for v in BIN]
     add(f"{m} 온도 1.0 대 0.7 사후층화 비율 평균절대차(이진 8지표)", round(float(np.mean(d)), 2), "%p", "0.5 (Gemini), 4.0 (EXAONE) (IV-F)",
         f"{f10} vs {f07}; 2024 만 10세 이상 실측 셀 점유율; 지표별 |차|: " + ", ".join(f"{v}={x:.1f}" for v, x in zip(BIN, d)))
 
@@ -68,7 +72,7 @@ for m, d in raw.items():
     add(f"{m} 5점 문항 응답 평균(원문항 24개, 비가중)", round(float(vals.mean()), 2), "점", "-(논문 미인용; IV-C 는 구성개념 사후층화 평균을 쓴다)", "진단_응답스타일 의 5점_평균과 동일 산식")
 for m, f in SYN_FILES.items():
     cm = syn_cell_means(load_syn(f), CON)
-    add(f"{m} 구성개념 8개 사후층화 평균(5점)", round(float(np.mean([post_stratified_rate(share24, cm[v]) for v in CON])), 3), "점",
+    add(f"{m} 구성개념 8개 사후층화 평균(5점)", round(float(np.mean([post_stratified_rate(SH24[v], cm[v]) for v in CON])), 3), "점",
         "2.54 (Gemini), 3.03 (EXAONE) (IV-C)", "구성개념 시트의 모델 열 8개 값의 평균과 동일")
 cons = [R24.overall_wmean(v) for v in CON]
 add("실측 2024 5점 기준값(8개 구성개념 가중평균의 평균, 만 10세 이상)", round(float(np.mean(cons)), 3), "점", "-", "analysis_ready.csv 2024 만 10세 이상, 구성개념별 WT 가중평균의 단순평균")
@@ -83,7 +87,7 @@ sv8 = [np.average(a_full[[v, "WT"]].dropna()[v], weights=a_full[[v, "WT"]].dropn
 add("실측 2024 이진 '예' 선택률(8지표 가중 이용률의 평균, 전체 표본)", round(float(np.mean(sv8)), 3), "비율", "55.9% (IV-C)", "RQ1_전체일치도 의 실측_가중 8개 값의 평균")
 for m, f in SYN_FILES.items():
     cm = syn_cell_means(load_syn(f), BIN)
-    add(f"{m} 이진 '예' 선택률(8지표 사후층화 이용률의 평균)", round(float(np.mean([post_stratified_rate(share24, cm[v]) for v in BIN])), 3), "비율",
+    add(f"{m} 이진 '예' 선택률(8지표 사후층화 이용률의 평균)", round(float(np.mean([post_stratified_rate(SH24[v], cm[v]) for v in BIN])), 3), "비율",
         "51.6% (Gemini), 57.5% (EXAONE) (IV-C)", "RQ1_전체일치도 의 모델 열 8개 값의 평균과 동일; 진단_응답스타일 의 이진_예선택률_사후층화")
 
 # (e) 이진 문항 '예' 선택률

@@ -49,10 +49,12 @@ def paired_arrays(fa, fb, vars_):
 def real_stats(real, idx, vars_):
     """재표집 행 인덱스(중복 허용)로 가중 셀 점유율·전체 가중률 계산."""
     w=real.wt[idx]; c=real.cell[idx]
-    share=np.bincount(c,weights=w,minlength=NC); share=share/share.sum()
-    rates={}
+    share={}; rates={}
     for v in vars_:
-        y=real.Y[v][idx]; ok=~np.isnan(y); rates[v]=np.average(y[ok],weights=w[ok])
+        # 조건부 문항은 응답자 부분모집단의 셀 구성으로 사후층화한다(rr_common.Real.cell_share 주석 참조)
+        y=real.Y[v][idx]; ok=~np.isnan(y)
+        sh=np.bincount(c[ok],weights=w[ok],minlength=NC); share[v]=sh/sh.sum()
+        rates[v]=np.average(y[ok],weights=w[ok])
     return share, rates
 
 def syn_rates(cell, Y, idx, share, vars_):
@@ -61,7 +63,7 @@ def syn_rates(cell, Y, idx, share, vars_):
         y=Y[v][idx]; c=cell[idx]; ok=~np.isnan(y)
         num=np.bincount(c[ok],weights=y[ok],minlength=NC); den=np.bincount(c[ok],minlength=NC)
         with np.errstate(invalid="ignore"): cm=np.where(den>0,num/den,np.nan)
-        out[v]=post_stratified_rate(share,cm)
+        out[v]=post_stratified_rate(share[v],cm)
     return out
 
 def compare(label, name, fa, fb, real, vars_=BIN):

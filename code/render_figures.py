@@ -21,7 +21,7 @@ BINS=["AI use","OTT","YouTube","Short-form","SNS","Messenger","Metaverse","Subsc
 
 # Fig 1 — RQ1 이용률(실측2024 vs 합성)
 def fig1():
-    act=[13.7,89.2,93.2,69.6,60.7,92.2,5.6,22.7]; gem=[39.9,64.5,97.0,25.2,48.0,97.6,2.0,38.8]; exa=[37.1,83.7,86.6,51.4,74.4,69.4,13.6,44.1]
+    act=[13.7,89.2,93.2,69.6,60.7,92.2,5.6,22.7]; gem=[39.9,64.5,100.0,29.5,48.0,97.6,2.0,38.8]; exa=[37.1,83.7,96.7,57.0,74.4,69.4,13.6,44.1]
     y=range(len(BINS)); h=0.26
     fig,ax=plt.subplots(figsize=(6.6,3.6))
     ax.barh([i+h for i in y],act,h,color=GRAY,label="Survey 2024 (weighted)",edgecolor="white",linewidth=0.4)
@@ -49,8 +49,8 @@ def fig2():
 
 # Fig 3 — 시점 드리프트
 def fig3():
-    a24=[13.7,89.2,93.2,69.6,60.7,92.2,5.6,22.7]; a25=[31.6,90.9,95.5,86.5,64.2,93.8,7.4,22.3]
-    gem=[39.9,64.5,97.0,25.2,48.0,97.6,2.0,38.8]; exa=[37.1,83.7,86.6,51.4,74.4,69.4,13.6,44.1]
+    a24=[13.7,89.2,93.2,69.6,60.7,92.2,5.6,22.7]; a25=[31.6,90.9,95.5,86.5,64.2,93.8,7.3,22.3]
+    gem=[39.9,64.5,100.0,29.5,48.0,97.6,2.0,38.8]; exa=[37.1,83.7,96.7,57.0,74.4,69.4,13.6,44.1]
     y=range(len(BINS)); h=0.2
     fig,ax=plt.subplots(figsize=(6.6,3.8))
     ax.barh([i+1.5*h for i in y],a24,h,color="#c3c2b7",label="Survey 2024",edgecolor="white",linewidth=0.3)
@@ -66,7 +66,7 @@ def fig3():
 # Fig 4 — 연령대별 숏폼
 def fig4():
     ages=["10s","20s","30s","40s","50s","60s","70s+"]
-    act=[88.7,94.7,94.1,88.9,83.1,78.3,76.6]; gem=[75.9,43.2,10.9,2.5,1.2,0.5,0.2]; exa=[42.7,39.1,34.4,30.1,25.4,21.1,17.2]
+    act=[88.7,94.7,94.1,88.9,83.1,78.3,76.6]; gem=[76.9,43.7,11.3,3.0,2.3,2.3,6.9]; exa=[44.7,40.5,35.5,31.3,27.4,24.9,22.6]
     fig,ax=plt.subplots(figsize=(5.0,3.2))
     ax.plot(ages,act,color=DARK,marker="s",lw=1.8,label="Survey 2025")
     ax.plot(ages,gem,color=BLUE,marker="o",lw=1.6,ls="--",label="Gemini")
@@ -79,7 +79,7 @@ def fig4():
 # Fig 5 — 연령경사 오차
 def fig5():
     labs=["OTT","Short-form","SNS","Subscription","AI use","YouTube","Messenger","Metaverse"]
-    gem=[-12.4,-8.6,-7.9,-7.1,-5.4,-4.3,-0.1,2.8]; exa=[1.5,-1.5,2.5,2.6,0.6,-5.7,-3.6,2.7]
+    gem=[-12.4,-7.9,-7.9,-7.1,-5.4,0.0,-0.1,2.8]; exa=[1.5,-0.9,2.5,2.6,0.6,-3.3,-3.6,2.7]
     y=range(len(labs)); h=0.36
     fig,ax=plt.subplots(figsize=(5.4,3.4))
     ax.barh([i+h/2 for i in y],gem,h,color=BLUE,label="Gemini",hatch="//",edgecolor="white",linewidth=0.4)
@@ -96,7 +96,7 @@ def fig6():
     # 동시점(within-2024) vs 시점밖(2024→2025): 무보정 / 선형 연령회귀(사전지정) / 중첩 선택(nested).
     # 값은 본문 Table 7 및 심사_보정형태_* 시트와 동일.
     models=["Gemini","EXAONE"]
-    ind=[[18.9,15.9],[8.6,6.7],[5.2,4.5]]; oot=[[21.0,18.3],[14.5,14.0],[12.4,12.7]]
+    ind=[[18.3,15.1],[8.3,6.7],[4.9,4.4]]; oot=[[20.2,17.3],[13.9,14.3],[12.0,13.1]]
     GM=12.0; PW=6.7
     import numpy as _np
     x=_np.arange(len(models)); w=0.13

@@ -30,9 +30,12 @@ def cell_wmean(df,var,weighted):
             out[key]=sub[var].mean()
     return out
 
-# 실측 셀분포(가중 셀 점유율) — 사후가중용
+# 실측 셀분포(가중 셀 점유율) — 사후가중용.
+# 조건부 문항(유튜브·숏폼은 OTT 이용자에게만 물음)은 그 문항 응답자만으로 셀 점유율을 계산한다.
 cell_w=a.groupby(CELL)["WT"].sum()
 cell_share=(cell_w/cell_w.sum()).to_dict()
+def share_of(var):
+    sub=a[a[var].notna()]; cw=sub.groupby(CELL)["WT"].sum(); return (cw/cw.sum()).to_dict()
 
 print("="*72)
 print("RQ1  전체 일치도 (사후가중 합성 vs 가중 실측)")
@@ -41,10 +44,11 @@ print(f"{'변수':<14}{'실측(가중)':>10}{'Gemini':>10}{'ΔG':>8}{'EXAONE':>1
 rq1=[]
 for v in BIN:
     act=wmean(a,v)
+    sh=share_of(v)
     def postw(df):
         cm=cell_wmean(df,v,False)
-        num=sum(cell_share.get(k,0)*cm[k] for k in cm if k in cell_share and not np.isnan(cm[k]))
-        den=sum(cell_share.get(k,0) for k in cm if k in cell_share and not np.isnan(cm[k]))
+        num=sum(sh.get(k,0)*cm[k] for k in cm if k in sh and not np.isnan(cm[k]))
+        den=sum(sh.get(k,0) for k in cm if k in sh and not np.isnan(cm[k]))
         return num/den if den else np.nan
     gm,em=postw(g),postw(e)
     print(f"{v:<14}{act*100:>9.1f}%{gm*100:>9.1f}%{(gm-act)*100:>+7.1f}{em*100:>9.1f}%{(em-act)*100:>+7.1f}")

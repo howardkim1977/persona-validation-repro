@@ -5,13 +5,15 @@ import pandas as pd, numpy as np
 BIN=["AI_이용여부","OTT_이용","유튜브_이용","숏폼_이용","SNS_이용","메신저_이용","메타버스_이용","콘텐츠구독_이용"]
 CELL=["성별","연령대"]
 a=pd.read_csv("analysis_ready.csv",encoding="utf-8-sig"); a24=a[a.YEAR==2024]
-cw=a24.groupby(CELL)["WT"].sum(); share=(cw/cw.sum()).to_dict()
+# 조건부 문항(유튜브·숏폼은 OTT 이용자에게만 물음)은 그 문항 응답자만으로 셀 점유율을 계산한다.
+SH={v:(lambda t:(t/t.sum()).to_dict())(a24[a24[v].notna()].groupby(CELL)["WT"].sum()) for v in BIN}
 def wm(df,v):
     s=df[[v,"WT"]].dropna(); return np.average(s[v],weights=s["WT"]) if len(s) else np.nan
 def postw(df,v):
+    sh=SH[v]
     cm={k:s[v].mean() for k,s in df.groupby(CELL)}
-    n=sum(share.get(k,0)*cm[k] for k in cm if k in share and not np.isnan(cm[k]))
-    d=sum(share.get(k,0) for k in cm if k in share and not np.isnan(cm[k])); return n/d if d else np.nan
+    n=sum(sh.get(k,0)*cm[k] for k in cm if k in sh and not np.isnan(cm[k]))
+    d=sum(sh.get(k,0) for k in cm if k in sh and not np.isnan(cm[k])); return n/d if d else np.nan
 def rq1(df): return np.mean([abs(postw(df,v)-wm(a24,v)) for v in BIN])*100
 def age_mae(df):
     e=[]

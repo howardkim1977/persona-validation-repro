@@ -52,15 +52,16 @@ def cosine(x,y):
 def rq1_block(ay,syn,teen_excl):
     if teen_excl:
         ay=ay[ay["연령대"].isin(AGES6)]; syn=syn[syn["연령대"].isin(AGES6)]
-    cw=ay.groupby(CELL)["WT"].sum(); share=(cw/cw.sum()).to_dict()
-    act=[wmean(ay,v) for v in BIN]; sb=[postw(syn,v,share) for v in BIN]
+    # 조건부 문항(유튜브·숏폼은 OTT 이용자에게만 물음)은 그 문항 응답자만으로 셀 점유율을 계산한다.
+    SH={v:(lambda t: (t/t.sum()).to_dict())(ay[ay[v].notna()].groupby(CELL)["WT"].sum()) for v in BIN+CONS if v in ay.columns}
+    act=[wmean(ay,v) for v in BIN]; sb=[postw(syn,v,SH[v]) for v in BIN]
     out={"MAE_%p":round(np.mean([abs(s-x)*100 for s,x in zip(sb,act)]),1),
          "코사인":round(cosine(act,sb),3),
          "KL":round(np.mean([kl_bern(x,s) for x,s in zip(act,sb)]),3),
          "JS":round(np.mean([js_bern(x,s) for x,s in zip(act,sb)]),3),
          "r_이진8":round(np.corrcoef(act,sb)[0,1],3)}
     if ay[CONS[0]].notna().any() and all(c in syn.columns for c in CONS):
-        ac=[wmean(ay,v) for v in CONS]; sc=[postw(syn,v,share) for v in CONS]
+        ac=[wmean(ay,v) for v in CONS]; sc=[postw(syn,v,SH[v]) for v in CONS]
         out["r_구성8"]=round(np.corrcoef(ac,sc)[0,1],3)
     return out
 rq1_rows=[]

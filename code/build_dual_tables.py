@@ -20,10 +20,12 @@ def postw(df,v,share):
 # 정답지별 RQ1 표
 dual={}
 for yr in [2024,2025]:
-    ay=a[a.YEAR==yr]; cw=ay.groupby(CELL)["WT"].sum(); share=(cw/cw.sum()).to_dict()
+    ay=a[a.YEAR==yr]
+    # 조건부 문항(유튜브·숏폼은 OTT 이용자에게만 물음)은 그 문항 응답자만으로 셀 점유율을 계산한다.
+    SH={v:(lambda t:(t/t.sum()).to_dict())(ay[ay[v].notna()].groupby(CELL)["WT"].sum()) for v in BIN}
     rows=[]
     for v in BIN:
-        act=wmean(ay,v); gm=postw(g,v,share); em=postw(e,v,share)
+        act=wmean(ay,v); gm=postw(g,v,SH[v]); em=postw(e,v,SH[v])
         rows.append({"변수":v,f"실측{yr}":round(act,4),
             "Gemini":round(gm,4),"Gemini_오차%p":round((gm-act)*100,1),
             "EXAONE":round(em,4),"EXAONE_오차%p":round((em-act)*100,1)})

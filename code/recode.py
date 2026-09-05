@@ -45,6 +45,14 @@ def recode(df):
     # 미디어 이용행태(1=예/있다 → 1, else 0)
     for name, code in MEDIA.items():
         o[name] = df[code].map({1:1, 2:0}) if code in df.columns else np.nan
+    # 설문의 스킵 로직을 분석 단계에서 적용한다(items.CONDITIONAL 과 같은 규칙).
+    # 유튜브·숏폼은 OTT 이용자에게만 묻고, AI 하위문항은 AI 이용자에게만 묻는다.
+    # 실측은 조사 단계에서 이미 결측이므로 이 처리는 합성 응답에만 영향을 준다.
+    for child, parent in [("유튜브_이용", "OTT_이용"), ("숏폼_이용", "OTT_이용"),
+                          ("AI_유료이용", "AI_이용여부"),
+                          ("AI_주이용서비스", "AI_이용여부"), ("AI_이용목적", "AI_이용여부")]:
+        if child in o and parent in o:
+            o.loc[o[parent] == 0, child] = np.nan
     return o
 
 

@@ -72,8 +72,13 @@ class Real:
     def grand_wmean(self,mask,v):
         y=self.Y[v]; ok=mask&~np.isnan(y)
         return np.average(y[ok],weights=self.wt[ok]) if ok.any() else np.nan
-    def cell_share(self,mask=None):
+    def cell_share(self,mask=None,v=None):
+        """셀 가중 점유율. v 를 주면 그 문항에 응답한 사람만으로 계산한다.
+        조건부 문항(유튜브·숏폼은 OTT 이용자에게만 물음)에서는 실측 기준값이
+        응답자 부분모집단의 값이므로, 합성 추정치도 같은 부분모집단의 셀 구성으로
+        사후층화해야 두 값이 같은 양을 추정한다."""
         m=np.ones(self.n,bool) if mask is None else mask
+        if v is not None: m=m&~np.isnan(self.Y[v])
         cw=np.bincount(self.cell[m],weights=self.wt[m],minlength=NC); return cw/cw.sum()
     def overall_wmean(self,v,mask=None):
         m=np.ones(self.n,bool) if mask is None else mask

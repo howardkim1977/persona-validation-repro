@@ -29,6 +29,10 @@ AI_ITEMS = {
 }
 # 조건부 문항: d31003/d31005/d31007 은 d31002==1(있다)인 경우에만 응답
 AI_CONDITIONAL = {"p__d31003": "p__d31002", "p__d31005": "p__d31002", "p__d31007": "p__d31002"}
+# 조건부 문항: d26075(유튜브)·d26092(숏폼)는 d26001==1(OTT 이용)인 경우에만 응답한다.
+# 실측 자료에서 두 문항의 응답자 7,346/8,675(2024), 7,196/8,395(2025)가 전원 OTT 이용자이고
+# 미응답자는 전원 비이용자로, 예외가 한 건도 없다.
+MEDIA_CONDITIONAL = {"p__d26075": "p__d26001", "p__d26092": "p__d26001"}
 
 # ── 소비자 혁신성·기술 수용도 (m01; 2024) ───────────────────────
 _M = {
@@ -75,7 +79,7 @@ ITEMS_BY_WAVE = {
     2024: {**AI_ITEMS, **ACCEPT_ITEMS, **MEDIA_ITEMS},
     2025: {**AI_ITEMS, **MEDIA_ITEMS},  # m01 미측정
 }
-CONDITIONAL = AI_CONDITIONAL
+CONDITIONAL = {**AI_CONDITIONAL, **MEDIA_CONDITIONAL}
 
 
 def allowed_codes(item_def):

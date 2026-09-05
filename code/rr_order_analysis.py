@@ -23,23 +23,25 @@ def load_arm(arm):
 A={arm:load_arm(arm) for arm in ["F1","F2","F3","R1"]}
 common=sorted(set.intersection(*[set(v.index) for v in A.values()])); n=len(common)
 print(f"4개 암 공통 유효 페르소나 {n} (F1 {len(A['F1'])}, F2 {len(A['F2'])}, F3 {len(A['F3'])}, R1 {len(A['R1'])})")
-real=Real(load_real(2024)); share=real.cell_share(); RR={v:real.overall_wmean(v) for v in BIN}
+real=Real(load_real(2024))
+# 조건부 문항(유튜브·숏폼)은 응답자 부분모집단의 셀 구성으로 사후층화한다
+SHARE={v:real.cell_share(v=v) for v in BIN}; RR={v:real.overall_wmean(v) for v in BIN}
 cell=A["F1"].loc[common,"_cell"].to_numpy()
 Y={arm:{v:A[arm].loc[common,v].to_numpy(float) for v in BIN} for arm in A}
 C={arm:{v:A[arm].loc[common,v].to_numpy(float) for v in CON} for arm in A}
 
-def ps_rate(y,idx):
+def ps_rate(y,idx,v):
     c=cell[idx]; yy=y[idx]; ok=~np.isnan(yy)
     num=np.bincount(c[ok],weights=yy[ok],minlength=NC); den=np.bincount(c[ok],minlength=NC)
     with np.errstate(invalid="ignore"): cm=np.where(den>0,num/den,np.nan)
-    return post_stratified_rate(share,cm)
+    return post_stratified_rate(SHARE[v],cm)
 full=np.arange(n)
 rows=[]; pv=[]
 for v in BIN:
-    f1=ps_rate(Y["F1"][v],full); f2=ps_rate(Y["F2"][v],full); f3=ps_rate(Y["F3"][v],full); r1=ps_rate(Y["R1"][v],full)
+    f1=ps_rate(Y["F1"][v],full,v); f2=ps_rate(Y["F2"][v],full,v); f3=ps_rate(Y["F3"][v],full,v); r1=ps_rate(Y["R1"][v],full,v)
     dFR=[]; dFF=[]
     for _ in range(B):
-        idx=rng.integers(0,n,n); dFR.append(ps_rate(Y["R1"][v],idx)-ps_rate(Y["F1"][v],idx)); dFF.append(ps_rate(Y["F2"][v],idx)-ps_rate(Y["F1"][v],idx))
+        idx=rng.integers(0,n,n); dFR.append(ps_rate(Y["R1"][v],idx,v)-ps_rate(Y["F1"][v],idx,v)); dFF.append(ps_rate(Y["F2"][v],idx,v)-ps_rate(Y["F1"][v],idx,v))
     dFR=np.array(dFR)*100; dFF=np.array(dFF)*100
     p=boot_p(dFR); pv.append(p)
     a1=Y["F1"][v]; a2=Y["R1"][v]; a3=Y["F2"][v]; ok=~np.isnan(a1)&~np.isnan(a2)&~np.isnan(a3)
@@ -57,9 +59,9 @@ tab=pd.DataFrame(rows); print(tab.to_string(index=False))
 # MAE vs 2024 기준(부분표본, 사후층화)
 mae={}
 for arm in ["F1","F2","F3","R1"]:
-    mae[arm]=np.mean([abs(ps_rate(Y[arm][v],full)-RR[v]) for v in BIN])*100
+    mae[arm]=np.mean([abs(ps_rate(Y[arm][v],full,v)-RR[v]) for v in BIN])*100
 Yavg={v:np.nanmean(np.stack([Y[a][v] for a in ["F1","F2","F3"]]),axis=0) for v in BIN}
-mae["F평균(3회)"]=np.mean([abs(ps_rate(Yavg[v],full)-RR[v]) for v in BIN])*100
+mae["F평균(3회)"]=np.mean([abs(ps_rate(Yavg[v],full,v)-RR[v]) for v in BIN])*100
 mae_rows=[{"암":k,"RQ1_MAE%p(부분표본)":round(v,2)} for k,v in mae.items()]
 print("\nMAE vs 2024:", {k:round(v,2) for k,v in mae.items()})
 
